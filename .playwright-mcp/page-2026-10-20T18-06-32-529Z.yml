@@ -1,0 +1,329 @@
+- generic [ref=e2]:
+  - generic "Loading ArtSwapy Experience" [ref=e3]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: ARTSWAPY // STITCH EDITION
+        - button "Skip loading intro" [ref=e10] [cursor=pointer]: "[ESC] SKIP INTRO ➔"
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - generic [ref=e14]: ✛
+            - text: INITIALIZING STITCH ARCHITECTURE
+          - generic [ref=e15]: 08%
+          - generic [ref=e17]: "[01/03] CALIBRATING STITCH MESH & PALETTE..."
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - generic [ref=e21]: ✳
+            - text: BRAND THOUGHT · Visual Ambassador
+          - generic [ref=e22]:
+            - paragraph [ref=e23]:
+              - generic [ref=e24]: “Design is the silent ambassador of your brand.”
+              - generic [aria-hidden] [ref=e26]: “Design
+              - generic [aria-hidden] [ref=e28]: is
+              - generic [aria-hidden] [ref=e30]: the
+              - generic [aria-hidden] [ref=e32]: silent
+              - generic [aria-hidden] [ref=e34]: ambassador
+              - generic [aria-hidden] [ref=e36]: of
+              - generic [aria-hidden] [ref=e38]: your
+              - generic [aria-hidden] [ref=e40]: brand.”
+            - generic [ref=e41]: — Paul Rand · Modern Corporate Identity Pioneer
+      - generic [ref=e42]:
+        - generic [ref=e43]: SWAPNIL GATHIBANDHE
+        - generic [ref=e44]: BRAND DESIGN & CONSULTING PRACTICE
+        - generic [ref=e45]: EST. 2024
+  - link "Skip to content" [ref=e46] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e47]:
+    - link "ArtSwapy — home" [ref=e48] [cursor=pointer]:
+      - /url: "#home"
+      - text: art
+      - generic [ref=e50]: swapy
+    - button "Open menu" [ref=e51] [cursor=pointer]:
+      - generic [aria-hidden] [ref=e52]: Menu
+  - main [ref=e56]:
+    - region [ref=e57]:
+      - generic [ref=e58]:
+        - paragraph [ref=e59]: ArtSwapy · Brand design & consulting practice
+        - heading "Brands with meaning. Made to be remembered." [level=1] [ref=e61]:
+          - generic [ref=e62]: Brands with
+          - generic [ref=e64]: meaning.
+          - generic [ref=e66]: Made to be
+          - generic [ref=e68]: remembered.
+        - paragraph [ref=e70]:
+          - generic [ref=e71]: Strategy, identity, and brand experiences for businesses that want to be understood — not just seen. An independent practice led by Swapnil Gathibandhe.
+          - generic [aria-hidden] [ref=e73]: Strategy,
+          - generic [aria-hidden] [ref=e75]: identity,
+          - generic [aria-hidden] [ref=e77]: and
+          - generic [aria-hidden] [ref=e79]: brand
+          - generic [aria-hidden] [ref=e81]: experiences
+          - generic [aria-hidden] [ref=e83]: for
+          - generic [aria-hidden] [ref=e85]: businesses
+          - generic [aria-hidden] [ref=e87]: that
+          - generic [aria-hidden] [ref=e89]: want
+          - generic [aria-hidden] [ref=e91]: to
+          - generic [aria-hidden] [ref=e93]: be
+          - generic [aria-hidden] [ref=e95]: understood
+          - generic [aria-hidden] [ref=e97]: —
+          - generic [aria-hidden] [ref=e99]: not
+          - generic [aria-hidden] [ref=e101]: just
+          - generic [aria-hidden] [ref=e103]: seen.
+          - generic [aria-hidden] [ref=e105]: An
+          - generic [aria-hidden] [ref=e107]: independent
+          - generic [aria-hidden] [ref=e109]: practice
+          - generic [aria-hidden] [ref=e111]: led
+          - generic [aria-hidden] [ref=e113]: by
+          - generic [aria-hidden] [ref=e115]: Swapnil
+          - generic [aria-hidden] [ref=e117]: Gathibandhe.
+      - figure [ref=e118]:
+        - generic [ref=e120]:
+          - generic [aria-hidden]: ⌜
+          - generic [aria-hidden]: ⌝
+          - generic [aria-hidden]: ⌞
+          - generic [aria-hidden]: ⌟
+          - img "Portrait placeholder for Swapnil Gathibandhe" [ref=e122]:
+            - generic [aria-hidden] [ref=e123]: SG
+            - generic [ref=e124]: Portrait placeholder
+            - code [ref=e125]: public/images/swapy-portrait.png
+          - generic [ref=e126]: Swapnil Gathibandhe — Founder
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - term [ref=e130]: Based in
+            - definition [ref=e131]:
+              - text: City, Country
+              - generic [ref=e132]: Editable
+          - generic [ref=e133]:
+            - term [ref=e134]: Availability
+            - definition [ref=e135]:
+              - text: Add current availability
+              - generic [ref=e136]: Editable
+        - link "See selected work" [ref=e137] [cursor=pointer]:
+          - /url: "#work"
+          - text: See selected work
+          - generic [aria-hidden] [ref=e138]: ↓
+    - generic [aria-hidden]:
+      - generic: THREAD // 01 · STUDIO THESIS
+    - region [ref=e139]:
+      - paragraph [ref=e141]:
+        - generic [ref=e142]: "01"
+        - text: The studio
+      - generic [ref=e143]:
+        - heading "ArtSwapy helps businesses find what makes them distinct — then shapes it into a brand people can recognise, trust, and remember." [level=2] [ref=e144]:
+          - generic [aria-hidden] [ref=e147]: ArtSwapy
+          - generic [aria-hidden] [ref=e149]: helps
+          - generic [aria-hidden] [ref=e151]: businesses
+          - generic [aria-hidden] [ref=e153]: find
+          - generic [aria-hidden] [ref=e155]: what
+          - generic [aria-hidden] [ref=e157]: makes
+          - generic [aria-hidden] [ref=e159]: them
+          - generic [aria-hidden] [ref=e161]: distinct
+          - generic [aria-hidden] [ref=e163]: —
+          - generic [aria-hidden] [ref=e165]: then
+          - generic [aria-hidden] [ref=e167]: shapes
+          - generic [aria-hidden] [ref=e169]: it
+          - generic [aria-hidden] [ref=e171]: into
+          - generic [aria-hidden] [ref=e173]: a
+          - generic [aria-hidden] [ref=e175]: brand
+          - generic [aria-hidden] [ref=e177]: people
+          - generic [aria-hidden] [ref=e179]: can
+          - generic [aria-hidden] [ref=e181]: recognise,
+          - generic [aria-hidden] [ref=e183]: trust,
+          - generic [aria-hidden] [ref=e185]: and
+          - generic [aria-hidden] [ref=e187]: remember.
+        - paragraph [ref=e189]: Work starts with strategy and carries through to identity, packaging, communications, and the everyday places a brand shows up.
+    - generic [aria-hidden]:
+      - generic: THREAD // 02 · SELECTED ARCHIVE
+    - region [ref=e190]:
+      - generic [ref=e191]:
+        - generic [ref=e192]:
+          - generic [ref=e193]:
+            - paragraph [ref=e194]:
+              - generic [ref=e195]: "02"
+              - text: Selected work
+              - generic [ref=e196]: "[01 / 03] Aaranya"
+            - heading [level=2] [ref=e197]:
+              - text: Good work leaves a
+              - emphasis [ref=e198]: mark.
+          - generic [ref=e199]: Concept placeholders
+        - generic [ref=e202]:
+          - article [ref=e203]:
+            - generic [ref=e204]:
+              - generic [aria-hidden]: ⌜
+              - generic [aria-hidden]: ⌝
+              - generic [aria-hidden]: ⌞
+              - generic [aria-hidden]: ⌟
+              - generic [ref=e205]:
+                - generic [ref=e206]: ARTSWAPY // ARCHIVE 01
+                - generic [ref=e207]: A
+                - generic [ref=e208]: Rooted in something real
+                - generic [ref=e209]: SPEC 01 · 2025
+            - generic [ref=e210]:
+              - generic [ref=e211]:
+                - generic [ref=e212]: "2025"
+                - generic [ref=e213]: Botanical & Lifestyle
+                - generic [ref=e214]: Identity · Packaging
+              - generic [ref=e215]:
+                - generic [ref=e216]:
+                  - generic [ref=e217]: 01 /
+                  - heading "Aaranya" [level=3] [ref=e218]
+                  - generic [ref=e219]: Placeholder
+                - link "Commission a project like Aaranya" [ref=e221] [cursor=pointer]:
+                  - /url: "#contact"
+          - article [ref=e225]:
+            - generic [ref=e226]:
+              - generic [aria-hidden]: ⌜
+              - generic [aria-hidden]: ⌝
+              - generic [aria-hidden]: ⌞
+              - generic [aria-hidden]: ⌟
+              - generic [ref=e227]:
+                - generic [ref=e228]: ARTSWAPY // ARCHIVE 02
+                - generic [ref=e229]: CG
+                - generic [ref=e230]: A little more human
+                - generic [ref=e231]: SPEC 02 · 2025
+            - generic [ref=e232]:
+              - generic [ref=e233]:
+                - generic [ref=e234]: "2025"
+                - generic [ref=e235]: Culture & Commerce
+                - generic [ref=e236]: Strategy · Identity
+              - generic [ref=e237]:
+                - generic [ref=e238]:
+                  - generic [ref=e239]: 02 /
+                  - heading "Common Ground" [level=3] [ref=e240]
+                  - generic [ref=e241]: Placeholder
+                - link "Commission a project like Common Ground" [ref=e243] [cursor=pointer]:
+                  - /url: "#contact"
+          - article [ref=e247]:
+            - generic [ref=e248]:
+              - generic [aria-hidden]: ⌜
+              - generic [aria-hidden]: ⌝
+              - generic [aria-hidden]: ⌞
+              - generic [aria-hidden]: ⌟
+              - generic [ref=e249]:
+                - generic [ref=e250]: ARTSWAPY // ARCHIVE 03
+                - generic [ref=e251]: GH
+                - generic [ref=e252]: Make room for better
+                - generic [ref=e253]: SPEC 03 · 2024
+            - generic [ref=e254]:
+              - generic [ref=e255]:
+                - generic [ref=e256]: "2024"
+                - generic [ref=e257]: Consumer Wellness
+                - generic [ref=e258]: Identity · Campaign
+              - generic [ref=e259]:
+                - generic [ref=e260]:
+                  - generic [ref=e261]: 03 /
+                  - heading "Good Habit" [level=3] [ref=e262]
+                  - generic [ref=e263]: Placeholder
+                - link "Commission a project like Good Habit" [ref=e265] [cursor=pointer]:
+                  - /url: "#contact"
+          - generic [ref=e270]:
+            - generic [aria-hidden]: ⌜
+            - generic [aria-hidden]: ⌝
+            - generic [aria-hidden]: ⌞
+            - generic [aria-hidden]: ⌟
+            - generic [ref=e271]:
+              - generic [ref=e272]: THE CRAFT PHILOSOPHY
+              - heading "Every identity is a story stitched to endure." [level=3] [ref=e273]:
+                - generic [aria-hidden] [ref=e276]: Every
+                - generic [aria-hidden] [ref=e278]: identity
+                - generic [aria-hidden] [ref=e280]: is
+                - generic [aria-hidden] [ref=e282]: a
+                - generic [aria-hidden] [ref=e284]: story
+                - generic [aria-hidden] [ref=e286]: stitched
+                - generic [aria-hidden] [ref=e288]: to
+                - generic [aria-hidden] [ref=e290]: endure.
+              - paragraph [ref=e291]: These concept studies explore how conviction, tactile packaging, and typographic character unite into cohesive systems.
+              - link "Start a project with us" [ref=e292] [cursor=pointer]:
+                - /url: "#contact"
+                - text: Start a project with us
+                - generic [aria-hidden] [ref=e293]: ↗
+    - generic [aria-hidden]:
+      - generic: THREAD // 03 · DISCIPLINE SUITE
+    - region [ref=e294]:
+      - generic [ref=e296]:
+        - paragraph [ref=e297]:
+          - generic [ref=e298]: "03"
+          - text: Services
+        - heading [level=2] [ref=e299]:
+          - text: From first idea
+          - emphasis [ref=e300]: to every touchpoint.
+      - list [ref=e301]:
+        - listitem [ref=e302]:
+          - generic [ref=e303]: 01 //
+          - heading "Brand Strategy" [level=3] [ref=e304]
+          - paragraph [ref=e305]: Positioning, voice, and the story that holds a brand together.
+        - listitem [ref=e306]:
+          - generic [ref=e307]: 02 //
+          - heading "Visual Identity" [level=3] [ref=e308]
+          - paragraph [ref=e309]: Logo, typography, colour, and a system that scales.
+        - listitem [ref=e310]:
+          - generic [ref=e311]: 03 //
+          - heading "Packaging & Communications" [level=3] [ref=e312]
+          - paragraph [ref=e313]: Packaging, print, and campaign work built from the identity.
+        - listitem [ref=e314]:
+          - generic [ref=e315]: 04 //
+          - heading "Brand Experiences" [level=3] [ref=e316]
+          - paragraph [ref=e317]: Digital and physical touchpoints that feel like one brand.
+    - region [ref=e318]:
+      - generic [ref=e319]:
+        - paragraph [ref=e320]:
+          - generic [ref=e321]: "04"
+          - text: Founder
+        - heading "Meet Swapnil." [level=2] [ref=e322]
+      - generic [ref=e323]:
+        - paragraph [ref=e325]: ArtSwapy is a brand design and consulting practice founded by Swapnil Gathibandhe.
+        - generic [ref=e326]:
+          - paragraph [ref=e327]:
+            - generic [ref=e328]: Placeholder
+            - text: Add a short founder bio here — background, approach, and what it is like to work together.
+          - paragraph [ref=e329]: How a project moves
+          - list [ref=e330]:
+            - listitem [ref=e331]: Strategy
+            - listitem [ref=e332]: Identity
+            - listitem [ref=e333]: Packaging
+            - listitem [ref=e334]: Communications
+            - listitem [ref=e335]: Applications
+    - region [ref=e336]:
+      - generic [ref=e337]:
+        - paragraph [ref=e338]:
+          - generic [ref=e339]: "05"
+          - text: Start a project
+        - generic [ref=e340]:
+          - heading "Ready to stand out?" [level=2] [ref=e341]:
+            - generic [aria-hidden] [ref=e344]: Ready
+            - generic [aria-hidden] [ref=e346]: to
+            - generic [aria-hidden] [ref=e348]: stand
+            - generic [aria-hidden] [ref=e350]: out?
+          - paragraph [ref=e351]: meaningful.
+        - generic [ref=e352]:
+          - paragraph [ref=e353]: Tell us about your business, where it is today, and where you want it to go.
+          - generic [ref=e354]:
+            - link "Start a project" [ref=e355] [cursor=pointer]:
+              - /url: mailto:hello@artswapy.com
+              - text: Start a project
+              - generic [aria-hidden] [ref=e356]: ↗
+            - paragraph [ref=e357]:
+              - text: hello@artswapy.com
+              - generic [ref=e358]: Confirm email
+  - contentinfo [ref=e359]:
+    - link "ArtSwapy — home" [ref=e360] [cursor=pointer]:
+      - /url: "#home"
+      - text: art
+      - generic [ref=e362]: swapy
+    - navigation "Footer navigation" [ref=e363]:
+      - list [ref=e364]:
+        - listitem [ref=e365]:
+          - link "Work" [ref=e366] [cursor=pointer]:
+            - /url: "#work"
+        - listitem [ref=e367]:
+          - link "About" [ref=e368] [cursor=pointer]:
+            - /url: "#about"
+        - listitem [ref=e369]:
+          - link "Services" [ref=e370] [cursor=pointer]:
+            - /url: "#services"
+        - listitem [ref=e371]:
+          - link "Contact" [ref=e372] [cursor=pointer]:
+            - /url: "#contact"
+    - paragraph [ref=e373]: © 2026 ArtSwapy
+    - link "Back to top" [ref=e374] [cursor=pointer]:
+      - /url: "#home"
+      - text: Back to top ↑
