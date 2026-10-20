@@ -1,6 +1,6 @@
-# Swapy Art — Brand Portfolio
+# ArtSwapy — Brand Portfolio
 
-Portfolio website for **Swapy Art**, a brand design and consulting practice founded by **Swapnil Gathibandhe**.
+Portfolio website for **ArtSwapy**, a brand design and consulting practice founded by **Swapnil Gathibandhe**.
 
 The site introduces the practice, showcases branding work and case studies, explains services, and gives prospective clients a way to get in touch.
 
@@ -8,13 +8,13 @@ The site introduces the practice, showcases branding work and case studies, expl
 
 ## Design direction
 
-The existing Swapy Art MVP is the visual foundation for development. Preserve and refine its design rather than replacing it.
+The existing ArtSwapy MVP is the visual foundation for development. Preserve and refine its design rather than replacing it.
 
 | Token | Value |
 | ----- | ----- |
 | **Palette** | Orange, white, and near-black |
 | **Style** | Minimal, editorial, confident, and human |
-| **Motion** | Purposeful scroll reveals and image transitions inspired by [DZ!NR Studio](https://dzinrstudio.com/), adapted to Swapy Art's own identity |
+| **Motion** | Purposeful scroll reveals and image transitions inspired by [DZ!NR Studio](https://dzinrstudio.com/), adapted to ArtSwapy's own identity |
 
 > [!IMPORTANT]
 > **Reference rule:** Do not copy another studio's branding, layout, copy, imagery, or exact animations.

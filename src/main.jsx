@@ -1,124 +1,178 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { motion, useScroll, useTransform, useSpring, useReducedMotion, AnimatePresence } from 'motion/react';
+import { motion, MotionConfig, useReducedMotion, AnimatePresence, useScroll, useTransform } from 'motion/react';
+import BlurText from './BlurText.jsx';
+import { site, navLinks, hero, intro, projects, services, about, contact, brandQuotes } from './content.js';
 import './styles.css';
 
-const brandQuotes = [
-  {
-    id: 'rand',
-    tab: 'Paul Rand',
-    quote: 'Design is the silent ambassador of your brand.',
-    author: 'Paul Rand',
-    role: 'Pioneer of Modern Corporate Identity',
-    topic: 'Visual Ambassador'
-  },
-  {
-    id: 'zeldman',
-    tab: 'Jeffrey Zeldman',
-    quote: 'Content precedes design. Design in the absence of content is not design, it’s decoration.',
-    author: 'Jeffrey Zeldman',
-    role: 'Father of Web Standards',
-    topic: 'Content Strategy'
-  },
-  {
-    id: 'gansky',
-    tab: 'Lisa Gansky',
-    quote: 'A brand is a voice and a product is a souvenir.',
-    author: 'Lisa Gansky',
-    role: 'Author & Entrepreneur',
-    topic: 'Brand Longevity'
-  },
-  {
-    id: 'swapy',
-    tab: 'Art Swapy',
-    quote: 'Identity is not a superficial veneer. It is what you stand for when the noise fades and the room goes quiet.',
-    author: 'Art Swapy Studio',
-    role: 'Studio Core Axiom',
-    topic: 'Radical Authenticity'
-  },
-  {
-    id: 'maeda',
-    tab: 'John Maeda',
-    quote: 'Simplicity is about subtracting the obvious and adding the meaningful.',
-    author: 'John Maeda',
-    role: 'The Laws of Simplicity',
-    topic: 'Craft Reduction'
-  }
-];
+const EASE = [0.22, 1, 0.36, 1];
 
-const projects = [
-  { 
-    no: '01', 
-    name: 'Aaranya', 
-    category: 'Identity · Packaging', 
-    filter: 'identity',
-    year: '2025', 
-    className: 'aaranya', 
-    mark: 'A', 
-    line: 'ROOTED IN\nSOMETHING REAL',
-    stamp: 'STITCH SPEC 01\nORGANIC BOTANICAL'
-  },
-  { 
-    no: '02', 
-    name: 'Common Ground', 
-    category: 'Strategy · Identity', 
-    filter: 'strategy',
-    year: '2024', 
-    className: 'common', 
-    mark: 'CG', 
-    line: 'A LITTLE MORE\nHUMAN',
-    stamp: 'STITCH SPEC 02\nTERRACOTTA DUST'
-  },
-  { 
-    no: '03', 
-    name: 'Good Habit', 
-    category: 'Identity · Campaign', 
-    filter: 'packaging',
-    year: '2024', 
-    className: 'habit', 
-    mark: 'GH', 
-    line: 'MAKE ROOM\nFOR BETTER',
-    stamp: 'STITCH SPEC 03\nVIVID REDUCTION'
-  },
-  { 
-    no: '04', 
-    name: 'Stitch Lab', 
-    category: 'Digital Craft · Systems', 
-    filter: 'digital',
-    year: '2025', 
-    className: 'stitchlab', 
-    mark: 'AS', 
-    line: 'SEWN IN CODE\nBUILT IN TYPE',
-    stamp: 'STITCH SPEC 04\nKINETIC PROTOTYPE'
-  }
-];
+/* --------------------------------------------------------------------------
+   Shared helpers
+   -------------------------------------------------------------------------- */
+
+// Fades/slides children in when they enter the viewport.
+// Renders immediately (no animation) when reduced motion is preferred.
+function Reveal({ children, className = '', delay = 0, y = 32, as = 'div' }) {
+  const reduce = useReducedMotion();
+  const Tag = motion[as] ?? motion.div;
+  return (
+    <Tag
+      className={className}
+      initial={reduce ? false : { opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.75, delay, ease: EASE }}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+// Small visible label for any content that still needs confirming.
+function PlaceholderTag({ children = 'Placeholder' }) {
+  return <span className="placeholder-tag">{children}</span>;
+}
+
+function Wordmark() {
+  return (
+    <a href="#home" className="wordmark" aria-label={`${site.name} — home`}>
+      <span className="brand-dot" aria-hidden="true" />
+      art<span className="wordmark-light">swapy</span>
+    </a>
+  );
+}
+
+// Brand-Story Connector: guides the eye with an animated vertical stitch line and diamond node.
+// Decorative element, strictly hidden from assistive technology with aria-hidden="true".
+function SectionConnector({ variant = 'light', label = 'STITCH LINK' }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <div
+      className={`section-connector connector-${variant}`}
+      aria-hidden="true"
+      role="presentation"
+    >
+      <div className="connector-inner">
+        {/* Top vertical stitch line */}
+        <motion.div
+          className="connector-thread-line thread-top"
+          initial={reduce ? false : { scaleY: 0 }}
+          whileInView={{ scaleY: 1 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.45, ease: EASE }}
+        />
+
+        {/* Center orange diamond stitch node */}
+        <motion.div
+          className="connector-thread-dot"
+          initial={reduce ? false : { scale: 0, rotate: 0, opacity: 0 }}
+          whileInView={{ scale: 1, rotate: 45, opacity: 1 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.35, delay: 0.18, ease: [0.34, 1.56, 0.64, 1] }}
+        />
+
+        {/* Micro monospace spec label */}
+        {label && (
+          <motion.span
+            className="connector-thread-label"
+            initial={reduce ? false : { opacity: 0, y: 5 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.35, delay: 0.26, ease: EASE }}
+          >
+            {label}
+          </motion.span>
+        )}
+
+        {/* Bottom vertical stitch line */}
+        <motion.div
+          className="connector-thread-line thread-bottom"
+          initial={reduce ? false : { scaleY: 0 }}
+          whileInView={{ scaleY: 1 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.45, delay: 0.22, ease: EASE }}
+        />
+      </div>
+    </div>
+  );
+}
 
 /* --------------------------------------------------------------------------
    Art Swapy Bespoke Loading Screen with Split Curtain Reveal
    -------------------------------------------------------------------------- */
-function ArtSwapyLoader({ onComplete }) {
+function ArtSwapyLoader({ onRevealStart, onComplete }) {
   const [percent, setPercent] = useState(0);
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const [statusStep, setStatusStep] = useState('CALIBRATING STITCH MESH...');
-  const [isExiting, setIsExiting] = useState(false);
+  const [statusStep, setStatusStep] = useState('[01/03] CALIBRATING STITCH MESH & PALETTE...');
+  const [phase, setPhase] = useState('loading'); // 'loading' | 'release' | 'parting'
   const reduce = useReducedMotion();
+  const hasFinishedRef = useRef(false);
 
-  // Progress counter animation
+  // Safe skip handler: immediately starts parting and exits cleanly
+  const handleSkip = () => {
+    if (hasFinishedRef.current) return;
+    setPhase('parting');
+    document.body.style.overflow = '';
+    onRevealStart?.();
+    setTimeout(() => {
+      hasFinishedRef.current = true;
+      onComplete?.();
+    }, 280);
+  };
+
+  // Progress counter and staged release (calibrated for ~1.8-2.4s total cinematic flow)
   useEffect(() => {
+    // If user prefers reduced motion, show site immediately with zero delay
+    if (reduce) {
+      document.body.style.overflow = '';
+      onRevealStart?.();
+      onComplete?.();
+      return undefined;
+    }
+
+    document.body.style.overflow = 'hidden';
+
+    // Reliability safety fallback: ensure loader never blocks the page
+    const safetyTimer = setTimeout(() => {
+      if (!hasFinishedRef.current) {
+        document.body.style.overflow = '';
+        hasFinishedRef.current = true;
+        onRevealStart?.();
+        onComplete?.();
+      }
+    }, 3000);
+
     let current = 0;
+    let releaseTimer = null;
+    let partingTimer = null;
+    let completeTimer = null;
+
     const interval = setInterval(() => {
-      current += Math.floor(Math.random() * 4) + 2;
+      current += Math.floor(Math.random() * 3) + 2;
       if (current >= 100) {
         current = 100;
         setPercent(100);
-        setStatusStep('SYSTEM INITIALIZED. UNZIPPING CANVAS.');
+        setStatusStep('CANVAS READY. RELEASING STAGE...');
         clearInterval(interval);
-        setTimeout(() => {
-          setIsExiting(true);
-          setTimeout(() => {
-            onComplete();
-          }, 850);
-        }, 350);
+
+        // Step 2: Brief controlled release of centered stage content
+        releaseTimer = setTimeout(() => {
+          setPhase('release');
+
+          // Step 3: Animate curtains away & coordinate Hero entrance
+          partingTimer = setTimeout(() => {
+            setPhase('parting');
+            document.body.style.overflow = '';
+            onRevealStart?.();
+
+            completeTimer = setTimeout(() => {
+              hasFinishedRef.current = true;
+              onComplete?.();
+            }, 780);
+          }, 180);
+        }, 150);
       } else {
         setPercent(current);
         if (current > 75) {
@@ -129,70 +183,93 @@ function ArtSwapyLoader({ onComplete }) {
           setStatusStep('[01/03] CALIBRATING STITCH MESH & PALETTE...');
         }
       }
-    }, 45);
+    }, 34);
 
-    return () => clearInterval(interval);
-  }, [onComplete]);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(releaseTimer);
+      clearTimeout(partingTimer);
+      clearTimeout(completeTimer);
+      clearTimeout(safetyTimer);
+      document.body.style.overflow = '';
+    };
+  }, [onComplete, onRevealStart, reduce]);
 
   // Quote cycling during loading
   useEffect(() => {
+    if (reduce) return undefined;
     const quoteInterval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % brandQuotes.length);
-    }, 1100);
+    }, 1250);
     return () => clearInterval(quoteInterval);
-  }, []);
+  }, [reduce]);
 
   // Keyboard escape listener to skip
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        setIsExiting(true);
-        setTimeout(() => onComplete(), 400);
+        handleSkip();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onComplete]);
+  }, []);
 
-  const handleSkip = () => {
-    setIsExiting(true);
-    setTimeout(() => onComplete(), 400);
-  };
-
-  const activeQuote = brandQuotes[quoteIndex];
+  const activeQuote = brandQuotes[quoteIndex] || brandQuotes[0];
+  const isParting = phase === 'parting';
+  const isReleasing = phase === 'release' || phase === 'parting';
 
   return (
-    <div className="artswapy-loader" aria-live="polite" aria-label="Loading Art Swapy Experience">
+    <div
+      className={`artswapy-loader ${isParting ? 'is-parting' : ''}`}
+      aria-live="polite"
+      aria-label="Loading ArtSwapy Experience"
+    >
       {/* Top Split Curtain */}
-      <motion.div 
+      <motion.div
         className="loader-curtain loader-curtain-top"
-        animate={isExiting ? { y: '-100%' } : { y: '0%' }}
-        transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
-      />
+        initial={{ y: '0%' }}
+        animate={isParting ? { y: '-100%' } : { y: '0%' }}
+        transition={{ duration: 0.78, ease: [0.76, 0, 0.24, 1] }}
+      >
+        <span className="curtain-stitch-line curtain-stitch-bottom" aria-hidden="true" />
+      </motion.div>
 
       {/* Bottom Split Curtain */}
-      <motion.div 
+      <motion.div
         className="loader-curtain loader-curtain-bottom"
-        animate={isExiting ? { y: '100%' } : { y: '0%' }}
-        transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
-      />
+        initial={{ y: '0%' }}
+        animate={isParting ? { y: '100%' } : { y: '0%' }}
+        transition={{ duration: 0.78, ease: [0.76, 0, 0.24, 1] }}
+      >
+        <span className="curtain-stitch-line curtain-stitch-top" aria-hidden="true" />
+      </motion.div>
 
-      {/* Center Tactical Stage */}
-      <motion.div 
+      {/* Center Tactical Stage Content with Controlled Release */}
+      <motion.div
         className="loader-stage-content"
-        animate={isExiting ? { opacity: 0, scale: 0.95 } : { opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={
+          isReleasing
+            ? { opacity: 0, scale: 0.97, filter: 'blur(6px)' }
+            : { opacity: 1, scale: 1, filter: 'blur(0px)' }
+        }
+        transition={
+          isReleasing
+            ? { duration: 0.22, ease: [0.4, 0, 0.2, 1] }
+            : { duration: 0.4, ease: EASE }
+        }
       >
         <div className="loader-header-seam">
           <span className="loader-brand">
-            <span className="brand-dot" />
-            ART SWAPY // STITCH BOOTSTRAP 2025
+            <span className="brand-dot" aria-hidden="true" />
+            ARTSWAPY // STITCH EDITION
           </span>
-          <button 
-            type="button" 
-            className="skip-loader-btn" 
+          <button
+            type="button"
+            className="skip-loader-btn"
             onClick={handleSkip}
-            aria-label="Skip loading screen"
+            aria-label="Skip loading intro"
           >
             [ESC] SKIP INTRO ➔
           </button>
@@ -205,21 +282,21 @@ function ArtSwapyLoader({ onComplete }) {
             </span>
             <div className="loader-counter-num">
               {percent < 10 ? `0${percent}` : percent}
-              <span style={{ color: 'var(--orange)', fontSize: '0.6em', marginLeft: '4px' }}>%</span>
+              <span className="counter-pct-mark">%</span>
             </div>
             <div className="loader-progress-seam">
-              <div 
-                className="loader-progress-fill" 
+              <div
+                className="loader-progress-fill"
                 style={{ width: `${percent}%` }}
               />
             </div>
             <div className="loader-status-step">
-              <span className="hud-pill" />
+              <span className="hud-pill" aria-hidden="true" />
               {statusStep}
             </div>
           </div>
 
-          {/* Cycling Quotes Card on Loading Screen */}
+          {/* Cycling Quotes Card on Loading Screen with BlurText */}
           <div className="loader-quote-box">
             <div className="loader-quote-badge">
               <span>✳</span> BRAND THOUGHT · {activeQuote.topic}
@@ -227,14 +304,22 @@ function ArtSwapyLoader({ onComplete }) {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeQuote.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18 }}
               >
-                <p className="loader-quote-text">
-                  “{activeQuote.quote}”
-                </p>
+                <BlurText
+                  key={`quote-${activeQuote.id}`}
+                  text={`“${activeQuote.quote}”`}
+                  className="loader-quote-text"
+                  animateBy="words"
+                  direction="top"
+                  blur={8}
+                  delay={35}
+                  stepDuration={0.22}
+                  trigger="load"
+                />
                 <div className="loader-quote-author">
                   — <span>{activeQuote.author}</span> · {activeQuote.role}
                 </div>
@@ -244,715 +329,702 @@ function ArtSwapyLoader({ onComplete }) {
         </div>
 
         <div className="loader-footer-seam">
-          <span>BHARAT · WORLDWIDE</span>
-          <span>CURATED BRAND STRATEGY & TACTILE SYSTEMS</span>
-          <span>[REF. 04]</span>
+          <span>SWAPNIL GATHIBANDHE</span>
+          <span>BRAND DESIGN & CONSULTING PRACTICE</span>
+          <span>EST. 2024</span>
         </div>
       </motion.div>
     </div>
   );
 }
 
-function Reveal({ children, className = '', delay = 0, y = 32 }) {
+/* --------------------------------------------------------------------------
+   1. Site header
+   -------------------------------------------------------------------------- */
+function Header({ isRevealing = true }) {
+  const [open, setOpen] = useState(false);
+  const buttonRef = useRef(null);
+  const navRef = useRef(null);
   const reduce = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={reduce ? false : { opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function ScrollHud({ onReplayIntro }) {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 280, damping: 30 });
-  const [percent, setPercent] = useState(0);
 
   useEffect(() => {
-    return scrollYProgress.on('change', (latest) => {
-      setPercent(Math.round(latest * 100));
-    });
-  }, [scrollYProgress]);
+    if (!open) return undefined;
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    const onPointerDown = (e) => {
+      if (!navRef.current?.contains(e.target) && !buttonRef.current?.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    const desktop = window.matchMedia('(min-width: 861px)');
+    const onBreakpoint = (e) => e.matches && setOpen(false);
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    desktop.addEventListener('change', onBreakpoint);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown);
+      desktop.removeEventListener('change', onBreakpoint);
+    };
+  }, [open]);
+
+  const close = () => setOpen(false);
 
   return (
-    <div className="scroll-hud" aria-label="Scroll HUD">
-      <span className="hud-pill" />
-      <span>STITCH HUD</span>
-      <div className="hud-bar">
-        <motion.div className="hud-fill" style={{ scaleX }} />
-      </div>
-      <span>{percent}%</span>
-      <button 
-        type="button" 
-        className="hud-replay-btn" 
-        onClick={onReplayIntro}
-        title="Replay Intro Loading Screen"
+    <motion.header
+      className="header"
+      initial={reduce ? false : { opacity: 0, y: -14 }}
+      animate={reduce || isRevealing ? { opacity: 1, y: 0 } : { opacity: 0, y: -14 }}
+      transition={{ duration: 0.7, delay: 0.16, ease: EASE }}
+    >
+      <Wordmark />
+
+      <button
+        ref={buttonRef}
+        type="button"
+        className="menu-toggle"
+        aria-controls="site-nav"
+        aria-expanded={open}
+        aria-label={open ? 'Close menu' : 'Open menu'}
+        onClick={() => setOpen((v) => !v)}
       >
-        INTRO ↺
+        <span className="menu-toggle-label" aria-hidden="true">{open ? 'Close' : 'Menu'}</span>
+        <span className={`menu-icon ${open ? 'is-open' : ''}`} aria-hidden="true">
+          <span />
+          <span />
+        </span>
       </button>
-    </div>
-  );
-}
 
-function Header() {
-  return (
-    <>
-      <div className="top-seam-bar">
-        <span className="status-live">ART SWAPY STUDIO · AVAILABLE FOR SELECT COMMISSIONS</span>
-        <span>EST. 2024 · BHARAT / WORKING WORLDWIDE</span>
-      </div>
-      <header className="header">
-        <a href="#home" className="wordmark" aria-label="Art Swapy home">
-          <span className="brand-dot" />
-          art<span className="wordmark-light">swapy</span>
+      <nav
+        id="site-nav"
+        ref={navRef}
+        className={`site-nav ${open ? 'is-open' : ''}`}
+        aria-label="Main navigation"
+      >
+        <ul>
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <a href={link.href} onClick={close}>{link.label}</a>
+            </li>
+          ))}
+        </ul>
+        <a className="header-cta" href="#contact" onClick={close}>
+          Start a project <span aria-hidden="true">↗</span>
         </a>
-        <nav aria-label="Main navigation">
-          <a href="#work">Work</a>
-          <a href="#manifesto">Manifesto</a>
-          <a href="#case-story">Story</a>
-          <a href="#about">Philosophy</a>
-          <a href="#services">Services</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        <a className="header-cta" href="#contact">
-          Start a project <span>↗</span>
-        </a>
-      </header>
-    </>
-  );
-}
-
-function Hero() {
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start']
-  });
-
-  const titleY = useTransform(scrollYProgress, [0, 1], [0, 90]);
-  const bgGridY = useTransform(scrollYProgress, [0, 1], [0, 50]);
-
-  return (
-    <section className="hero" id="home" ref={ref}>
-      <div className="hero-top">
-        <span>Independent Brand & Digital Practice<br />Tactile Systems · Kinetic Identity</span>
-        <span className="hero-index">STITCH EDITION 2025 // [REF 04]</span>
-      </div>
-
-      <div className="hero-stage">
-        <span className="corner-bracket bracket-tl">⌜</span>
-        <span className="corner-bracket bracket-tr">⌝</span>
-        <span className="corner-bracket bracket-bl">⌞</span>
-        <span className="corner-bracket bracket-br">⌟</span>
-
-        <motion.div className="hero-grid-canvas" style={reduce ? {} : { y: bgGridY }} />
-
-        <div className="hero-headline-wrap">
-          <div className="hero-spec-tag">
-            <span>✛</span> BRAND CRAFT & STITCH SPECIFICATION 01
-          </div>
-          <motion.div 
-            className="hero-title"
-            style={reduce ? {} : { y: titleY }}
-            initial={reduce ? false : 'hidden'}
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } }
-            }}
-          >
-            <motion.span variants={{ hidden: { y: '105%' }, visible: { y: 0 } }}>
-              MAKE
-            </motion.span>
-            <motion.span className="orange-accent" variants={{ hidden: { y: '105%' }, visible: { y: 0 } }}>
-              YOUR
-            </motion.span>
-            <motion.span variants={{ hidden: { y: '105%' }, visible: { y: 0 } }}>
-              MARK.
-            </motion.span>
-          </motion.div>
-        </div>
-
-        {/* Interactive Tactical Swatches in Hero */}
-        <div className="hero-swatch-stage">
-          <motion.div 
-            className="stitch-swatch-card"
-            drag
-            dragConstraints={{ top: -20, bottom: 20, left: -20, right: 20 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            initial={reduce ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <div className="swatch-meta-top">
-              <span>SPEC 01 // STRATEGY</span>
-              <span className="swatch-badge">STITCH ✛</span>
-            </div>
-            <div className="swatch-name">Rooted Conviction</div>
-            <p className="swatch-desc">Strategy that uncovers who you are before deciding how you look.</p>
-            <div className="swatch-thread-line" />
-          </motion.div>
-
-          <motion.div 
-            className="stitch-swatch-card"
-            drag
-            dragConstraints={{ top: -20, bottom: 20, left: -20, right: 20 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            initial={reduce ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.42 }}
-          >
-            <div className="swatch-meta-top">
-              <span>SPEC 02 // IDENTITY</span>
-              <span className="swatch-badge">AS LAB</span>
-            </div>
-            <div className="swatch-name">Tactile Character</div>
-            <p className="swatch-desc">Bold typography, raw texture, and a point of view that sticks.</p>
-            <div className="swatch-thread-line" style={{ filter: 'hue-rotate(45deg)' }} />
-          </motion.div>
-
-          <motion.div 
-            className="stitch-swatch-card"
-            drag
-            dragConstraints={{ top: -20, bottom: 20, left: -20, right: 20 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            initial={reduce ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.54 }}
-          >
-            <div className="swatch-meta-top">
-              <span>SPEC 03 // SYSTEMS</span>
-              <span className="swatch-badge">2025</span>
-            </div>
-            <div className="swatch-name">Cohesive Stitching</div>
-            <p className="swatch-desc">Seamlessly scaled from digital experiences to physical print.</p>
-            <div className="swatch-thread-line" style={{ filter: 'brightness(1.3)' }} />
-          </motion.div>
-        </div>
-
-        <div className="hero-seam-strip">
-          <span>DRAG ARTIFACTS TO EXPLORE TACTILITY</span>
-          <a href="#work" className="scroll-cue">
-            SCROLL TO COMMENCE <span>↓</span>
-          </a>
-          <span>ART SWAPY DESIGN FRAMEWORK</span>
-        </div>
-      </div>
-
-      <div className="hero-bottom">
-        <span>BRAND ARCHITECTURE / VISUAL IDENTITY / DIGITAL INTERFACES</span>
-        <span>A BOUTIQUE PRACTICE FOR AMBITIOUS FOUNDERS</span>
-      </div>
-    </section>
-  );
-}
-
-function KineticMarquee() {
-  const items = [
-    'ART SWAPY',
-    'TACTILE BRAND STRATEGY',
-    'STITCHED IDENTITY SYSTEMS',
-    'PRECISION CRAFT',
-    'KINETIC CHOREOGRAPHY',
-    'NO TEMPLATES',
-    'BUILT WITH CONVICTION'
-  ];
-
-  return (
-    <div className="marquee-ribbon" aria-hidden="true">
-      <div className="marquee-track">
-        {[...items, ...items, ...items].map((text, idx) => (
-          <span className="marquee-item" key={idx}>
-            {text} <span className="seam-cross">✳</span>
-          </span>
-        ))}
-      </div>
-    </div>
+      </nav>
+    </motion.header>
   );
 }
 
 /* --------------------------------------------------------------------------
-   FourTwo / Studio Freight Style Kinetic Scroll Text Reveal Section
+   2. Hero
    -------------------------------------------------------------------------- */
-function FourTwoManifesto() {
-  const containerRef = useRef(null);
-  const [selectedQuoteId, setSelectedQuoteId] = useState('rand');
+function Portrait({ isRevealing = true }) {
   const reduce = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start 80%', 'end 30%']
-  });
-
-  const manifestoWords = [
-    { text: 'WE', highlight: false },
-    { text: 'BELIEVE', highlight: false },
-    { text: 'THAT', highlight: false },
-    { text: 'ICONIC', highlight: true },
-    { text: 'BRANDS', highlight: true },
-    { text: 'DO', highlight: false },
-    { text: 'NOT', highlight: false },
-    { text: 'WIN', highlight: false },
-    { text: 'BY', highlight: false },
-    { text: 'SHOUTING', highlight: false },
-    { text: 'INTO', highlight: false },
-    { text: 'THE', highlight: false },
-    { text: 'VOID.', highlight: false },
-    { text: 'THEY', highlight: false },
-    { text: 'WIN', highlight: false },
-    { text: 'BY', highlight: false },
-    { text: 'CRAFTING', highlight: false },
-    { text: 'A', highlight: false },
-    { text: 'VOICE', highlight: true },
-    { text: 'SO', highlight: false },
-    { text: 'GROUNDED,', highlight: true },
-    { text: 'A', highlight: false },
-    { text: 'SYSTEM', highlight: true },
-    { text: 'SO', highlight: false },
-    { text: 'COHESIVE,', highlight: true },
-    { text: 'AND', highlight: false },
-    { text: 'CONTENT', highlight: true },
-    { text: 'SO', highlight: false },
-    { text: 'MEANINGFUL', highlight: true },
-    { text: 'THAT', highlight: false },
-    { text: 'RECOGNITION', highlight: true },
-    { text: 'BECOMES', highlight: true },
-    { text: 'INEVITABLE.', highlight: true }
-  ];
-
-  const activeQuote = brandQuotes.find(q => q.id === selectedQuoteId) || brandQuotes[0];
+  const [failed, setFailed] = useState(false);
 
   return (
-    <section className="fourtwo-manifesto" id="manifesto" ref={containerRef}>
-      <div className="fourtwo-sticky-container">
-        <div className="fourtwo-meta-top">
-          <span className="eyebrow">
-            <span>02</span> FOURTWO STYLE KINETIC REVEAL
-          </span>
-          <span style={{ color: 'var(--orange)' }}>STITCH SPECIFICATION 2025 // [REF 05]</span>
-        </div>
+    <motion.figure
+      className="hero-portrait"
+      initial={reduce ? false : { opacity: 0, y: 28 }}
+      animate={reduce || isRevealing ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+      transition={{ duration: 0.9, delay: 0.22, ease: EASE }}
+    >
+      <span className="portrait-offset" aria-hidden="true" />
 
-        {/* Dynamic Scroll Text Reveal */}
-        <h2 className="fourtwo-big-text" aria-label="Studio Manifesto">
-          {manifestoWords.map((wordObj, i) => {
-            const wordStart = i / manifestoWords.length;
-            const wordEnd = (i + 1) / manifestoWords.length;
-            return (
-              <FourTwoWord 
-                key={i} 
-                word={wordObj.text} 
-                isHighlight={wordObj.highlight} 
-                scrollYProgress={scrollYProgress} 
-                start={wordStart} 
-                end={wordEnd}
-                reduce={reduce}
-              />
-            );
-          })}
-        </h2>
+      <div className="portrait-card">
+        <span className="corner-bracket bracket-tl" aria-hidden="true">⌜</span>
+        <span className="corner-bracket bracket-tr" aria-hidden="true">⌝</span>
+        <span className="corner-bracket bracket-bl" aria-hidden="true">⌞</span>
+        <span className="corner-bracket bracket-br" aria-hidden="true">⌟</span>
 
-        {/* Brand Designing & Content Quotes Deck */}
-        <div className="quotes-deck-wrap">
-          <div className="quotes-deck-header">
-            <span className="eyebrow">
-              <span>✳</span> CURATED BRAND & CONTENT QUOTES
+        <motion.div
+          className="portrait-frame"
+          initial={reduce ? false : { clipPath: 'inset(100% 0% 0% 0%)' }}
+          animate={reduce || isRevealing ? { clipPath: 'inset(0% 0% 0% 0%)' } : { clipPath: 'inset(100% 0% 0% 0%)' }}
+          transition={{ duration: 1.05, delay: 0.36, ease: EASE }}
+        >
+          {failed ? (
+            <div
+              className="portrait-fallback"
+              role="img"
+              aria-label={`Portrait placeholder for ${site.founder}`}
+            >
+              <span className="portrait-fallback-mark" aria-hidden="true">SG</span>
+              <PlaceholderTag>Portrait placeholder</PlaceholderTag>
+              <code>public{hero.portrait.src}</code>
+            </div>
+          ) : (
+            <img
+              src={hero.portrait.src}
+              alt={hero.portrait.alt}
+              width="800"
+              height="1000"
+              fetchPriority="high"
+              onError={() => setFailed(true)}
+            />
+          )}
+        </motion.div>
+
+        <figcaption>{hero.portrait.caption}</figcaption>
+      </div>
+    </motion.figure>
+  );
+}
+
+function Hero({ isRevealing = true }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <motion.section
+      className="hero"
+      id="home"
+      aria-labelledby="hero-title"
+      initial={reduce ? false : { opacity: 0, scale: 1.025 }}
+      animate={reduce || isRevealing ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.025 }}
+      transition={{ duration: 0.9, ease: EASE, delay: 0.05 }}
+    >
+      <div className="hero-grid-canvas" aria-hidden="true" />
+
+      <div className="hero-copy">
+        <motion.p
+          className="hero-eyebrow"
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={reduce || isRevealing ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          transition={{ duration: 0.65, delay: 0.12, ease: EASE }}
+        >
+          <span className="brand-dot" aria-hidden="true" />
+          {site.name} · {hero.eyebrow}
+        </motion.p>
+
+        <motion.h1
+          id="hero-title"
+          className="hero-title"
+          initial={reduce ? false : 'hidden'}
+          animate={reduce || isRevealing ? 'visible' : 'hidden'}
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.09,
+                delayChildren: 0.16
+              }
+            },
+            hidden: {}
+          }}
+        >
+          {hero.headline.map((line) => (
+            <span className="line-mask" key={line.text}>
+              <motion.span
+                className={`line ${line.accent ? 'accent' : ''}`}
+                variants={{
+                  hidden: { y: '110%' },
+                  visible: { y: '0%', transition: { duration: 0.85, ease: EASE } }
+                }}
+              >
+                {line.text}
+              </motion.span>{' '}
             </span>
-            <div className="quotes-deck-tabs">
-              {brandQuotes.map((q) => (
-                <button
-                  key={q.id}
-                  type="button"
-                  className={`quote-tab-pill ${selectedQuoteId === q.id ? 'active' : ''}`}
-                  onClick={() => setSelectedQuoteId(q.id)}
-                >
-                  {q.tab}
-                </button>
-              ))}
-            </div>
-          </div>
+          ))}
+        </motion.h1>
 
-          <motion.div 
-            key={activeQuote.id}
-            className="quote-featured-card"
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="quote-featured-body">
-              {activeQuote.quote}
+        <BlurText
+          as="p"
+          text={hero.supporting}
+          className="hero-supporting"
+          animateBy="words"
+          direction="bottom"
+          blur={6}
+          delay={25}
+          stepDuration={0.24}
+          trigger={isRevealing ? 'load' : 'manual'}
+        />
+      </div>
+
+      <Portrait isRevealing={isRevealing} />
+
+      <motion.div
+        className="hero-strip"
+        initial={reduce ? false : { opacity: 0, y: 14 }}
+        animate={reduce || isRevealing ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+        transition={{ duration: 0.75, delay: 0.44, ease: EASE }}
+      >
+        <dl className="hero-meta">
+          {hero.meta.map((item) => (
+            <div key={item.label}>
+              <dt>{item.label}</dt>
+              <dd>
+                {item.value}
+                {item.placeholder && <PlaceholderTag>Editable</PlaceholderTag>}
+              </dd>
             </div>
-            <div className="quote-featured-footer">
-              <div>
-                <span className="quote-author-name">{activeQuote.author}</span>
-                <span className="quote-author-role"> — {activeQuote.role}</span>
-              </div>
-              <span className="quote-topic-tag">{activeQuote.topic}</span>
-            </div>
-          </motion.div>
-        </div>
+          ))}
+        </dl>
+        <a href={hero.scrollCue.href} className="scroll-cue">
+          {hero.scrollCue.label} <span aria-hidden="true">↓</span>
+        </a>
+      </motion.div>
+    </motion.section>
+  );
+}
+
+/* --------------------------------------------------------------------------
+   3. Studio introduction
+   -------------------------------------------------------------------------- */
+function StudioIntro() {
+  return (
+    <section className="intro section-pad" id="studio" aria-labelledby="intro-title">
+      <Reveal>
+        <p className="eyebrow"><span>01</span> {intro.eyebrow}</p>
+      </Reveal>
+      <div className="intro-grid">
+        <BlurText
+          as="h2"
+          id="intro-title"
+          text={intro.lead}
+          className="intro-lead"
+          animateBy="words"
+          direction="top"
+          blur={8}
+          delay={35}
+          stepDuration={0.25}
+          trigger="view"
+          threshold={0.15}
+        />
+        <Reveal delay={0.15}>
+          <p className="intro-body">{intro.body}</p>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function FourTwoWord({ word, isHighlight, scrollYProgress, start, end, reduce }) {
-  const opacity = useTransform(scrollYProgress, [start, end], [0.2, 1]);
-  const y = useTransform(scrollYProgress, [start, end], [10, 0]);
-  const color = useTransform(
-    scrollYProgress,
-    [start, end],
-    ['rgba(22, 22, 20, 0.2)', isHighlight ? '#ff551f' : '#161614']
-  );
+/* --------------------------------------------------------------------------
+   4. Selected work — Horizontal Scroll Showcase with Subtle Parallax Depth
+   -------------------------------------------------------------------------- */
 
-  if (reduce) {
-    return (
-      <span className={`fourtwo-word-span ${isHighlight ? 'fourtwo-word-highlight' : 'fourtwo-word-active'}`}>
-        {word}
-      </span>
-    );
-  }
+// WorkPanel: Dedicated sub-component for project showcase panels.
+// Implements restrained parallax depth for internal artwork while keeping
+// project cards, typography, tags, and action buttons 100% stable and legible.
+function WorkPanel({ project, scrollYProgress, reduce }) {
+  // Parallax: Artwork inside the frame shifts slightly slower than its frame as visitor scrolls horizontally.
+  // Because horizontal track moves left (-scrollDistance), shifting the artwork from -32 to +32 produces
+  // a gentle, physical lag relative to the frame.
+  const artParallaxX = useTransform(scrollYProgress, [0, 1], [-32, 32]);
+  const markParallaxX = useTransform(scrollYProgress, [0, 1], [-14, 14]);
 
   return (
-    <motion.span 
-      className="fourtwo-word-span"
-      style={{ opacity, y, color }}
-    >
-      {word}
-    </motion.span>
+    <article className="work-panel" aria-labelledby={`project-${project.no}`}>
+      <div className={`work-panel-canvas ${project.className}`}>
+        <span className="corner-bracket bracket-tl" aria-hidden="true">⌜</span>
+        <span className="corner-bracket bracket-tr" aria-hidden="true">⌝</span>
+        <span className="corner-bracket bracket-bl" aria-hidden="true">⌞</span>
+        <span className="corner-bracket bracket-br" aria-hidden="true">⌟</span>
+
+        <motion.div
+          className="work-panel-art-frame"
+          style={reduce ? {} : { x: artParallaxX }}
+        >
+          <span className="art-top">ARTSWAPY // ARCHIVE {project.no}</span>
+          <motion.span
+            className="art-mark"
+            style={reduce ? {} : { x: markParallaxX }}
+          >
+            {project.mark}
+          </motion.span>
+          <span className="art-line">{project.line}</span>
+          <span className="art-stamp">SPEC {project.no} · {project.year}</span>
+        </motion.div>
+      </div>
+
+      <div className="work-panel-footer">
+        <div className="work-panel-meta-row">
+          <span className="work-year-pill">{project.year}</span>
+          <span className="work-industry">{project.industry}</span>
+          <span className="work-category">{project.category}</span>
+        </div>
+
+        <div className="work-panel-title-row">
+          <div className="work-title-wrap">
+            <span className="work-panel-no">{project.no} /</span>
+            <h3 id={`project-${project.no}`} className="work-panel-name">{project.name}</h3>
+            <span className="work-panel-tag"><PlaceholderTag /></span>
+          </div>
+
+          <a
+            href="#contact"
+            className="work-panel-circle-btn"
+            aria-label={`Commission a project like ${project.name}`}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="7" y1="17" x2="17" y2="7" />
+              <polyline points="7 7 17 7 17 17" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </article>
   );
 }
 
 function Work() {
-  const [activeFilter, setActiveFilter] = useState('all');
-
-  const filteredProjects = activeFilter === 'all' 
-    ? projects 
-    : projects.filter(p => p.filter === activeFilter);
-
-  return (
-    <section className="work section-pad" id="work">
-      <div className="section-heading">
-        <Reveal>
-          <p className="eyebrow">
-            <span>03</span> SELECTED WORKS · 2024—25
-          </p>
-          <h2>
-            Good work<br />leaves a <em>mark.</em>
-          </h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="section-intro">
-            A curated collection of identities built with weight, intention, and cohesive visual stitching.
-          </p>
-        </Reveal>
-      </div>
-
-      <div className="filter-bar">
-        {[
-          { key: 'all', label: 'All Works [04]' },
-          { key: 'identity', label: 'Identity' },
-          { key: 'strategy', label: 'Strategy' },
-          { key: 'packaging', label: 'Packaging' },
-          { key: 'digital', label: 'Digital Craft' }
-        ].map((f) => (
-          <button
-            key={f.key}
-            type="button"
-            className={`filter-btn ${activeFilter === f.key ? 'active' : ''}`}
-            onClick={() => setActiveFilter(f.key)}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="project-grid">
-        {filteredProjects.map((p, i) => (
-          <Reveal 
-            key={p.no} 
-            className={`project-card ${i % 2 === 1 ? 'project-card-asym' : ''}`}
-            delay={i * 0.08}
-          >
-            <motion.a 
-              className={`project-art ${p.className}`} 
-              href="#case-story"
-              whileHover={{ y: -8 }}
-              transition={{ duration: 0.3 }}
-              aria-label={`${p.name} case study preview`}
-            >
-              <div className="art-frame">
-                <span className="art-top">ART SWAPY // STITCH ARCHIVE</span>
-                <span className="art-view-tag">INSPECT CASE ↗</span>
-                <span className="art-mark">{p.mark}</span>
-                <span className="art-line">{p.line}</span>
-                <span className="art-stamp">{p.stamp}</span>
-              </div>
-            </motion.a>
-            <div className="project-meta">
-              <div>
-                <span className="project-no">{p.no} /</span>
-                <h3>{p.name}</h3>
-              </div>
-              <p>{p.category}<br />{p.year}</p>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Story() {
-  const ref = useRef(null);
+  const containerRef = useRef(null);
+  const trackRef = useRef(null);
+  const viewportRef = useRef(null);
+  const [scrollDistance, setScrollDistance] = useState(0);
+  const [activeProject, setActiveProject] = useState(0);
   const reduce = useReducedMotion();
+
+  // Measure track width dynamically to prevent hardcoding scroll distances
+  useEffect(() => {
+    if (reduce) return undefined;
+
+    const measureDistance = () => {
+      if (!trackRef.current || !viewportRef.current) return;
+      const trackW = trackRef.current.scrollWidth;
+      const viewW = viewportRef.current.clientWidth;
+      const distance = Math.max(0, trackW - viewW + 48);
+      setScrollDistance(distance);
+    };
+
+    measureDistance();
+    window.addEventListener('resize', measureDistance);
+    return () => window.removeEventListener('resize', measureDistance);
+  }, [reduce]);
+
   const { scrollYProgress } = useScroll({
-    target: ref,
+    target: containerRef,
     offset: ['start start', 'end end']
   });
 
-  const stepLabel = useTransform(
-    scrollYProgress,
-    [0, 0.33, 0.66, 1],
-    ['01 // STRATEGIC BLUEPRINT', '02 // TYPOGRAPHIC STITCH', '03 // COHESIVE SYSTEM', '03 // COHESIVE SYSTEM']
-  );
+  // Dynamic X translation from measured track size
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
 
-  const tileRotate1 = useTransform(scrollYProgress, [0, 1], [-10, 8]);
-  const tileY1 = useTransform(scrollYProgress, [0, 1], [30, -30]);
-  const tileRotate2 = useTransform(scrollYProgress, [0, 1], [10, -6]);
-  const tileY2 = useTransform(scrollYProgress, [0, 1], [-15, 30]);
-  const tileRotate3 = useTransform(scrollYProgress, [0, 1], [-4, 12]);
-  const scaleVisual = useTransform(scrollYProgress, [0, 0.5, 1], [0.94, 1.02, 1]);
+  // Update active project index dynamically as visitor scrolls
+  useEffect(() => {
+    if (reduce) return undefined;
+    return scrollYProgress.on('change', (latest) => {
+      const idx = Math.min(projects.length - 1, Math.floor(latest * projects.length));
+      setActiveProject(idx);
+    });
+  }, [scrollYProgress, reduce]);
 
   return (
-    <section className="story" id="case-story" ref={ref}>
-      <div className="story-sticky">
-        <div className="story-head">
-          <p className="eyebrow">
-            <span>04</span> DECONSTRUCTED PROCESS
-          </p>
-          <motion.span className="story-step-indicator">{stepLabel}</motion.span>
+    <section className="work-scroll-container" id="work" ref={containerRef} aria-labelledby="work-title">
+      <div className="work-sticky-viewport">
+        {/* Sticky viewport header */}
+        <div className="work-viewport-header">
+          <div className="work-header-left">
+            <p className="eyebrow">
+              <span>02</span> Selected work
+              <span className="work-active-pill" aria-live="polite">
+                [0{activeProject + 1} / 0{projects.length}] {projects[activeProject]?.name}
+              </span>
+            </p>
+            <h2 id="work-title" className="work-viewport-title">
+              Good work leaves a <em>mark.</em>
+            </h2>
+          </div>
+          <div className="work-header-right">
+            <PlaceholderTag>Concept placeholders</PlaceholderTag>
+            <span className="work-scroll-hint" aria-hidden="true">
+              SCROLL DOWN TO EXPLORE ➔
+            </span>
+          </div>
         </div>
 
-        <div className="story-content">
-          <div className="story-copy">
-            <p className="eyebrow">A CONCEPT CASE STUDY</p>
-            <h2>
-              One clear idea.<br />
-              <em>Stitched seamlessly</em><br />
-              across every medium.
-            </h2>
-            <p>
-              From the initial strategic truth to the tactile printed artifact, an authentic identity doesn't just look cohesive—it feels unmistakably alive.
-            </p>
-            <a href="#contact" className="header-cta" style={{ marginTop: '28px', display: 'inline-flex' }}>
-              Commission a system <span>↗</span>
-            </a>
-          </div>
-
+        {/* Horizontal moving filmstrip with dynamic viewport measurement */}
+        <div className="work-track-wrapper" ref={viewportRef}>
           <motion.div 
-            className="story-visual-canvas"
-            style={reduce ? {} : { scale: scaleVisual }}
-            aria-label="Interactive layered brand architecture"
+            ref={trackRef}
+            className="work-horizontal-track"
+            style={reduce ? {} : { x }}
           >
-            <div className="story-grid-overlay" />
-            <div className="story-orbit-ring" />
-            <div className="story-orbit-ring story-orbit-inner" />
+            {projects.map((p) => (
+              <WorkPanel
+                key={p.no}
+                project={p}
+                scrollYProgress={scrollYProgress}
+                reduce={reduce}
+              />
+            ))}
 
-            <motion.div 
-              className="story-tile-piece tile-orange-stitch"
-              style={reduce ? {} : { rotate: tileRotate1, y: tileY1 }}
-            >
-              AS
-            </motion.div>
+            {/* Concluding Story Panel */}
+            <div className="work-panel work-panel-finale">
+              <div className="finale-card">
+                <span className="corner-bracket bracket-tl" aria-hidden="true">⌜</span>
+                <span className="corner-bracket bracket-tr" aria-hidden="true">⌝</span>
+                <span className="corner-bracket bracket-bl" aria-hidden="true">⌞</span>
+                <span className="corner-bracket bracket-br" aria-hidden="true">⌟</span>
 
-            <motion.div 
-              className="story-tile-piece tile-white-stitch"
-              style={reduce ? {} : { rotate: tileRotate2, y: tileY2 }}
-            >
-              Aa
-            </motion.div>
-
-            <motion.div 
-              className="story-tile-piece tile-dark-stitch"
-              style={reduce ? {} : { rotate: tileRotate3 }}
-            >
-              01
-              <small>IDENTITY SYSTEM</small>
-            </motion.div>
+                <div className="finale-content">
+                  <span className="finale-eyebrow">THE CRAFT PHILOSOPHY</span>
+                  <BlurText
+                    as="h3"
+                    text="Every identity is a story stitched to endure."
+                    className="finale-title"
+                    animateBy="words"
+                    direction="top"
+                    blur={8}
+                    delay={45}
+                    stepDuration={0.26}
+                    trigger="view"
+                    threshold={0.15}
+                  />
+                  <p className="finale-desc">
+                    These concept studies explore how conviction, tactile packaging, and typographic character unite into cohesive systems.
+                  </p>
+                  <a href="#contact" className="finale-cta">
+                    Start a project with us <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
 
-        <div className="story-progress-seam">
+        {/* Bottom progress seam */}
+        <div className="work-viewport-seam" aria-hidden="true">
           <motion.div 
-            className="story-progress-bar"
-            style={{ scaleX: scrollYProgress }} 
+            className="work-viewport-progress" 
+            style={reduce ? { width: '100%' } : { scaleX: scrollYProgress }} 
           />
         </div>
       </div>
-      <div className="story-scroll-space" aria-hidden="true" />
     </section>
   );
 }
 
+/* --------------------------------------------------------------------------
+   5. Services preview — Coordinated Staggered Narrative Reveal
+   -------------------------------------------------------------------------- */
+const serviceContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08
+    }
+  }
+};
+
+const serviceRowVariants = {
+  hidden: {
+    opacity: 0,
+    y: 24
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.65,
+      ease: EASE
+    }
+  }
+};
+
+function Services() {
+  const reduce = useReducedMotion();
+
+  return (
+    <section className="services section-pad" id="services" aria-labelledby="services-title">
+      <div className="section-heading">
+        <Reveal>
+          <p className="eyebrow"><span>03</span> Services</p>
+          <h2 id="services-title">
+            From first idea<br /><em>to every touchpoint.</em>
+          </h2>
+        </Reveal>
+      </div>
+
+      <motion.ul
+        className="service-list"
+        variants={reduce ? undefined : serviceContainerVariants}
+        initial={reduce ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        {services.map((item) => (
+          <motion.li
+            key={item.num}
+            className="service-row"
+            variants={reduce ? undefined : serviceRowVariants}
+          >
+            <span className="service-num">{item.num} //</span>
+            <h3>{item.title}</h3>
+            <p className="service-desc">{item.description}</p>
+          </motion.li>
+        ))}
+      </motion.ul>
+    </section>
+  );
+}
+
+/* --------------------------------------------------------------------------
+   6. About / founder preview
+   -------------------------------------------------------------------------- */
 function About() {
   return (
-    <section className="about section-pad" id="about">
+    <section className="about section-pad" id="about" aria-labelledby="about-title">
       <Reveal>
-        <p className="eyebrow">
-          <span>05</span> THE PHILOSOPHY
-        </p>
-        <h2>
-          Thoughtful by nature.<br />
-          <span>Distinct by design.</span>
-        </h2>
+        <p className="eyebrow"><span>04</span> {about.eyebrow}</p>
+        <h2 id="about-title" className="about-title">{about.heading}</h2>
       </Reveal>
 
       <div className="about-grid">
-        <Reveal delay={0.1}>
-          <p className="about-lead">
-            Art Swapy is an independent brand practice partnering with people who want their business to feel unmistakably theirs.
-          </p>
+        <Reveal delay={0.08}>
+          <p className="about-lead">{about.lead}</p>
         </Reveal>
-
-        <div className="about-body-col">
-          <Reveal delay={0.15}>
-            <p>
-              We connect the dots between what you stand for and what the world sees. Clear thinking first. A visual identity with a sharp point of view. Then a flexible system that carries the idea across every detail.
-            </p>
-            <p>
-              No bloated agency layers. You work directly with the creators shaping your vision from first spark to production delivery.
-            </p>
-            <div className="craft-pill-list">
-              <span className="craft-pill">Dashed Seam Layouts</span>
-              <span className="craft-pill">Kinetic Typography</span>
-              <span className="craft-pill">Tactile Packaging</span>
-              <span className="craft-pill">Stitch Design Systems</span>
-            </div>
-          </Reveal>
-        </div>
+        <Reveal delay={0.14} className="about-body-col">
+          <p>
+            {about.bio.placeholder && <PlaceholderTag />}
+            {about.bio.text}
+          </p>
+          <p className="process-label">{about.processLabel}</p>
+          <ol className="craft-pill-list">
+            {about.process.map((step) => (
+              <motion.li 
+                className="craft-pill" 
+                key={step}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                {step}
+              </motion.li>
+            ))}
+          </ol>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function Services() {
-  const serviceList = [
-    { num: '01', title: 'Brand Strategy', tag: 'POSITIONING · VOICE · NARRATIVE' },
-    { num: '02', title: 'Visual Identity', tag: 'LOGOMARK · TYPOGRAPHY · PALETTE' },
-    { num: '03', title: 'Packaging Design', tag: 'STRUCTURAL · PRINT · TACTILITY' },
-    { num: '04', title: 'Digital Experiences', tag: 'CREATIVE WEBSITES · INTERACTION' },
-    { num: '05', title: 'Design Systems', tag: 'STITCH SPEC · GUIDELINES · TOKENS' }
-  ];
-
-  return (
-    <section className="services section-pad" id="services">
-      <div className="section-heading" style={{ borderBottomColor: 'rgba(245, 242, 235, 0.2)' }}>
-        <Reveal>
-          <p className="eyebrow" style={{ color: '#9e9a91' }}>
-            <span>06</span> CAPABILITIES & OFFERINGS
-          </p>
-          <h2>
-            Small team.<br />
-            <em>Full picture.</em>
-          </h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="section-intro">
-            From the first exploratory session to production deployment, we build brands that command attention.
-          </p>
-        </Reveal>
-      </div>
-
-      <div className="service-list">
-        {serviceList.map((item, idx) => (
-          <Reveal key={item.num} delay={idx * 0.05}>
-            <div className="service-row">
-              <span className="service-num">{item.num} //</span>
-              <h3>{item.title}</h3>
-              <span className="service-tag">{item.tag}</span>
-              <span className="service-arrow">↗</span>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
-}
-
+/* --------------------------------------------------------------------------
+   7. Contact call to action
+   -------------------------------------------------------------------------- */
 function Contact() {
+  const reduce = useReducedMotion();
+
   return (
-    <footer className="contact" id="contact">
-      <div className="contact-top">
-        <p className="eyebrow">
-          <span>07</span> HAVE A PROJECT IN MIND?
-        </p>
-        <span className="contact-spark">✳</span>
-      </div>
+    <section className="contact" id="contact" aria-labelledby="contact-title">
+      <motion.div
+        className="contact-narrative-wrapper"
+        initial={reduce ? false : { opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, ease: EASE }}
+      >
+        <p className="eyebrow"><span>05</span> {contact.eyebrow}</p>
 
-      <Reveal>
-        <h2 className="contact-headline">
-          Let’s make<br />
-          a <em>mark.</em>
-        </h2>
-      </Reveal>
+        <div className="contact-headline-wrap">
+          <BlurText
+            as="h2"
+            id="contact-title"
+            text="Ready to stand out?"
+            className="contact-headline"
+            animateBy="words"
+            direction="top"
+            blur={12}
+            delay={50}
+            stepDuration={0.3}
+            trigger="view"
+            threshold={0.2}
+          />
+          <motion.p
+            className="contact-subheadline"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 1 }}
+          >
+            {contact.heading[1]}
+          </motion.p>
+        </div>
 
-      <div className="contact-bottom">
-        <p>
-          Have a challenge, a big idea, or just want to explore how a tailored identity can elevate your business?<br />
-          We respond within 24 hours.
-        </p>
-        <a className="contact-button" href="mailto:hello@artswapy.com">
-          START A PROJECT <span>↗</span>
-        </a>
-      </div>
+        <div className="contact-bottom">
+          <p className="contact-story-text">{contact.text}</p>
+          <div className="contact-action">
+            <motion.a
+              className="contact-button"
+              href={`mailto:${site.email.address}`}
+              whileHover={{ scale: 1.05, x: 10 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
+              {contact.cta} <span aria-hidden="true">↗</span>
+            </motion.a>
+            <p className="contact-email">
+              {site.email.address}
+              {site.email.placeholder && <PlaceholderTag>Confirm email</PlaceholderTag>}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
 
-      <div className="footer-line">
-        <a className="wordmark" href="#home">
-          <span className="brand-dot" />
-          art<span className="wordmark-light">swapy</span>
-        </a>
-        <span>INDEPENDENT BY DESIGN · BHARAT / WORLDWIDE</span>
-        <a href="mailto:hello@artswapy.com">HELLO@ARTSWAPY.COM</a>
-        <a href="#home">BACK TO TOP ↑</a>
-      </div>
+/* --------------------------------------------------------------------------
+   8. Footer
+   -------------------------------------------------------------------------- */
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <Wordmark />
+      <nav aria-label="Footer navigation">
+        <ul>
+          {navLinks.map((link) => (
+            <li key={link.href}><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <p>© {new Date().getFullYear()} {site.name}</p>
+      <a href="#home">Back to top <span aria-hidden="true">↑</span></a>
     </footer>
   );
 }
 
+/* --------------------------------------------------------------------------
+   App
+   -------------------------------------------------------------------------- */
 function App() {
-  const [loading, setLoading] = useState(true);
+  const reduce = useReducedMotion();
+  const [loading, setLoading] = useState(!reduce);
+  const [isRevealing, setIsRevealing] = useState(Boolean(reduce));
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <AnimatePresence>
         {loading && (
-          <ArtSwapyLoader onComplete={() => setLoading(false)} />
+          <ArtSwapyLoader
+            onRevealStart={() => setIsRevealing(true)}
+            onComplete={() => setLoading(false)}
+          />
         )}
       </AnimatePresence>
 
+      <a className="skip-link" href="#main">Skip to content</a>
       <div className="bg-stitch-mesh" aria-hidden="true" />
-      <ScrollHud onReplayIntro={() => setLoading(true)} />
-      <Header />
-      <main>
-        <Hero />
-        <KineticMarquee />
-        <FourTwoManifesto />
+      <Header isRevealing={isRevealing} />
+      <main id="main" tabIndex={-1}>
+        <Hero isRevealing={isRevealing} />
+        <SectionConnector variant="light" label="THREAD // 01 · STUDIO THESIS" />
+        <StudioIntro />
+        <SectionConnector variant="light" label="THREAD // 02 · SELECTED ARCHIVE" />
         <Work />
-        <Story />
-        <About />
+        <SectionConnector variant="transition" label="THREAD // 03 · DISCIPLINE SUITE" />
         <Services />
+        <About />
+        <Contact />
       </main>
-      <Contact />
-    </>
+      <Footer />
+    </MotionConfig>
   );
 }
 
