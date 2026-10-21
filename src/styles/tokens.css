@@ -1,0 +1,69 @@
+/* ArtSwapy design tokens (DESIGN.md §2). The only file with raw values. */
+:root {
+  /* Colour */
+  --bg: #f6f4ef;
+  --surface: #ece9e1;
+  --ink: #161614;
+  --muted: #5b5850;
+  --accent: #ff551f;
+  --thread: #b23506;
+  --on-accent: #161614;
+  --inverse-bg: #161614;
+  --inverse-ink: #f6f4ef;
+  --inverse-muted: #a8a497;
+  --focus: #b23506;
+
+  /* Concept-project colours (used inside work imagery only) */
+  --sage: #7f9170;
+  --terracotta: #c2674a;
+  --honey: #e3b95a;
+
+  /* Fonts (set by next/font in layout.tsx) */
+  --font-display: var(--font-space), 'Arial Narrow', Arial, sans-serif;
+  --font-body: var(--font-dm), system-ui, sans-serif;
+
+  /* Space and layout */
+  --margin: clamp(16px, 2.2vw, 32px);
+  --gap: clamp(16px, 2vw, 28px);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 40px;
+  --space-6: 64px;
+  --space-7: 104px;
+  --section: clamp(120px, 14vw, 220px);
+  --radius: 0;
+  --header-h: 64px;
+
+  /* Type */
+  --name-em: 4.9;
+  --step-mon: min(calc((100vw - 2 * var(--margin)) / var(--name-em)), 320px);
+  --step-mon-crop: calc(var(--step-mon) * 1.08);
+  --step-poster: clamp(36px, 6.4vw, 92px);
+  --step-h: clamp(28px, 3vw, 40px);
+  --step-body: clamp(16px, 1.15vw, 19px);
+  --step-small: 14px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-color: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-ui: 240ms;
+  --t-thread-in: 260ms;
+  --t-thread-out: 180ms;
+  --t-thread-hero: 700ms;
+  --t-reveal: 800ms;
+  --stagger: 70ms;
+}
+
+/* Thread and focus switch to the bright accent on inverse grounds */
+[data-inverse-section],
+header[data-on-inverse] {
+  --thread: var(--accent);
+  --focus: var(--accent);
+}

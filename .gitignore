@@ -23,3 +23,9 @@ npm-debug.log*
 
 # Taste-skill working files
 .taste-skill/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
