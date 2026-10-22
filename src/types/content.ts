@@ -16,10 +16,17 @@ export interface Project {
   name: string;
   year: string;
   category: string;
+  discipline?: string;
   summary: string;
+  image?: string;
   placeholder: boolean;
   preview: { alt: string; mark: MarkId };
   href?: string;
+  theme?: {
+    bg: string;
+    text: string;
+    accent: string;
+  };
 }
 
 export interface Service {

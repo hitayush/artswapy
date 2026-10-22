@@ -63,19 +63,28 @@ export default function ProcessStory({ heading, stages }: { heading: string; sta
           end: '+=350%',
           pin: true,
           pinSpacing: true,
-          scrub: 0.6,
-          refreshPriority: 5,
+          scrub: true,
+          refreshPriority: 1,
+          anticipatePin: 1,
           onUpdate: (self) => apply(self.progress)
         });
         trigger.current = st;
 
         /* Re-measure once fonts settle (nothing waits on them). */
-        const refresh = () => ScrollTrigger.refresh();
+        const refresh = () => {
+          ScrollTrigger.sort();
+          ScrollTrigger.refresh();
+        };
         window.addEventListener('resize', refresh);
+        window.addEventListener('orientationchange', refresh);
         document.fonts?.ready.then(refresh);
+
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
 
         return () => {
           window.removeEventListener('resize', refresh);
+          window.removeEventListener('orientationchange', refresh);
           st.kill();
           trigger.current = null;
           section.removeAttribute('data-pinned');

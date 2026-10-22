@@ -11,24 +11,26 @@ export default function Hero() {
 
   return (
     <section className="hero" id="top" aria-label={site.name}>
-      {/* Centered monumental brand title matching DZ!NR reference */}
-      <div className="hero-center hero-rise" style={{ '--i': 0 } as React.CSSProperties}>
+      {/* Centered monumental brand title */}
+      <div className="hero-center">
         <div className="hero-name-wrap">
-          <h1 className="hero-name">{site.name}</h1>
+          <div className="hero-name-mask">
+            <h1 className="hero-name">{site.name}</h1>
+          </div>
           <span className="load-thread" aria-hidden="true" />
         </div>
       </div>
 
       {/* Bottom meta bar with discipline, practice statement & interactive scroll cue */}
-      <div className="hero-bottom-bar hero-rise" style={{ '--i': 1 } as React.CSSProperties}>
+      <div className="hero-bottom-bar">
         <div className="hero-statements">
-          <div className="hero-stat-block">
+          <div className="hero-stat-block hero-rise-item" style={{ '--i': 0 } as React.CSSProperties}>
             <span className="hero-stat-kicker">Discipline</span>
             <p className="hero-stat-text">
               Strategy, Design,<br />Performance
             </p>
           </div>
-          <div className="hero-stat-block">
+          <div className="hero-stat-block hero-rise-item" style={{ '--i': 1 } as React.CSSProperties}>
             <span className="hero-stat-kicker">Studio Practice</span>
             <p className="hero-stat-text">
               Independent branding studio<br />working with founders.
@@ -36,7 +38,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="hero-actions-wrap">
+        <div className="hero-actions-wrap hero-rise-item" style={{ '--i': 2 } as React.CSSProperties}>
           <button
             type="button"
             className="hero-scroll-cue"

@@ -128,7 +128,7 @@ timeline. Its feel comes from Lenis and from `scrub: 0.6` smoothing, not from th
 | `--ease-drawer` | `cubic-bezier(0.32, 0.72, 0, 1)` · `"art.drawer"` · `[0.32, 0.72, 0, 1]` | Sheets and the phone menu (iOS-like settle) |
 | `--ease-soft` | `cubic-bezier(0.33, 1, 0.68, 1)` · `"art.soft"` · `[0.33, 1, 0.68, 1]` | Long quiet reveals, image scale, portrait drift |
 | `--ease-color` | `cubic-bezier(0.4, 0, 0.2, 1)` | Colour and opacity only, on hover |
-| *(retired)* | magnet, pointer-follow, left→right fill wipes | Rejected as default and cheap-feeling. **No element follows the pointer anywhere on the site** |
+| Custom Cursor | Pointer-following dot and ring | Approved exception: restrained center dot (6px) with fine outer ring (32px), desktop fine-pointer only. No magnetic button movement. |
 | `--t-press` | `140ms` | Press feedback |
 | `--t-hover` | `180ms` | Hover colour and underline |
 | `--t-ui` | `240ms` | Menus, image swaps |
@@ -143,6 +143,7 @@ There is one response per control type, used everywhere. This is the part v1 lef
 
 | Control | Rest | Hover (pointer: fine only) | Press | Focus-visible | Done / current |
 | --- | --- | --- | --- | --- | --- |
+| **Custom round cursor** | 6px center dot + 32px ring (1.5px border) | Over interactive elements (links, buttons, controls), ring expands (1.5x) with `--accent` tint; over project cards it expands to 1.7x; over text inputs it fades out to reveal native I-beam cursor | Ring compresses (0.85x) and dot expands on press | Unaffected (keyboard navigation preserves native focus-visible) | Fine pointer only; disabled on touch/coarse devices and reduced motion. Layer is `pointer-events: none` |
 | **Primary button: "Needle pass"** (orange, square) | `--accent` fill, ink label, arrow at the right | The fill **never changes**. A 2px ink needle crosses the label (440ms `--ease-in-out`). Each letter rolls to an identical copy the moment the needle crosses it (260ms `--ease-out`, timed from the curve), and the arrow is pulled out right and a fresh one pulled in from the left. It plays once per hover and never replays mid-run | **Tug**: `translateY(1px) scale(0.97)`, 140ms in / 200ms out | 2px `--focus` ring, 3px offset. No needle on keyboard focus | — |
 | **Text link: "Taut thread"** | Ink. Standalone links (nav, footer) have no underline. **Links inside running text** keep a 0.07em `--muted` underline at rest (WCAG 1.4.1), and the thread replaces it on hover | A **slack thread appears under the word and pulls tight**: an SVG quadratic path whose sag goes 9px → 0 (320ms `--ease-out`), with opacity in over 120ms. On leave it fades over 160ms and resets slack. The tween keeps its current value, so it's interruptible | Thread draws on `:active` (this is the touch cue) | Thread drawn plus a focus ring | `aria-current`: thread stays drawn |
 | **Nav link** | As text link | As text link. Siblings stay at full ink, because hover never lowers contrast | As text link | Ring | Current section: thread drawn (driven by IntersectionObserver), on the header and in the phone menu sheet |
@@ -173,11 +174,7 @@ Rules:
 
 ## 4. Motion layer
 
-1. **Load:** there is no curtain and nothing hides the page. The hero paints at once, so a referred visitor sees the
-   name and the portrait on first paint. On the first visit of a session, the thread draws once across the name
-   (700ms) and the supporting sentence and button rise behind it (stagger `--stagger`). The whole sequence is
-   900ms or less, never blocks scrolling or input, and is skipped on repeat visits (`sessionStorage`) and under
-   reduced motion.
+1. **Landing Entrance:** The page background, navigation, and essential content paint immediately without any curtain, flash, or blocking overlay. On the first session visit (under standard motion), a choreographed entrance reveals the oversized ArtSwapy wordmark through a vertical mask (0.52s), draws the signature electric orange thread underneath (0.44s), and staggers in the supporting studio statements and scroll cue (0.38s, stagger 0.07s). The complete sequence settles within 880ms (under 900ms) and leaves the page fully interactive. On repeat visits (checked via sessionStorage) or under prefers-reduced-motion, the animation is bypassed and paints immediately at rest. In no-JS or animation failure scenarios, all content remains completely visible via CSS fallbacks.
 2. **Signature, the pinned process:** see `components/process-story.md`.
 3. **Section entrances:** each section sets its own choreography (a list arrives row by row, an image opens
    with a shutter, a heading rises from a mask). Stagger is `--stagger`, and travel is 16–32px. Each plays once.

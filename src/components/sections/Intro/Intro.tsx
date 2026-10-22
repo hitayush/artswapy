@@ -30,7 +30,6 @@ export default function Intro() {
             ))}
           </svg>
         </div>
-        {intro.panorama.placeholder && <PlaceholderTag>Concept placeholder</PlaceholderTag>}
         <p className="panorama-credit small muted" data-r="rise" style={idx(5)}>{intro.panorama.credit}</p>
       </div>
     </RevealRoot>

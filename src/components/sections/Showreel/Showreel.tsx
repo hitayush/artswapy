@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap, ScrollTrigger } from '@/lib/motion/gsap';
+import { useRef } from 'react';
+import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import { showreel } from '@/content/site';
 import { scrollToHash } from '@/lib/motion/lenis';
 import ShowreelPlayer from './ShowreelPlayer.client';
@@ -21,137 +21,154 @@ export default function Showreel() {
     scrollToHash('#studio');
   };
 
-  useEffect(() => {
-    const container = containerRef.current;
-    const viewport = viewportRef.current;
-    const topBar = topBarRef.current;
-    const stage = stageRef.current;
-    const videoSlot = videoSlotRef.current;
-    const videoCard = videoCardRef.current;
-    const quoteCol = quoteColRef.current;
-    const bottomBar = bottomBarRef.current;
+  useGSAP(
+    () => {
+      const container = containerRef.current;
+      const viewport = viewportRef.current;
+      const topBar = topBarRef.current;
+      const stage = stageRef.current;
+      const videoSlot = videoSlotRef.current;
+      const videoCard = videoCardRef.current;
+      const quoteCol = quoteColRef.current;
+      const bottomBar = bottomBarRef.current;
 
-    if (!container || !viewport || !stage || !videoSlot || !videoCard || !quoteCol) return;
+      if (!container || !viewport || !stage || !videoSlot || !videoCard || !quoteCol) return;
 
-    const mm = gsap.matchMedia();
+      const mm = gsap.matchMedia();
 
-    // Desktop and Tablet: Pinned scroll scrub where video shrinks from full screen to compact left slot
-    mm.add('(min-width: 900px)', () => {
-      const getRects = () => {
-        const vRect = viewport.getBoundingClientRect();
-        const slotRect = videoSlot.getBoundingClientRect();
+      // Desktop and Tablet: Pinned scroll scrub where video shrinks from full screen to compact left slot
+      mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+        const getRects = () => {
+          const vRect = viewport.getBoundingClientRect();
+          const slotRect = videoSlot.getBoundingClientRect();
 
-        // 1. Initial State: Full Screen spanning the entire viewport
-        const fullW = vRect.width;
-        const fullH = vRect.height;
-        const fullX = 0;
-        const fullY = 0;
+          // 1. Initial State: Full Screen spanning the entire viewport
+          const fullW = vRect.width;
+          const fullH = vRect.height;
+          const fullX = 0;
+          const fullY = 0;
 
-        // 2. Final compact target dimensions matching the left slot in stage grid
-        const finalW = slotRect.width;
-        const finalH = slotRect.height || (slotRect.width * (9 / 16));
-        const finalX = slotRect.left - vRect.left;
-        const finalY = slotRect.top - vRect.top;
+          // 2. Final compact target dimensions matching the left slot in stage grid
+          const finalW = slotRect.width;
+          const finalH = slotRect.height || (slotRect.width * (9 / 16));
+          const finalX = slotRect.left - vRect.left;
+          const finalY = slotRect.top - vRect.top;
 
-        return { fullW, fullH, fullX, fullY, finalW, finalH, finalX, finalY };
-      };
+          return { fullW, fullH, fullX, fullY, finalW, finalH, finalX, finalY };
+        };
 
-      let r = getRects();
+        let r = getRects();
 
-      // Initial state at scroll = 0: Full screen video covering viewport
-      gsap.set(videoCard, {
-        left: 0,
-        top: 0,
-        width: r.fullW,
-        height: r.fullH,
-        borderRadius: 0,
-        boxShadow: '0 32px 80px -16px rgba(0, 0, 0, 0.5)',
-        zIndex: 30
-      });
+        // Initial state at scroll = 0: Full screen video covering viewport
+        gsap.set(videoCard, {
+          left: 0,
+          top: 0,
+          width: r.fullW,
+          height: r.fullH,
+          borderRadius: 0,
+          boxShadow: '0 32px 80px -16px rgba(0, 0, 0, 0.5)',
+          zIndex: 30
+        });
 
-      if (topBar) {
-        gsap.set(topBar, { opacity: 0, y: -20 });
-      }
-      gsap.set(quoteCol, { opacity: 0, x: 50 });
-      if (bottomBar) {
-        gsap.set(bottomBar, { opacity: 0, y: 20 });
-      }
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: '+=130%',
-          pin: viewport,
-          pinSpacing: true,
-          scrub: 0.8,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onRefresh: () => {
-            r = getRects();
-          }
+        if (topBar) {
+          gsap.set(topBar, { opacity: 0, y: -20 });
         }
-      });
+        gsap.set(quoteCol, { opacity: 0, x: 50 });
+        if (bottomBar) {
+          gsap.set(bottomBar, { opacity: 0, y: 20 });
+        }
 
-      // 1. Shrink video from full screen into left slot
-      tl.to(videoCard, {
-        left: () => r.finalX,
-        top: () => r.finalY,
-        width: () => r.finalW,
-        height: () => r.finalH,
-        borderRadius: '8px',
-        boxShadow: '0 16px 36px -12px rgba(22, 22, 20, 0.14)',
-        ease: 'power2.inOut',
-        duration: 1
-      }, 0);
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+            start: 'top top',
+            end: '+=130%',
+            pin: viewport,
+            pinSpacing: true,
+            scrub: true,
+            invalidateOnRefresh: true,
+            refreshPriority: 10,
+            anticipatePin: 1,
+            onRefresh: () => {
+              r = getRects();
+            }
+          }
+        });
 
-      // 2. Top meta bar fades in as video begins shrinking
-      if (topBar) {
-        tl.to(topBar, {
+        // 1. Shrink video from full screen into left slot
+        tl.to(videoCard, {
+          left: () => r.finalX,
+          top: () => r.finalY,
+          width: () => r.finalW,
+          height: () => r.finalH,
+          borderRadius: '8px',
+          boxShadow: '0 16px 36px -12px rgba(22, 22, 20, 0.14)',
+          ease: 'power2.inOut',
+          duration: 1
+        }, 0);
+
+        // 2. Top meta bar fades in as video begins shrinking
+        if (topBar) {
+          tl.to(topBar, {
+            opacity: 1,
+            y: 0,
+            ease: 'power2.out',
+            duration: 0.45
+          }, 0.25);
+        }
+
+        // 3. Fade in and slide in the quote on the right as the video clears the space
+        tl.to(quoteCol, {
           opacity: 1,
-          y: 0,
+          x: 0,
           ease: 'power2.out',
           duration: 0.45
-        }, 0.25);
-      }
+        }, 0.52);
 
-      // 3. Fade in and slide in the quote on the right as the video clears the space
-      tl.to(quoteCol, {
-        opacity: 1,
-        x: 0,
-        ease: 'power2.out',
-        duration: 0.45
-      }, 0.52);
+        // 4. Reveal bottom editorial bar
+        if (bottomBar) {
+          tl.to(bottomBar, {
+            opacity: 1,
+            y: 0,
+            ease: 'power2.out',
+            duration: 0.4
+          }, 0.6);
+        }
 
-      // 4. Reveal bottom editorial bar
-      if (bottomBar) {
-        tl.to(bottomBar, {
-          opacity: 1,
-          y: 0,
-          ease: 'power2.out',
-          duration: 0.4
-        }, 0.6);
-      }
+        // 5. Brief hold so the viewer can read the settled quote and see the video
+        tl.to({}, { duration: 0.3 });
 
-      // 5. Brief hold so the viewer can read the settled quote and see the video
-      tl.to({}, { duration: 0.3 });
+        const refresh = () => {
+          ScrollTrigger.sort();
+          ScrollTrigger.refresh();
+        };
+        window.addEventListener('resize', refresh);
+        window.addEventListener('orientationchange', refresh);
+        document.fonts?.ready.then(refresh);
+
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
+
+        return () => {
+          window.removeEventListener('resize', refresh);
+          window.removeEventListener('orientationchange', refresh);
+          tl.scrollTrigger?.kill();
+          tl.kill();
+          gsap.set([videoCard, topBar, quoteCol, bottomBar], { clearProps: 'all' });
+        };
+      });
+
+      // Mobile and reduced motion: natural flow without pinning
+      mm.add('(max-width: 899px), (prefers-reduced-motion: reduce)', () => {
+        gsap.set([videoCard, topBar, quoteCol, bottomBar], { clearProps: 'all' });
+      });
 
       return () => {
-        tl.scrollTrigger?.kill();
-        tl.kill();
-        gsap.set([videoCard, topBar, quoteCol, bottomBar], { clearProps: 'all' });
+        mm.revert();
       };
-    });
-
-    // Mobile: natural flow without pinning
-    mm.add('(max-width: 899px)', () => {
-      gsap.set([videoCard, topBar, quoteCol, bottomBar], { clearProps: 'all' });
-    });
-
-    return () => {
-      mm.revert();
-    };
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section

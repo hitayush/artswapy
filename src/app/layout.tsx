@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Space_Grotesk, Geist } from 'next/font/google';
 import SmoothScroll from '@/components/providers/SmoothScroll';
-import Preloader from '@/components/layout/Preloader.client';
+import CustomCursor from '@/components/layout/CustomCursor.client';
 import { about, site } from '@/content/site';
 import './globals.css';
 import { cn } from "@/lib/utils";
@@ -115,6 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
         <SmoothScroll />
+        <CustomCursor />
         {children}
       </body>
     </html>

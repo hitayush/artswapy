@@ -12,11 +12,15 @@ export default function SmoothScroll() {
     let lenis: Lenis | null = null;
     let tick: ((time: number) => void) | null = null;
 
+    let onRefresh: (() => void) | null = null;
+
     const stop = () => {
       if (tick) gsap.ticker.remove(tick);
+      if (onRefresh) ScrollTrigger.removeEventListener('refresh', onRefresh);
       lenis?.destroy();
       lenis = null;
       tick = null;
+      onRefresh = null;
       setLenis(null);
     };
 
@@ -29,6 +33,12 @@ export default function SmoothScroll() {
         syncTouch: false
       });
       lenis.on('scroll', ScrollTrigger.update);
+
+      onRefresh = () => {
+        lenis?.resize();
+      };
+      ScrollTrigger.addEventListener('refresh', onRefresh);
+
       tick = (time: number) => lenis?.raf(time * 1000);
       gsap.ticker.add(tick);
       gsap.ticker.lagSmoothing(0);

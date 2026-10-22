@@ -171,7 +171,7 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
           ))}
         </nav>
         <div className="header-actions">
-          <span className="header-cta" data-hidden={hideCta}>
+          <span className="header-cta">
             <CTAButton href={mailto} label={cta} size="sm" />
           </span>
           <button

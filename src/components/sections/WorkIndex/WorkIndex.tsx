@@ -1,13 +1,15 @@
 import { projects, site, work } from '@/content/site';
-import WorkIndexList from './WorkIndexList.client';
+import WorkHorizontal from './WorkHorizontal.client';
 
 export default function WorkIndex() {
   return (
-    <WorkIndexList
+    <WorkHorizontal
       projects={projects}
       to={site.email.address}
       enquiry={work.enquiry}
+      heading={work.heading}
     />
   );
 }
+
 

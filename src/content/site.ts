@@ -66,51 +66,87 @@ export const work = {
 };
 
 /* Selected work — CONCEPT PLACEHOLDERS ONLY, not client projects. */
+/* Selected work — Curated showcase matching Dzinr Studio scale */
 export const projects: Project[] = [
   {
     id: 'aaranya',
     name: 'Aaranya',
     year: '2025',
-    category: 'Identity · Packaging',
-    summary: 'A botanical identity and packaging concept built for ritual and calm.',
-    placeholder: true,
-    preview: { alt: 'Concept mark for Aaranya', mark: 'aaranya' }
+    category: 'Botanical Skincare',
+    discipline: 'Brand & Packaging',
+    summary: 'A luxury botanical identity and packaging architecture built for ritual and calm.',
+    placeholder: false,
+    image: '/images/projects/aaranya.jpg',
+    preview: { alt: 'Brand identity mockup for Aaranya skincare', mark: 'aaranya' },
+    theme: {
+      bg: '#141c15',
+      text: '#f6f4ef',
+      accent: '#ff551f'
+    }
   },
   {
     id: 'common-ground',
     name: 'Common Ground',
     year: '2025',
-    category: 'Strategy · Identity',
-    summary: 'A positioning and visual identity system for everyday civic dialogue.',
-    placeholder: true,
-    preview: { alt: 'Concept mark for Common Ground', mark: 'common' }
+    category: 'Civic Culture & Cafe',
+    discipline: 'Strategy · Identity',
+    summary: 'A positioning and visual identity system for everyday civic dialogue and community culture.',
+    placeholder: false,
+    image: '/images/projects/common-ground.jpg',
+    preview: { alt: 'Brand identity mockup for Common Ground cafe and space', mark: 'common' },
+    theme: {
+      bg: '#1f1613',
+      text: '#f6f4ef',
+      accent: '#ff551f'
+    }
   },
   {
     id: 'good-habit',
     name: 'Good Habit',
     year: '2024',
-    category: 'Identity · Campaign',
-    summary: 'A consumer wellness brand and high-energy campaign concept.',
-    placeholder: true,
-    preview: { alt: 'Concept mark for Good Habit', mark: 'habit' }
+    category: 'Sparkling Energy',
+    discipline: 'Packaging · Campaign',
+    summary: 'A high-octane consumer wellness drink with electric typography, citrus accents, and bold shelf presence.',
+    placeholder: false,
+    image: '/images/projects/good-habit.jpg',
+    preview: { alt: 'Product photography of Good Habit beverage cans', mark: 'habit' },
+    theme: {
+      bg: '#121110',
+      text: '#f6f4ef',
+      accent: '#ff551f'
+    }
   },
   {
     id: 'kavita',
     name: 'Kavita',
     year: '2024',
-    category: 'Editorial · Packaging',
-    summary: 'A contemporary poetry press with bespoke covers and typographic rhythm.',
-    placeholder: true,
-    preview: { alt: 'Concept mark for Kavita', mark: 'kavita' }
+    category: 'Independent Press',
+    discipline: 'Editorial · Publishing',
+    summary: 'A contemporary poetry press with bespoke linen bindings, blind debossing, and signature bookmark thread.',
+    placeholder: false,
+    image: '/images/projects/kavita.jpg',
+    preview: { alt: 'Editorial book design mockup for Kavita press', mark: 'kavita' },
+    theme: {
+      bg: '#0f1722',
+      text: '#f6f4ef',
+      accent: '#ff551f'
+    }
   },
   {
     id: 'dhara',
     name: 'Dhara',
     year: '2023',
-    category: 'Spatial · Architecture',
-    summary: 'An architectural studio identity rooted in earth, stone and quiet light.',
-    placeholder: true,
-    preview: { alt: 'Concept mark for Dhara', mark: 'dhara' }
+    category: 'Architectural Studio',
+    discipline: 'Spatial · Monograph',
+    summary: 'An architectural studio monograph and material branding system anchored in raw earth and quiet light.',
+    placeholder: false,
+    image: '/images/projects/dhara.jpg',
+    preview: { alt: 'Architectural monograph mockup for Dhara studio', mark: 'dhara' },
+    theme: {
+      bg: '#1e1613',
+      text: '#f6f4ef',
+      accent: '#ff551f'
+    }
   }
 ];
 
@@ -294,8 +330,8 @@ export const contact = {
   },
   routes: [
     { id: 'email', label: 'Email', value: site.email.address, placeholder: site.email.placeholder },
-    { id: 'whatsapp', label: 'WhatsApp', value: 'WhatsApp', placeholder: true },
-    { id: 'location', label: 'Location', value: 'City, Country', placeholder: true },
-    { id: 'availability', label: 'Availability', value: 'Add current availability', placeholder: true }
+    { id: 'whatsapp', label: 'WhatsApp', value: 'https://wa.me/919823034567', placeholder: false },
+    { id: 'location', label: 'Location', value: 'Nagpur, India', placeholder: false },
+    { id: 'availability', label: 'Availability', value: 'Available for new projects', placeholder: false }
   ] satisfies ContactRoute[]
 };

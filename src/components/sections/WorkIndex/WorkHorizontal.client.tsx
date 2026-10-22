@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { gsap, ScrollTrigger } from '@/lib/motion/gsap';
+import { useRef, useState } from 'react';
+import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import Mark from '@/components/primitives/Mark';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
 import { mailto } from '@/lib/mailto';
@@ -20,56 +20,83 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
   const progressRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(1);
 
-  useEffect(() => {
-    const mm = gsap.matchMedia();
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-    mm.add('(min-width: 900px)', () => {
-      const track = trackRef.current;
-      const section = sectionRef.current;
-      if (!track || !section) return;
+      mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+        const track = trackRef.current;
+        const section = sectionRef.current;
+        if (!track || !section) return;
 
-      const getDistance = () => track.scrollWidth - window.innerWidth;
+        const getDistance = () => (track ? Math.max(0, track.scrollWidth - window.innerWidth) : 0);
 
-      const tween = gsap.to(track, {
-        x: () => -getDistance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          pin: true,
-          pinSpacing: true,
-          scrub: 1,
-          start: 'top top',
-          end: () => `+=${getDistance()}`,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-          refreshPriority: 10,
-          onUpdate: (self) => {
-            if (progressRef.current) {
-              progressRef.current.style.width = `${Math.round(self.progress * 100)}%`;
+        const tween = gsap.to(track, {
+          x: () => -getDistance(),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            pin: true,
+            pinSpacing: true,
+            scrub: true,
+            start: 'top top',
+            end: () => `+=${getDistance()}`,
+            invalidateOnRefresh: true,
+            refreshPriority: 5,
+            anticipatePin: 1,
+            onUpdate: (self) => {
+              if (progressRef.current) {
+                progressRef.current.style.width = `${Math.round(self.progress * 100)}%`;
+              }
+              // Update active index (1 to projects.length)
+              const idx = Math.min(
+                projects.length,
+                Math.max(1, Math.round(self.progress * (projects.length + 1)))
+              );
+              setActiveSlide(idx);
             }
-            // Update active index (1 to projects.length)
-            const idx = Math.min(
-              projects.length,
-              Math.max(1, Math.round(self.progress * (projects.length + 1)))
-            );
-            setActiveSlide(idx);
           }
-        }
+        });
+
+        const refresh = () => {
+          ScrollTrigger.sort();
+          ScrollTrigger.refresh();
+        };
+
+        window.addEventListener('resize', refresh);
+        window.addEventListener('orientationchange', refresh);
+        document.fonts?.ready.then(refresh);
+
+        // Re-measure once project images finish loading
+        const images = track.querySelectorAll('img');
+        images.forEach((img) => {
+          if (!img.complete) {
+            img.addEventListener('load', refresh, { once: true });
+          }
+        });
+
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
+
+        return () => {
+          window.removeEventListener('resize', refresh);
+          window.removeEventListener('orientationchange', refresh);
+          images.forEach((img) => img.removeEventListener('load', refresh));
+          tween.scrollTrigger?.kill();
+          tween.kill();
+          gsap.set(track, { clearProps: 'transform' });
+        };
       });
 
-      const refresh = () => ScrollTrigger.refresh();
-      window.addEventListener('resize', refresh);
-      document.fonts?.ready.then(refresh);
+      mm.add('(max-width: 899px), (prefers-reduced-motion: reduce)', () => {
+        const track = trackRef.current;
+        if (track) gsap.set(track, { clearProps: 'transform' });
+      });
 
-      return () => {
-        window.removeEventListener('resize', refresh);
-        tween.scrollTrigger?.kill();
-        tween.kill();
-      };
-    });
-
-    return () => mm.revert();
-  }, [projects.length]);
+      return () => mm.revert();
+    },
+    { scope: sectionRef, dependencies: [projects.length] }
+  );
 
   return (
     <section
@@ -81,11 +108,11 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
       {/* Top sticky bar inside pinned section */}
       <div className="work-h-topbar">
         <div className="work-h-meta">
-          <span className="ph-tag">Selected Work</span>
+          <span className="ph-tag orange-tag">[ ✦ SELECTED WORK ]</span>
           <span className="small muted mono">[ {String(activeSlide).padStart(2, '0')} / {String(projects.length).padStart(2, '0')} ]</span>
         </div>
-        <div className="work-h-cue small muted mono">
-          Scroll to explore →
+        <div className="work-h-cue small mono">
+          Scroll to explore <span className="arrow-cue">→</span>
         </div>
       </div>
 
@@ -95,68 +122,93 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
           {/* Slide 0: Intro Header Card */}
           <article className="work-h-card work-h-intro-card">
             <div className="intro-card-inner">
-              <span className="small muted mono">[ 01 / SHOWCASE ]</span>
+              <div className="intro-badge-row">
+                <span className="ph-tag orange-tag">[ ✦ SELECTED WORK ]</span>
+                <span className="small muted mono">01 / {String(projects.length).padStart(2, '0')}</span>
+              </div>
               <h2 className="heading work-h-heading">
-                Meaning first,<br />then the form.
+                Strategic Craft.<br />Distinctive Brands.
               </h2>
               <p className="body muted work-h-intro-body">
-                A collection of concept identities, packaging systems and brand architecture designed to demonstrate craft and strategic clarity.
+                A curated selection of identities, packaging systems, and digital architectures built for founders ready to stand out.
               </p>
               <div className="work-h-scroll-hint">
-                <span className="small mono">Explore projects</span>
-                <span className="arrow-thread">→</span>
+                <span className="small mono">Explore work</span>
+                <span className="arrow-thread" aria-hidden="true">→</span>
               </div>
             </div>
           </article>
 
-          {/* Project Cards */}
-          {projects.map((p, i) => (
-            <article className="work-h-card work-h-project-card" key={p.id}>
-              <div className="project-card-frame">
-                <div className="project-card-image" role="img" aria-label={p.preview.alt}>
-                  <Mark id={p.preview.mark} />
-                  {p.placeholder && <PlaceholderTag>Concept placeholder</PlaceholderTag>}
+          {/* Project Cards (Dzinr Studio signature scale) */}
+          {projects.map((p, i) => {
+            const isFeatured = p.id === 'good-habit' || p.id === 'dhara';
+            return (
+              <article
+                className={`work-h-card work-h-project-card ${isFeatured ? 'card-featured' : ''}`.trim()}
+                key={p.id}
+                style={{
+                  '--card-bg': p.theme?.bg ?? '#161614',
+                  '--card-ink': p.theme?.text ?? '#f6f4ef',
+                  '--card-accent': p.theme?.accent ?? '#ff551f',
+                } as React.CSSProperties}
+              >
+                <div className="project-card-frame">
+                  {p.image ? (
+                    <img
+                      src={p.image}
+                      alt={p.preview.alt}
+                      className="project-card-photo"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="project-card-image" role="img" aria-label={p.preview.alt}>
+                      <Mark id={p.preview.mark} />
+                    </div>
+                  )}
+                  <div className="project-frame-tag mono">[ 0{i + 1} ]</div>
                 </div>
-                <div className="project-card-badge mono small">
-                  [ {p.year} ]
-                </div>
-              </div>
 
-              <div className="project-card-info">
-                <div className="project-card-header">
-                  <span className="project-category small muted mono">{p.category}</span>
-                  <h3 className="project-title poster">{p.name}</h3>
-                </div>
+                <div className="project-card-content">
+                  {/* 3-Column Metadata Row matching Dzinr Studio */}
+                  <div className="project-meta-bar">
+                    <span className="project-year-badge mono">[ {p.year} ]</span>
+                    <span className="project-category-center mono">{p.category}</span>
+                    <span className="project-discipline-right mono">{p.discipline ?? 'Brand & Identity'}</span>
+                  </div>
 
-                <p className="project-summary small muted">{p.summary}</p>
-
-                <div className="project-card-action">
-                  <a
-                    href={p.href ?? mailto({ to, subject: enquiry.subjectPrefix + p.name, body: enquiry.body } satisfies MailtoTemplate)}
-                    className="project-link-btn"
-                    aria-label={`Start a project like ${p.name}`}
-                  >
-                    <span>Start a project like this</span>
-                    <span className="arrow-icon" aria-hidden="true">↗</span>
-                  </a>
+                  {/* Monumental Title Row */}
+                  <div className="project-title-row">
+                    <div className="project-title-group">
+                      <h3 className="project-title-monument">{p.name}</h3>
+                      <p className="project-summary-line">{p.summary}</p>
+                    </div>
+                    <a
+                      href={p.href ?? mailto({ to, subject: enquiry.subjectPrefix + p.name, body: enquiry.body } satisfies MailtoTemplate)}
+                      className="project-circle-btn"
+                      aria-label={`Start a project like ${p.name}`}
+                    >
+                      <span className="circle-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
 
           {/* Outro / Next Section Bridge Card */}
           <article className="work-h-card work-h-outro-card">
             <div className="outro-card-inner">
-              <span className="small muted mono">[ 02 / CAPABILITIES ]</span>
+              <span className="ph-tag orange-tag">[ ✦ NEXT STAGE ]</span>
               <h3 className="heading work-h-outro-title">
-                Next: What we do.
+                Ready to build your brand?
               </h3>
               <p className="body muted work-h-outro-body">
-                Explore our full capabilities across brand strategy, visual identity systems, packaging, and digital touchpoints.
+                From positioning and naming to visual identity and digital touchpoints — let&apos;s build something unforgettable.
               </p>
-              <a href="#services" className="cta cta-primary work-h-cta">
-                <span>View Services</span>
-                <span className="arrow" aria-hidden="true">↓</span>
+              <a href="#services" className="cta work-h-cta-orange">
+                <span>Explore Capabilities</span>
+                <span className="arrow" aria-hidden="true">→</span>
               </a>
             </div>
           </article>
