@@ -24,7 +24,12 @@ export default function HeroPortrait({
         gsap.to(drift.current, {
           yPercent: -8,
           ease: 'none',
-          scrollTrigger: { trigger: frame.current, start: 'top top', end: 'bottom top', scrub: 0.6 }
+          scrollTrigger: {
+            trigger: frame.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.6
+          }
         });
       });
       return () => mm.revert();

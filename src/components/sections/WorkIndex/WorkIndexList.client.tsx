@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from 'motion/react';
+import { useReducedMotion } from 'motion/react';
 import { useRef, useState } from 'react';
 import Mark from '@/components/primitives/Mark';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
@@ -19,9 +19,6 @@ export default function WorkIndexList({ projects, to, enquiry }: Props) {
   const [active, setActive] = useState(0);
   const [instant, setInstant] = useState(false);
   const rows = useRef<(HTMLLIElement | null)[]>([]);
-  const x = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 400, damping: 40, mass: 0.6 });
-  const transform = useMotionTemplate`translateX(${sx}px)`;
 
   const pct = (i: number, clientX: number) => {
     const r = rows.current[i]?.getBoundingClientRect();
@@ -32,28 +29,28 @@ export default function WorkIndexList({ projects, to, enquiry }: Props) {
   const activate = (i: number, clientX: number | null, keyboard: boolean) => {
     setInstant(keyboard);
     if (i === active) return;
+
     const cx = clientX ?? 0;
+
+    // Close old band
     const prev = rows.current[active];
-    // Origin-aware: the old band closes toward where the pointer left, the new one opens from where it entered.
-    if (prev && clientX !== null) prev.style.setProperty('--x', `${pct(active, cx)}%`);
+    if (prev && clientX !== null) {
+      prev.style.setProperty('--x', `${pct(active, cx)}%`);
+    }
+
+    // Open new band from entry X
     const next = rows.current[i];
     if (next) {
       next.style.setProperty('--x', clientX !== null ? `${pct(i, cx)}%` : '0%');
       void next.offsetWidth; // commit the closed state before opening
     }
-    setActive(i);
-  };
 
-  const onMove = (e: React.PointerEvent) => {
-    if (reduce || e.pointerType !== 'mouse') return;
-    const r = rows.current[active]?.getBoundingClientRect();
-    if (!r) return;
-    x.set(Math.min(Math.max(e.clientX - r.left, 0), Math.max(0, r.width - 72)));
+    setActive(i);
   };
 
   return (
     <div className="work-grid">
-      <ul className="work-list" data-instant={instant ? '' : undefined} onPointerMove={onMove}>
+      <ul className="work-list" data-instant={instant ? '' : undefined}>
         {projects.map((p, i) => (
           <li
             key={p.id}
@@ -62,7 +59,6 @@ export default function WorkIndexList({ projects, to, enquiry }: Props) {
             }}
             className="work-row"
             data-active={active === i}
-            data-r="rise"
             style={{ '--i': i } as React.CSSProperties}
             onPointerEnter={(e) => e.pointerType === 'mouse' && activate(i, e.clientX, false)}
           >
@@ -81,15 +77,10 @@ export default function WorkIndexList({ projects, to, enquiry }: Props) {
                 <span className="alt">Start one like this →</span>
               </span>
             </a>
-            {active === i && (
-              <motion.span className="thread-pos" aria-hidden="true" style={reduce ? undefined : { transform }}>
-                <span className="thread thread-draw" data-drawn="true" />
-              </motion.span>
-            )}
           </li>
         ))}
       </ul>
-      <div className="work-preview" data-r="rise" style={{ '--i': 2 } as React.CSSProperties}>
+      <div className="work-preview">
         <div className="preview-frame" role="img" aria-label={`Concept mark for ${projects[active].name}`}>
           {projects.map((p, i) => (
             <div className="mark-layer" key={p.id} data-active={active === i} aria-hidden="true">

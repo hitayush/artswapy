@@ -22,7 +22,12 @@ export default function SmoothScroll() {
 
     const start = () => {
       if (lenis || mq.matches) return;
-      lenis = new Lenis({ lerp: 0.1, syncTouch: false });
+      lenis = new Lenis({
+        lerp: 0.085,
+        wheelMultiplier: 0.95,
+        touchMultiplier: 1.4,
+        syncTouch: false
+      });
       lenis.on('scroll', ScrollTrigger.update);
       tick = (time: number) => lenis?.raf(time * 1000);
       gsap.ticker.add(tick);

@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Space_Grotesk } from 'next/font/google';
+import { DM_Sans, Space_Grotesk, Geist } from 'next/font/google';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 import Preloader from '@/components/layout/Preloader.client';
 import { about, site } from '@/content/site';
 import './globals.css';
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const space = Space_Grotesk({
   subsets: ['latin'],
@@ -55,13 +58,12 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${space.variable} ${dm.variable}`} suppressHydrationWarning>
+    <html lang="en" className={cn(space.variable, dm.variable, "font-sans", geist.variable)} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>
-        <Preloader />
         <a className="skip-link" href="#main">Skip to content</a>
         <SmoothScroll />
         {children}

@@ -6,7 +6,7 @@ import { createElement, useEffect, useRef, type HTMLAttributes, type ReactNode }
 export default function RevealRoot({
   as = 'div',
   children,
-  rootMargin = '0px 0px -12% 0px',
+  rootMargin = '0px 0px -4% 0px',
   ...rest
 }: {
   as?: 'div' | 'section' | 'footer';

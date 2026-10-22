@@ -19,8 +19,14 @@ export default function ContactRows() {
       </div>
 
       <div className="contact-row" data-r="band" style={idx(1)}>
-        {/* Inert until the number is confirmed: no href is rendered. */}
-        <span className="poster">{whatsapp.value}</span>
+        {/* Render as link if not a placeholder */}
+        {whatsapp.placeholder ? (
+          <span className="poster">{whatsapp.value}</span>
+        ) : (
+          <a href={whatsapp.value} target="_blank" rel="noopener noreferrer" className="poster">
+            {whatsapp.label}
+          </a>
+        )}
         {whatsapp.placeholder && <PlaceholderTag />}
       </div>
 

@@ -11,6 +11,8 @@
   --inverse-bg: #161614;
   --inverse-ink: #f6f4ef;
   --inverse-muted: #a8a497;
+  --hairline: rgba(22, 22, 20, 0.12);
+  --inverse-hairline: rgba(246, 244, 239, 0.14);
   --focus: #b23506;
 
   /* Concept-project colours (used inside work imagery only) */
@@ -66,4 +68,5 @@
 header[data-on-inverse] {
   --thread: var(--accent);
   --focus: var(--accent);
+  --hairline: var(--inverse-hairline);
 }

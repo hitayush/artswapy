@@ -33,7 +33,13 @@ export default function FooterClose() {
           </li>
           <li>
             <span style={{ minHeight: 44, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              {whatsapp.value}
+              {whatsapp.placeholder ? (
+                whatsapp.value
+              ) : (
+                <a href={whatsapp.value} target="_blank" rel="noopener noreferrer">
+                  {whatsapp.label}
+                </a>
+              )}
               {whatsapp.placeholder && <PlaceholderTag />}
             </span>
           </li>

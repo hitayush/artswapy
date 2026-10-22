@@ -157,9 +157,12 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
       <div className="header-bg" aria-hidden="true" />
       <div className="header-bg inverse" aria-hidden="true" />
       <div className="header-inner">
-        <TextLink href="#top" className="wordmark" ariaLabel={`${name}, back to top`}>
-          {name}
-        </TextLink>
+        <div className="wordmark-group">
+          <TextLink href="#top" className="wordmark" ariaLabel={`${name}, back to top`}>
+            {name}
+          </TextLink>
+          <span className="wordmark-sub">Branding Studio</span>
+        </div>
         <nav aria-label="Primary" className="nav">
           {nav.map((n) => (
             <TextLink key={n.href} href={n.href} current={current === n.href}>
