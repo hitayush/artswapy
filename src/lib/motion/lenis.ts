@@ -15,11 +15,21 @@ export function getLenis() {
 
 const HEADER_H = 64;
 
+/** Smoothly eased cubic-bezier (0.23, 1, 0.32, 1) approximation for programmatic Lenis scrollTo. */
+const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
+
 /** Scroll to a hash target through Lenis when running, else the native scroll. */
 export function scrollToHash(hash: string, opts: { immediate?: boolean } = {}) {
   if (hash === '#top' || hash === '#' || hash === '') {
-    if (instance) instance.scrollTo(0, { immediate: opts.immediate, duration: opts.immediate ? 0 : 1.2 });
-    else window.scrollTo({ top: 0, behavior: opts.immediate ? 'auto' : 'smooth' });
+    if (instance) {
+      instance.scrollTo(0, {
+        immediate: opts.immediate,
+        duration: opts.immediate ? 0 : 1.15,
+        easing: easeOutQuint
+      });
+    } else {
+      window.scrollTo({ top: 0, behavior: opts.immediate ? 'auto' : 'smooth' });
+    }
     return;
   }
   const el = document.querySelector<HTMLElement>(hash);
@@ -43,7 +53,11 @@ export function scrollToHash(hash: string, opts: { immediate?: boolean } = {}) {
   if (instance) {
     instance.scrollTo(targetY, {
       immediate: opts.immediate,
-      duration: opts.immediate ? 0 : 1.2
+      duration: opts.immediate ? 0 : 1.15,
+      easing: easeOutQuint,
+      onComplete: () => {
+        ScrollTrigger.update();
+      }
     });
   } else {
     window.scrollTo({

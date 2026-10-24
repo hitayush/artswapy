@@ -6,7 +6,6 @@ import WorkIndex from '@/components/sections/WorkIndex/WorkIndex';
 import ServicesPoster from '@/components/sections/ServicesPoster/ServicesPoster';
 import ProcessStory from '@/components/sections/ProcessStory/ProcessStory';
 import About from '@/components/sections/About/About';
-import ContactRows from '@/components/sections/ContactRows/ContactRows';
 import FooterClose from '@/components/sections/FooterClose/FooterClose';
 
 export default function Page() {
@@ -21,7 +20,6 @@ export default function Page() {
         <ServicesPoster />
         <ProcessStory />
         <About />
-        <ContactRows />
       </main>
       <FooterClose />
     </>

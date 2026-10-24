@@ -7,6 +7,7 @@ import { buildCaseStudyJsonLd, buildPageMetadata, SITE_KEYWORDS } from '@/lib/se
 import Mark from '@/components/primitives/Mark';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
 import CTAButton from '@/components/primitives/CTAButton';
+import RevealRoot from '@/components/primitives/RevealRoot';
 import ThemeToggle from '@/components/primitives/ThemeToggle.client';
 
 interface PageProps {
@@ -98,19 +99,23 @@ export default async function CaseStudyPage({ params }: PageProps) {
       </header>
 
       {/* Monumental Hero */}
-      <section className="cs-hero">
+      <RevealRoot as="section" className="cs-hero">
         <div className="cs-hero-inner">
-          <div className="cs-kicker-row">
+          <div className="cs-kicker-row" data-r="rise" style={{ '--i': 0 } as React.CSSProperties}>
             <span className="cs-kicker-tag mono">[ CASE STUDY · {project.year} ]</span>
             <span className="cs-kicker-cat mono">{project.category}</span>
             {project.placeholder && <PlaceholderTag>Concept Study</PlaceholderTag>}
           </div>
 
-          <h1 className="cs-monument-title">{project.name}</h1>
-          <p className="cs-lead-summary">{project.summary}</p>
+          <h1 className="cs-monument-title" data-r="rise" style={{ '--i': 1 } as React.CSSProperties}>
+            {project.name}
+          </h1>
+          <p className="cs-lead-summary" data-r="rise" style={{ '--i': 2 } as React.CSSProperties}>
+            {project.summary}
+          </p>
 
           {/* Quick Specs Grid */}
-          <div className="cs-specs-grid">
+          <div className="cs-specs-grid" data-r="rise" style={{ '--i': 3 } as React.CSSProperties}>
             <div className="cs-spec-item">
               <span className="spec-label mono">Discipline</span>
               <strong className="spec-value">{project.discipline ?? 'Brand Strategy & Identity'}</strong>
@@ -135,7 +140,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
         </div>
 
         {/* Feature Hero Image */}
-        <div className="cs-hero-media">
+        <div className="cs-hero-media" data-r="shutter">
           {project.image ? (
             <img
               src={project.image}
@@ -149,19 +154,19 @@ export default async function CaseStudyPage({ params }: PageProps) {
             </div>
           )}
         </div>
-      </section>
+      </RevealRoot>
 
       {/* Challenge & Strategic Solution */}
       {cs && (
-        <section className="cs-narrative-section">
+        <RevealRoot as="section" className="cs-narrative-section">
           <div className="cs-container">
             <div className="cs-narrative-grid">
-              <div className="cs-narrative-block">
+              <div className="cs-narrative-block" data-r="rise" style={{ '--i': 0 } as React.CSSProperties}>
                 <span className="eyebrow cs-section-tag">[ 01 · THE CHALLENGE ]</span>
                 <h2 className="heading cs-narrative-heading">Breaking through category inertia.</h2>
                 <p className="body cs-narrative-body">{cs.challenge}</p>
               </div>
-              <div className="cs-narrative-block">
+              <div className="cs-narrative-block" data-r="rise" style={{ '--i': 1 } as React.CSSProperties}>
                 <span className="eyebrow cs-section-tag">[ 02 · STRATEGIC SOLUTION ]</span>
                 <h2 className="heading cs-narrative-heading">Form follows uncompromising meaning.</h2>
                 <p className="body cs-narrative-body">{cs.solution}</p>
@@ -170,7 +175,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
 
             {/* Deliverables Checklist */}
             {cs.deliverables.length > 0 && (
-              <div className="cs-deliverables-box">
+              <div className="cs-deliverables-box" data-r="rise" style={{ '--i': 2 } as React.CSSProperties}>
                 <span className="eyebrow">[ CORE DELIVERABLES ARCHITECTURE ]</span>
                 <ul className="cs-deliverables-list">
                   {cs.deliverables.map((item, idx) => (
@@ -183,26 +188,30 @@ export default async function CaseStudyPage({ params }: PageProps) {
               </div>
             )}
           </div>
-        </section>
+        </RevealRoot>
       )}
 
       {/* The 5 Branding Pillars Breakdown */}
       {cs?.pillars && (
-        <section className="cs-pillars-section" data-inverse-section="">
+        <RevealRoot as="section" className="cs-pillars-section" data-inverse-section="">
           <div className="cs-container">
             <div className="cs-pillars-header">
-              <span className="ph-tag orange-tag">[ THE 5 BRANDING PILLARS ]</span>
-              <h2 className="heading cs-pillars-title">The Complete Brand Architecture</h2>
-              <p className="body muted cs-pillars-subtitle">
+              <span className="ph-tag orange-tag" data-r="rise" style={{ '--i': 0 } as React.CSSProperties}>
+                [ THE 5 BRANDING PILLARS ]
+              </span>
+              <h2 className="heading cs-pillars-title" data-r="rise" style={{ '--i': 1 } as React.CSSProperties}>
+                The Complete Brand Architecture
+              </h2>
+              <p className="body muted cs-pillars-subtitle" data-r="rise" style={{ '--i': 2 } as React.CSSProperties}>
                 A rigorous, full-stack brand identity system built to endure across physical and digital touchpoints.
               </p>
             </div>
 
             <div className="cs-pillars-grid">
-              {Object.entries(cs.pillars).map(([key, pillar]) => {
+              {Object.entries(cs.pillars).map(([key, pillar], pIdx) => {
                 if (!pillar) return null;
                 return (
-                  <article key={key} className="cs-pillar-card">
+                  <article key={key} className="cs-pillar-card" data-r="rise" style={{ '--i': pIdx } as React.CSSProperties}>
                     <span className="pillar-title-tag mono">{pillar.title}</span>
                     <h3 className="pillar-name">{pillar.summary}</h3>
                     <ul className="pillar-details-list">
@@ -218,13 +227,13 @@ export default async function CaseStudyPage({ params }: PageProps) {
               })}
             </div>
           </div>
-        </section>
+        </RevealRoot>
       )}
 
       {/* Visual Identity Mark Section */}
-      <section className="cs-mark-section">
+      <RevealRoot as="section" className="cs-mark-section">
         <div className="cs-container">
-          <div className="cs-mark-card">
+          <div className="cs-mark-card" data-r="rise" style={{ '--i': 0 } as React.CSSProperties}>
             <div className="cs-mark-preview">
               <Mark id={project.preview.mark} />
             </div>
@@ -237,12 +246,12 @@ export default async function CaseStudyPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-      </section>
+      </RevealRoot>
 
       {/* Project Pagination & Enquiry Footer */}
-      <footer className="cs-footer">
+      <RevealRoot as="footer" className="cs-footer">
         <div className="cs-container">
-          <div className="cs-pagination-grid">
+          <div className="cs-pagination-grid" data-r="rise" style={{ '--i': 0 } as React.CSSProperties}>
             <Link href={prevProject.href ?? `/work/${prevProject.id}`} className="cs-page-nav cs-nav-prev">
               <span className="small mono muted">← Previous Study</span>
               <strong className="nav-project-name">{prevProject.name}</strong>
@@ -256,7 +265,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
             </Link>
           </div>
 
-          <div className="cs-enquiry-banner">
+          <div className="cs-enquiry-banner" data-r="rise" style={{ '--i': 1 } as React.CSSProperties}>
             <div className="cs-enquiry-content">
               <span className="eyebrow">[ START A COLLABORATION ]</span>
               <h2 className="heading cs-enquiry-title">Ready for an enduring brand system?</h2>
@@ -267,7 +276,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
             <CTAButton href={enquiryHref} label="Start your project" />
           </div>
         </div>
-      </footer>
+      </RevealRoot>
     </article>
   );
 }

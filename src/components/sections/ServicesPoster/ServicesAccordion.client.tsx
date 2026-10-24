@@ -34,6 +34,7 @@ export default function ServicesAccordion({ services }: { services: Service[] })
                   className="svc-btn"
                   aria-expanded={isOpen}
                   aria-controls={`svc-${s.id}`}
+                  aria-describedby={`svc-fact-${s.id}`}
                   id={`svc-btn-${s.id}`}
                   onClick={() => setOpen(isOpen ? null : s.id)}
                   onFocus={(e) => setInstant(e.currentTarget.matches(':focus-visible') ? s.id : null)}
@@ -46,8 +47,16 @@ export default function ServicesAccordion({ services }: { services: Service[] })
                   <span className="svc-plus" aria-hidden="true" />
                 </button>
               </h3>
-              <span className="svc-fact small-ish">{s.fact}</span>
-              <div className="svc-desc" id={`svc-${s.id}`} role="region" aria-labelledby={`svc-btn-${s.id}`}>
+              <span className="svc-fact small-ish" id={`svc-fact-${s.id}`}>
+                {s.fact}
+              </span>
+              <div
+                className="svc-desc"
+                id={`svc-${s.id}`}
+                role="region"
+                aria-labelledby={`svc-btn-${s.id}`}
+                aria-hidden={!isOpen && hover !== s.id}
+              >
                 <div>
                   <p>{s.description}</p>
                 </div>

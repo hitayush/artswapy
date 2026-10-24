@@ -94,3 +94,4 @@ export interface PreloaderConfig {
   skipLabel: string;
   quotes: PreloaderQuote[];
 }
+

@@ -63,9 +63,10 @@ export default function ProcessStory({ heading, stages }: { heading: string; sta
           end: '+=350%',
           pin: true,
           pinSpacing: true,
-          scrub: true,
+          scrub: 0.6,
           refreshPriority: 1,
           anticipatePin: 1,
+          fastScrollEnd: true,
           onUpdate: (self) => apply(self.progress)
         });
         trigger.current = st;

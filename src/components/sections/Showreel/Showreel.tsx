@@ -85,10 +85,11 @@ export default function Showreel() {
             end: '+=130%',
             pin: viewport,
             pinSpacing: true,
-            scrub: true,
+            scrub: 0.6,
             invalidateOnRefresh: true,
             refreshPriority: 10,
             anticipatePin: 1,
+            fastScrollEnd: true,
             onRefresh: () => {
               r = getRects();
             }

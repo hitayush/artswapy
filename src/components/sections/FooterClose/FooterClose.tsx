@@ -7,7 +7,7 @@ import SetYourName from './SetYourName.client';
 
 export default function FooterClose() {
   return (
-    <RevealRoot as="footer" className="footer" aria-label="Site footer and contact" data-inverse-section="" rootMargin="0px 0px -5% 0px">
+    <RevealRoot as="footer" id="contact" className="footer" aria-label="Site footer and contact" data-inverse-section="" rootMargin="0px 0px -5% 0px">
       <div className="footer-top grid12">
         <h2 className="footer-invite poster">
           <span className="mask" data-r="lines">

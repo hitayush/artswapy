@@ -39,12 +39,13 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
             trigger: section,
             pin: true,
             pinSpacing: true,
-            scrub: true,
+            scrub: 0.6,
             start: 'top top',
             end: () => `+=${getDistance()}`,
             invalidateOnRefresh: true,
             refreshPriority: 5,
             anticipatePin: 1,
+            fastScrollEnd: true,
             onUpdate: (self) => {
               if (progressRef.current) {
                 progressRef.current.style.width = `${Math.round(self.progress * 100)}%`;

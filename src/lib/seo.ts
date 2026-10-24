@@ -7,13 +7,14 @@ export const SITE_URL = site.url.replace(/\/+$/, '');
 export const SITE_NAME = site.name;
 export const SITE_ALTERNATE_NAMES = [
   'Art Swapy',
+  'www.artswapy.com',
+  'artswapy.com',
   'ArtSwapy Studio',
-  'ArtSwapy Brand Design',
-  'ArtSwapy by Swapnil Gathibandhe'
+  'ArtSwapy Brand Design'
 ];
 
 export const DEFAULT_TITLE =
-  'ArtSwapy (Art Swapy) | Brand Strategy, Identity & Packaging Design Studio by Swapnil Gathibandhe';
+  'ArtSwapy — Brand Strategy, Identity & Packaging Design Studio';
 export const TITLE_TEMPLATE = '%s | ArtSwapy';
 
 export const DEFAULT_DESCRIPTION =
@@ -43,6 +44,16 @@ export const SITE_KEYWORDS = [
  */
 export function canonicalUrl(path = '/'): string {
   if (/^https?:\/\//i.test(path)) {
+    try {
+      const parsed = new URL(path);
+      if (parsed.hostname === 'artswapy.com' || parsed.hostname === 'www.artswapy.com') {
+        const cleanPath =
+          parsed.pathname === '/' ? '' : parsed.pathname.replace(/\/+$/, '');
+        return `${SITE_URL}${cleanPath}${parsed.search}${parsed.hash}`;
+      }
+    } catch {
+      return path;
+    }
     return path;
   }
   const normalized = path.startsWith('/') ? path : `/${path}`;

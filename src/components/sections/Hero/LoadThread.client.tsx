@@ -551,7 +551,8 @@ export default function LoadThread() {
           trigger: heroSection,
           start: 'top top',
           end: 'bottom top',
-          scrub: true
+          scrub: 0.6,
+          fastScrollEnd: true
         }
       });
     });

@@ -1,8 +1,10 @@
 'use client';
 
+import { useRef } from 'react';
 import RevealRoot from '@/components/primitives/RevealRoot';
 import CTAButton from '@/components/primitives/CTAButton';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
+import { gsap, useGSAP } from '@/lib/motion/gsap';
 
 interface AboutPrinciple {
   num: string;
@@ -38,8 +40,44 @@ export default function About({
   portrait,
   mailtoHref
 }: AboutProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const portraitImgRef = useRef<HTMLImageElement>(null);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const img = portraitImgRef.current;
+      if (!section || !img) return;
+
+      const mm = gsap.matchMedia();
+
+      // DESIGN.md §4.4: Portrait drift — image is 112% height inside frame and translates 0 -> -8% with scroll
+      mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+        gsap.set(img, { height: '112%', yPercent: 0 });
+        gsap.to(img, {
+          yPercent: -8,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.6,
+            fastScrollEnd: true
+          }
+        });
+
+        return () => {
+          gsap.set(img, { clearProps: 'height,transform' });
+        };
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section id="about" className="about" aria-labelledby="about-title">
+    <section ref={sectionRef} id="about" className="about" aria-labelledby="about-title">
       <RevealRoot className="about-container">
         {/* Section kicker */}
         <div className="about-kicker-row">
@@ -112,6 +150,7 @@ export default function About({
                   ) : (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
+                      ref={portraitImgRef}
                       src={portrait.src}
                       alt={portrait.alt}
                       width={880}

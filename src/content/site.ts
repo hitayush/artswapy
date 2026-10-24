@@ -16,7 +16,7 @@ import type {
 export const site = {
   name: 'ArtSwapy',
   founder: 'Swapnil Gathibandhe',
-  url: 'https://artswapy.com',
+  url: 'https://www.artswapy.com',
   email: {
     address: 'swapnilgathibandhe2494@gmail.com',
     placeholder: false
