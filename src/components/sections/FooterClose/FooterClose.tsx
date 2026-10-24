@@ -8,7 +8,7 @@ import SetYourName from './SetYourName.client';
 export default function FooterClose() {
   const whatsapp = contact.routes[1];
   return (
-    <RevealRoot as="footer" className="footer" aria-label="Start a project" data-inverse-section="" rootMargin="0px 0px -5% 0px">
+    <RevealRoot as="footer" className="footer" aria-label="Site footer and contact" data-inverse-section="" rootMargin="0px 0px -5% 0px">
       <div className="footer-top grid12">
         <h2 className="footer-invite poster">
           <span className="mask" data-r="lines">
@@ -36,7 +36,7 @@ export default function FooterClose() {
               {whatsapp.placeholder ? (
                 whatsapp.value
               ) : (
-                <a href={whatsapp.value} target="_blank" rel="noopener noreferrer">
+                <a href={whatsapp.value} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp (opens in new tab)">
                   {whatsapp.label}
                 </a>
               )}

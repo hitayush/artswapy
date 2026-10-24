@@ -92,25 +92,26 @@ Use approved Swapy Art assets and project information. Before launch, replace **
 
 ## Replace the content
 
-- **Portrait:** replace `public/images/swapy-portrait.png` with the final portrait, keeping the same filename or updating the image path in `src/main.jsx`.
-- **Work cards:** edit the `projects` array near the top of `src/main.jsx`. The current entries are concept placeholders, not client work.
-- **Contact:** replace `hello@swapyart.com` in `src/main.jsx` with the approved contact address.
-- **Copy and services:** edit the text in `src/main.jsx`.
-- **Colours and layout:** edit the CSS variables at the top of `src/styles.css`.
+- **All site copy, projects, services, process stages, and contact routes:** edit [`src/content/site.ts`](src/content/site.ts) (typed via [`src/types/content.ts`](src/types/content.ts)).
+- **Founder portrait:** replace `public/images/swapnil-portrait.png` or update `hero.portrait.src` and `about.portrait.src` in `src/content/site.ts`.
+- **Work cards & case studies:** edit the `projects` array in `src/content/site.ts` and place project images in `public/images/projects/`. Keep `placeholder: true` on any concept or unconfirmed work so it renders with a visible placeholder tag.
+- **Contact:** update `site.email.address` and `contact.routes` in `src/content/site.ts`.
+- **Colours, typography, spacing, and motion tokens:** edit [`src/styles/tokens.css`](src/styles/tokens.css) (see [`DESIGN.md`](DESIGN.md) for the full v2.2 token specification).
 
 ---
 
 ## Project status
 
-Development is in progress. Build incrementally, starting with the home page and hero, then continue page by page after review.
+The Next.js App Router MVP home page (`src/app/page.tsx`) is in place with Hero, Showreel, Intro, horizontal-scroll Work gallery, Services accordion, pinned Process spine, About, Contact rows, and interactive Footer close. Next steps include full reusable Case Study pages and progressive motion/content refinement.
 
 ---
 
 ## Tech stack
 
-- [React](https://react.dev/) + [Vite](https://vitejs.dev/)
-- [Motion](https://motion.dev/) (scroll reveals & transitions)
-- Vanilla CSS with custom properties
+- [Next.js 16](https://nextjs.org/) (App Router, static export) + [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS v4](https://tailwindcss.com/) + CSS custom property tokens (`src/styles/tokens.css`, `src/app/globals.css`)
+- [GSAP + ScrollTrigger](https://gsap.com/), [Lenis](https://lenis.darkroom.engineering/), and [Motion](https://motion.dev/)
+- [shadcn/ui](https://ui.shadcn.com/) / Base UI primitives restyled to ArtSwapy tokens
 
 ---
 

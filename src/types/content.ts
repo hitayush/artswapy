@@ -11,6 +11,27 @@ export interface MailtoTemplate {
 
 export type MarkId = 'aaranya' | 'common' | 'habit' | 'kavita' | 'dhara';
 
+export interface CaseStudyPillar {
+  title: string;
+  summary: string;
+  details: string[];
+}
+
+export interface CaseStudyDetails {
+  clientType: string;
+  timeline: string;
+  deliverables: string[];
+  challenge: string;
+  solution: string;
+  pillars: {
+    strategy?: CaseStudyPillar;
+    identity?: CaseStudyPillar;
+    packaging?: CaseStudyPillar;
+    communications?: CaseStudyPillar;
+    applications?: CaseStudyPillar;
+  };
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -27,6 +48,7 @@ export interface Project {
     text: string;
     accent: string;
   };
+  caseStudy?: CaseStudyDetails;
 }
 
 export interface Service {
@@ -55,4 +77,20 @@ export interface ContactRoute {
   value: string;
   href?: string;
   placeholder?: boolean;
+}
+
+export interface PreloaderQuote {
+  id: string;
+  index: string;
+  pillar: string;
+  quote: string;
+  note: string;
+}
+
+export interface PreloaderConfig {
+  kicker: string;
+  placeholder: boolean;
+  placeholderLabel: string;
+  skipLabel: string;
+  quotes: PreloaderQuote[];
 }

@@ -153,7 +153,11 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
   }, [closeMenu]);
 
   return (
-    <header className="header" data-on-inverse={onInverse ? '' : undefined}>
+    <header
+      className="header"
+      data-on-inverse={onInverse ? '' : undefined}
+      data-hide-cta={hideCta ? '' : undefined}
+    >
       <div className="header-bg" aria-hidden="true" />
       <div className="header-bg inverse" aria-hidden="true" />
       <div className="header-inner">

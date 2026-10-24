@@ -23,6 +23,7 @@
   /* Fonts (set by next/font in layout.tsx) */
   --font-display: var(--font-space), 'Arial Narrow', Arial, sans-serif;
   --font-body: var(--font-dm), system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Fira Code', monospace;
 
   /* Space and layout */
   --margin: clamp(16px, 2.2vw, 32px);
@@ -35,17 +36,49 @@
   --space-6: 64px;
   --space-7: 104px;
   --section: clamp(120px, 14vw, 220px);
-  --radius: 0;
+  --surface-subtle: #f0ede5;
+  --surface-card: #eae7de;
+  --inverse-surface: #20201d;
+  --hairline-bold: rgba(22, 22, 20, 0.22);
+  --inverse-hairline-bold: rgba(246, 244, 239, 0.28);
+  --container-max: 1400px;
+  --btn-h: 54px;
+  --btn-h-sm: 44px;
+
+  /* Radius */
+  --radius: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-subtle: 0 2px 8px rgba(22, 22, 20, 0.05);
+  --shadow-card: 0 16px 40px -12px rgba(22, 22, 20, 0.1);
+  --shadow-lift: 0 20px 48px -12px rgba(22, 22, 20, 0.16);
+  --shadow-pill: 0 4px 14px rgba(255, 85, 31, 0.24);
+  --shadow-pill-hover: 0 8px 22px rgba(255, 85, 31, 0.38);
+
   --header-h: 64px;
 
   /* Type */
+  --leading-tight: 0.95;
+  --leading-title: 1.1;
+  --leading-body: 1.55;
   --name-em: 4.9;
   --step-mon: min(calc((100vw - 2 * var(--margin)) / var(--name-em)), 320px);
   --step-mon-crop: calc(var(--step-mon) * 1.08);
   --step-poster: clamp(36px, 6.4vw, 92px);
   --step-h: clamp(28px, 3vw, 40px);
+  --step-3: clamp(22px, 2.5vw, 34px);
+  --step-4: clamp(18px, 1.8vw, 26px);
   --step-body: clamp(16px, 1.15vw, 19px);
   --step-small: 14px;
+  --tracking-tight: -0.03em;
+  --tracking-display: -0.05em;
+  --tracking-caps: 0.08em;
+  --tracking-meta: 0.05em;
 
   /* Motion */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -69,4 +102,5 @@ header[data-on-inverse] {
   --thread: var(--accent);
   --focus: var(--accent);
   --hairline: var(--inverse-hairline);
+  --hairline-bold: var(--inverse-hairline-bold);
 }

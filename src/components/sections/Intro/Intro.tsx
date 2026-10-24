@@ -8,6 +8,14 @@ const idx = (i: number) => ({ '--i': i }) as React.CSSProperties;
 export default function Intro() {
   return (
     <RevealRoot as="section" id="studio" className="intro" aria-labelledby="intro-title">
+      <div className="section-kicker-row intro-kicker-row">
+        <span className="eyebrow" data-r="rise" style={idx(0)}>
+          [ MANIFESTO &amp; PRACTICE ]
+        </span>
+        <span className="small muted mono" data-r="rise" style={idx(0)}>
+          Strategy · Identity · Packaging
+        </span>
+      </div>
       <h2 id="intro-title" className="poster">
         <span className="mask" data-r="lines" style={idx(0)}>
           <span>{intro.heading[0]}</span>
@@ -29,6 +37,7 @@ export default function Intro() {
               </svg>
             ))}
           </svg>
+          {intro.panorama.placeholder && <PlaceholderTag>Concept studies</PlaceholderTag>}
         </div>
         <p className="panorama-credit small muted" data-r="rise" style={idx(5)}>{intro.panorama.credit}</p>
       </div>

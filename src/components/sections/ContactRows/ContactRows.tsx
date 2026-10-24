@@ -11,7 +11,20 @@ export default function ContactRows() {
   const [email, whatsapp, location, availability] = contact.routes;
   return (
     <RevealRoot as="section" id="contact" className="contact" aria-labelledby="contact-title" rootMargin="0px 0px -8% 0px">
-      <h2 id="contact-title" className="sr-only">Contact</h2>
+      <div className="section-header contact-header">
+        <div className="section-kicker-row">
+          <span className="eyebrow" data-r="rise">[ DIRECT ENQUIRIES ]</span>
+          <span className="small muted mono" data-r="rise">Response within 24–48h</span>
+        </div>
+        <div className="section-title-row">
+          <h2 id="contact-title" className="heading" data-r="rise">
+            Contact &amp; Availability
+          </h2>
+          <p className="small muted section-subtitle" data-r="rise">
+            Reach out directly via email or WhatsApp to discuss a new brand, packaging system, or identity refresh.
+          </p>
+        </div>
+      </div>
 
       <div className="contact-row" data-r="band" style={idx(0)}>
         <CopyEmail address={email.value} template={contact.mailto} />
@@ -23,7 +36,7 @@ export default function ContactRows() {
         {whatsapp.placeholder ? (
           <span className="poster">{whatsapp.value}</span>
         ) : (
-          <a href={whatsapp.value} target="_blank" rel="noopener noreferrer" className="poster">
+          <a href={whatsapp.value} target="_blank" rel="noopener noreferrer" className="poster" aria-label="Chat on WhatsApp (opens in new tab)">
             {whatsapp.label}
           </a>
         )}

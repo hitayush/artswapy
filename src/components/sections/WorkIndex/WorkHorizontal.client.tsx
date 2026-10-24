@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import Mark from '@/components/primitives/Mark';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
+import CTAButton from '@/components/primitives/CTAButton';
 import { mailto } from '@/lib/mailto';
 import type { MailtoTemplate, Project } from '@/types/content';
 
@@ -18,7 +19,7 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-  const [activeSlide, setActiveSlide] = useState(1);
+  const counterRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -48,12 +49,14 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
               if (progressRef.current) {
                 progressRef.current.style.width = `${Math.round(self.progress * 100)}%`;
               }
-              // Update active index (1 to projects.length)
-              const idx = Math.min(
-                projects.length,
-                Math.max(1, Math.round(self.progress * (projects.length + 1)))
-              );
-              setActiveSlide(idx);
+              // Update active index directly on DOM to prevent React re-renders during scrub
+              if (counterRef.current) {
+                const idx = Math.min(
+                  projects.length,
+                  Math.max(1, Math.round(self.progress * (projects.length + 1)))
+                );
+                counterRef.current.textContent = `[ ${String(idx).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')} ]`;
+              }
             }
           }
         });
@@ -109,7 +112,7 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
       <div className="work-h-topbar">
         <div className="work-h-meta">
           <span className="ph-tag orange-tag">[ ✦ SELECTED WORK ]</span>
-          <span className="small muted mono">[ {String(activeSlide).padStart(2, '0')} / {String(projects.length).padStart(2, '0')} ]</span>
+          <span ref={counterRef} className="small muted mono">[ 01 / {String(projects.length).padStart(2, '0')} ]</span>
         </div>
         <div className="work-h-cue small mono">
           Scroll to explore <span className="arrow-cue">→</span>
@@ -166,7 +169,9 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
                       <Mark id={p.preview.mark} />
                     </div>
                   )}
-                  <div className="project-frame-tag mono">[ 0{i + 1} ]</div>
+                  <div className="project-frame-tag mono">
+                    [ 0{i + 1} ] {p.placeholder && <span style={{ marginLeft: 6 }}><PlaceholderTag>Concept</PlaceholderTag></span>}
+                  </div>
                 </div>
 
                 <div className="project-card-content">
@@ -180,13 +185,21 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
                   {/* Monumental Title Row */}
                   <div className="project-title-row">
                     <div className="project-title-group">
-                      <h3 className="project-title-monument">{p.name}</h3>
+                      <h3 className="project-title-monument">
+                        {p.href ? (
+                          <a href={p.href} className="project-title-link">
+                            {p.name}
+                          </a>
+                        ) : (
+                          p.name
+                        )}
+                      </h3>
                       <p className="project-summary-line">{p.summary}</p>
                     </div>
                     <a
                       href={p.href ?? mailto({ to, subject: enquiry.subjectPrefix + p.name, body: enquiry.body } satisfies MailtoTemplate)}
                       className="project-circle-btn"
-                      aria-label={`Start a project like ${p.name}`}
+                      aria-label={p.href ? `View ${p.name} case study` : `Start a project like ${p.name}`}
                     >
                       <span className="circle-arrow" aria-hidden="true">↗</span>
                     </a>
@@ -206,10 +219,9 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
               <p className="body muted work-h-outro-body">
                 From positioning and naming to visual identity and digital touchpoints — let&apos;s build something unforgettable.
               </p>
-              <a href="#services" className="cta work-h-cta-orange">
-                <span>Explore Capabilities</span>
-                <span className="arrow" aria-hidden="true">→</span>
-              </a>
+              <div className="work-h-outro-action">
+                <CTAButton href="#services" label="Explore Capabilities" />
+              </div>
             </div>
           </article>
         </div>

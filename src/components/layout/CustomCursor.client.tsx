@@ -102,24 +102,30 @@ export default function CustomCursor() {
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
+      let nextState: 'default' | 'interactive' | 'media' | 'text' = 'default';
+
       // 1. Text inputs & editables: yield cleanly to native text selection I-beam
       if (target.closest('input, textarea, select, [contenteditable], iframe, video')) {
-        currentTargetState = 'text';
+        nextState = 'text';
       }
       // 2. Links, buttons, interactive controls
       else if (target.closest('a, button, [role="button"], input[type="submit"], .cta, .project-circle-btn, .hero-scroll-cue, .menu-btn, .nav a')) {
-        currentTargetState = 'interactive';
+        nextState = 'interactive';
       }
       // 3. Project cards & media frames
       else if (target.closest('.work-h-card, .project-card-frame, .shutter, .intro-card-inner')) {
-        currentTargetState = 'media';
-      } else {
-        currentTargetState = 'default';
+        nextState = 'media';
       }
 
       // Check dark/inverse grounds
-      isInverse = !!target.closest('[data-inverse-section], .header[data-on-inverse], .work-h-project-card, .work-h-outro-card, .menu');
+      const nextInverse = !!target.closest('[data-inverse-section], .header[data-on-inverse], .work-h-project-card, .work-h-outro-card, .menu');
 
+      if (nextState === currentTargetState && nextInverse === isInverse) {
+        return;
+      }
+
+      currentTargetState = nextState;
+      isInverse = nextInverse;
       applyVisualState();
     };
 

@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Space_Grotesk, Geist } from 'next/font/google';
+import { DM_Sans, Space_Grotesk } from 'next/font/google';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 import CustomCursor from '@/components/layout/CustomCursor.client';
 import { about, site } from '@/content/site';
 import './globals.css';
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const space = Space_Grotesk({
   subsets: ['latin'],
@@ -68,8 +67,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: '#f6f4ef', width: 'device-width', initialScale: 1 };
 
-/* Runs before paint: marks JS-capable, and decides whether the one-time load thread plays. */
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.intro=(r||sessionStorage.getItem('as-intro'))?'done':'play'}catch(e){d.dataset.intro='done'}})();`;
+/* Runs before paint: marks JS-capable and activates the editorial intro (reduced-motion uses a quick static fade). */
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.motion=r?'reduced':'full';d.dataset.intro='play'}catch(e){d.dataset.intro='done'}})();`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -104,7 +103,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn(space.variable, dm.variable, "font-sans", geist.variable)} suppressHydrationWarning>
+    <html lang="en" className={cn(space.variable, dm.variable)} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script

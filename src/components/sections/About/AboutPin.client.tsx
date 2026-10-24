@@ -21,6 +21,7 @@ interface AboutProps {
   principles?: AboutPrinciple[];
   disciplines?: string[];
   portrait: { src: string; alt: string; placeholder?: boolean };
+  mailtoHref?: string;
 }
 
 const idx = (i: number) => ({ '--i': i }) as React.CSSProperties;
@@ -34,7 +35,8 @@ export default function About({
   bio,
   principles = [],
   disciplines = [],
-  portrait
+  portrait,
+  mailtoHref
 }: AboutProps) {
   return (
     <section id="about" className="about" aria-labelledby="about-title">
@@ -87,7 +89,7 @@ export default function About({
             {/* Direct CTA */}
             <div className="about-cta-row" data-r="rise" style={idx(4)}>
               <CTAButton
-                href="mailto:swapnilgathibandhe2494@gmail.com?subject=Project%20Enquiry%20via%20ArtSwapy"
+                href={mailtoHref ?? 'mailto:swapnilgathibandhe2494@gmail.com'}
                 label="Start a conversation"
               />
               <span className="small muted">Direct collaboration · No account managers</span>
