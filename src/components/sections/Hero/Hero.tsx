@@ -49,7 +49,7 @@ export default function Hero() {
 
         {/* Bottom metadata bar aligned to the 12-column layout grid */}
         <div className="hero-bottom-bar">
-          <div className="hero-stat-block hero-col-discipline hero-rise-item" style={{ '--i': 0 } as React.CSSProperties}>
+          <div className="hero-stat-block hero-col-discipline hide-mobile hero-rise-item" style={{ '--i': 0 } as React.CSSProperties}>
             <span className="hero-stat-kicker">Discipline</span>
             <p className="hero-stat-text">
               Strategy, Identity,<br />Packaging &amp; Digital

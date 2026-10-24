@@ -115,15 +115,17 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
           <span ref={counterRef} className="small muted mono">[ 01 / {String(projects.length).padStart(2, '0')} ]</span>
         </div>
         <div className="work-h-cue small mono">
-          Scroll to explore <span className="arrow-cue">→</span>
+          <span className="hide-mobile">Scroll to explore</span>
+          <span className="show-mobile-inline">Swipe to explore</span>{' '}
+          <span className="arrow-cue">→</span>
         </div>
       </div>
 
       {/* The horizontal scrolling track */}
       <div className="work-h-viewport">
         <div ref={trackRef} className="work-h-track">
-          {/* Slide 0: Intro Header Card */}
-          <article className="work-h-card work-h-intro-card">
+          {/* Slide 0: Intro Header Card (desktop panoramic lead-in) */}
+          <article className="work-h-card work-h-intro-card hide-mobile">
             <div className="intro-card-inner">
               <div className="intro-badge-row">
                 <span className="ph-tag orange-tag">[ ✦ SELECTED WORK ]</span>
@@ -156,7 +158,27 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
                 } as React.CSSProperties}
               >
                 <div className="project-card-frame">
-                  {p.image ? (
+                  {p.href ? (
+                    <a
+                      href={p.href}
+                      className="project-frame-link"
+                      aria-label={`View ${p.name} case study`}
+                    >
+                      {p.image ? (
+                        <img
+                          src={p.image}
+                          alt={p.preview.alt}
+                          className="project-card-photo"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <div className="project-card-image" role="img" aria-label={p.preview.alt}>
+                          <Mark id={p.preview.mark} />
+                        </div>
+                      )}
+                    </a>
+                  ) : p.image ? (
                     <img
                       src={p.image}
                       alt={p.preview.alt}

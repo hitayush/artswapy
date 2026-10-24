@@ -42,11 +42,12 @@ export default function CustomCursor() {
 
       gsap.to(root, { opacity: 1, duration: 0.12, overwrite: 'auto' });
 
+      const isDarkGround = isInverse || document.documentElement.dataset.theme === 'dark';
       let ringScale = 1;
-      let ringBorderColor = isInverse ? 'rgba(246, 244, 239, 0.45)' : 'rgba(22, 22, 20, 0.35)';
+      let ringBorderColor = isDarkGround ? 'rgba(246, 244, 239, 0.45)' : 'rgba(22, 22, 20, 0.35)';
       let ringBg = 'transparent';
       let dotScale = 1;
-      let dotBg = isInverse ? '#f6f4ef' : 'var(--ink, #161614)';
+      let dotBg = isDarkGround ? '#f6f4ef' : 'var(--ink, #161614)';
 
       if (currentTargetState === 'interactive') {
         ringScale = isPressed ? 1.2 : 1.5;
@@ -149,10 +150,15 @@ export default function CustomCursor() {
       }
     };
 
+    const onThemeChange = () => {
+      applyVisualState();
+    };
+
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('pointerover', onPointerOver, { passive: true });
     window.addEventListener('pointerdown', onPointerDown, { passive: true });
     window.addEventListener('pointerup', onPointerUp, { passive: true });
+    window.addEventListener('artswapy-theme-change', onThemeChange);
     document.addEventListener('mouseleave', onMouseLeave);
     document.addEventListener('mouseenter', onMouseEnter);
 
@@ -162,6 +168,7 @@ export default function CustomCursor() {
       window.removeEventListener('pointerover', onPointerOver);
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('artswapy-theme-change', onThemeChange);
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
     };

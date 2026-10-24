@@ -2,7 +2,13 @@ import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Space_Grotesk } from 'next/font/google';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 import CustomCursor from '@/components/layout/CustomCursor.client';
-import { about, site } from '@/content/site';
+import {
+  buildHomeJsonLd,
+  buildPageMetadata,
+  DEFAULT_TITLE,
+  SITE_URL,
+  TITLE_TEMPLATE
+} from '@/lib/seo';
 import './globals.css';
 import { cn } from "@/lib/utils";
 
@@ -23,83 +29,35 @@ const dm = DM_Sans({
   variable: '--font-dm'
 });
 
-const title = 'ArtSwapy | Brand Strategy, Identity & Packaging Design';
-const description =
-  'ArtSwapy is the independent brand design practice of Swapnil Gathibandhe, shaping clear brands through strategy, identity, packaging and communications.';
+const baseMetadata = buildPageMetadata({ path: '/' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title,
-  description,
-  applicationName: site.name,
-  authors: [{ name: about.name, url: site.url }],
-  creator: about.name,
-  publisher: site.name,
-  category: 'Brand design',
-  alternates: {
-    canonical: new URL('/', site.url)
+  ...baseMetadata,
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: DEFAULT_TITLE,
+    template: TITLE_TEMPLATE
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1
-    }
-  },
-  openGraph: {
-    title,
-    description,
-    url: site.url,
-    siteName: site.name,
-    type: 'website'
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title,
-    description
-  },
-  icons: { icon: '/favicon.svg' }
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    shortcut: ['/favicon.svg']
+  }
 };
 
-export const viewport: Viewport = { themeColor: '#f6f4ef', width: 'device-width', initialScale: 1 };
-
-/* Runs before paint: marks JS-capable and activates the editorial intro (reduced-motion uses a quick static fade). */
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.motion=r?'reduced':'full';d.dataset.intro='play'}catch(e){d.dataset.intro='done'}})();`;
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      '@id': `${site.url}/#website`,
-      url: site.url,
-      name: site.name,
-      description,
-      inLanguage: 'en',
-      publisher: { '@id': `${site.url}/#practice` }
-    },
-    {
-      '@type': 'ProfessionalService',
-      '@id': `${site.url}/#practice`,
-      name: site.name,
-      url: site.url,
-      description,
-      email: site.email.address,
-      founder: { '@id': `${site.url}/#founder` }
-    },
-    {
-      '@type': 'Person',
-      '@id': `${site.url}/#founder`,
-      name: about.name,
-      worksFor: { '@id': `${site.url}/#practice` },
-      image: new URL(about.portrait.src, site.url).toString()
-    }
-  ]
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f6f4ef' },
+    { media: '(prefers-color-scheme: dark)', color: '#11110f' }
+  ],
+  width: 'device-width',
+  initialScale: 1
 };
+
+/* Runs before paint: resolves saved/system theme without FOUC, marks JS-capable, and activates the editorial intro. */
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var s=localStorage.getItem('artswapy-theme');var m=matchMedia('(prefers-color-scheme: dark)').matches;var t=s==='dark'||s==='light'?s:(m?'dark':'light');d.dataset.theme=t;d.classList.toggle('dark',t==='dark');d.style.colorScheme=t}catch(e){d.dataset.theme='light'}try{var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.motion=r?'reduced':'full';d.dataset.intro='play'}catch(e){d.dataset.intro='done'}})();`;
+
+const jsonLd = buildHomeJsonLd();
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

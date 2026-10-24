@@ -1,12 +1,11 @@
-import CopyEmail from '@/components/primitives/CopyEmail';
-import PlaceholderTag from '@/components/primitives/PlaceholderTag';
+import CTAButton from '@/components/primitives/CTAButton';
 import RevealRoot from '@/components/primitives/RevealRoot';
 import TextLink from '@/components/primitives/TextLink';
 import { contact, navLinks, site } from '@/content/site';
+import { mailto } from '@/lib/mailto';
 import SetYourName from './SetYourName.client';
 
 export default function FooterClose() {
-  const whatsapp = contact.routes[1];
   return (
     <RevealRoot as="footer" className="footer" aria-label="Site footer and contact" data-inverse-section="" rootMargin="0px 0px -5% 0px">
       <div className="footer-top grid12">
@@ -19,30 +18,27 @@ export default function FooterClose() {
           </span>
         </h2>
 
-        <SetYourName
-          to={contact.mailto.to}
-          subject={contact.mailto.subject}
-          body={contact.mailto.body}
-          cta={contact.cta}
-          {...contact.setName}
-        />
+        {/* Desktop interactive name-scrambler */}
+        <div className="hide-mobile footer-name-wrap">
+          <SetYourName
+            to={contact.mailto.to}
+            subject={contact.mailto.subject}
+            body={contact.mailto.body}
+            cta={contact.cta}
+            {...contact.setName}
+          />
+        </div>
+
+        {/* Smartphone direct action button */}
+        <div className="show-mobile-block footer-mobile-cta">
+          <CTAButton
+            href={mailto(contact.mailto)}
+            label="Start a project"
+            block
+          />
+        </div>
 
         <ul className="footer-links">
-          <li>
-            <CopyEmail address={site.email.address} variant="button" template={contact.mailto} />
-          </li>
-          <li>
-            <span style={{ minHeight: 44, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              {whatsapp.placeholder ? (
-                whatsapp.value
-              ) : (
-                <a href={whatsapp.value} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp (opens in new tab)">
-                  {whatsapp.label}
-                </a>
-              )}
-              {whatsapp.placeholder && <PlaceholderTag />}
-            </span>
-          </li>
           {navLinks.map((n) => (
             <li key={n.href}>
               <TextLink href={n.href}>{n.label}</TextLink>

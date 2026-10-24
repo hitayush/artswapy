@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { projects, site, contact } from '@/content/site';
+import { projects, site } from '@/content/site';
 import { mailto } from '@/lib/mailto';
+import { buildCaseStudyJsonLd, buildPageMetadata, SITE_KEYWORDS } from '@/lib/seo';
 import Mark from '@/components/primitives/Mark';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
 import CTAButton from '@/components/primitives/CTAButton';
+import ThemeToggle from '@/components/primitives/ThemeToggle.client';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -22,25 +24,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const project = projects.find((p) => p.id === slug);
   if (!project) return {};
 
-  const title = `${project.name} — ${project.category} Brand Case Study | ArtSwapy`;
-  const description = project.summary;
+  const title = `${project.name} — ${project.category} (${project.discipline ?? 'Brand Identity'}) Case Study`;
+  const description = project.caseStudy
+    ? `${project.summary} Explore strategy, visual identity, packaging, communications, and brand applications by ArtSwapy (${site.founder}).`
+    : project.summary;
 
-  return {
+  return buildPageMetadata({
+    path: `/work/${project.id}`,
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: 'article',
-      url: `${site.url}/work/${project.id}`,
-      images: project.image ? [{ url: new URL(project.image, site.url).toString() }] : undefined
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description
-    }
-  };
+    image: project.image ?? '/opengraph-image',
+    imageAlt: project.preview.alt,
+    type: 'article',
+    keywords: [
+      project.name,
+      `${project.name} brand identity`,
+      project.category,
+      project.discipline ?? 'Brand Strategy & Identity',
+      ...(project.caseStudy?.deliverables ?? []),
+      ...SITE_KEYWORDS
+    ]
+  });
 }
 
 export default async function CaseStudyPage({ params }: PageProps) {
@@ -64,9 +68,16 @@ export default async function CaseStudyPage({ params }: PageProps) {
   });
 
   const cs = project.caseStudy;
+  const caseStudyJsonLd = buildCaseStudyJsonLd(project);
 
   return (
     <article className="cs-page" style={{ '--project-accent': project.theme?.accent ?? '#ff551f' } as React.CSSProperties}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(caseStudyJsonLd).replace(/</g, '\\u003c')
+        }}
+      />
       {/* Top Navigation Bar */}
       <header className="cs-topbar">
         <div className="cs-topbar-inner">
@@ -80,6 +91,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
             </Link>
           </div>
           <div className="cs-topbar-action">
+            <ThemeToggle />
             <CTAButton href={enquiryHref} label="Enquire like this" size="sm" />
           </div>
         </div>

@@ -31,18 +31,18 @@ export const navLinks: NavLink[] = [
   { href: '#contact', label: 'Contact' }
 ];
 
-/* Editorial loading screen copy — editable placeholder thoughts on branding, identity & craft (unattributed). */
+/* Editorial loading screen copy — authentic studio philosophy on branding, identity & craft. */
 export const preloader: PreloaderConfig = {
   kicker: 'Editorial Opening · Studio Notes',
-  placeholder: true,
-  placeholderLabel: 'Placeholder quotes',
+  placeholder: false,
+  placeholderLabel: '',
   skipLabel: 'Skip intro',
   quotes: [
     {
       id: 'conviction',
       index: '01',
       pillar: 'Brand Strategy',
-      quote: 'Clarity precedes form. A lasting brand begins with the quiet conviction of what it stands for.',
+      quote: 'Clarity precedes form. A lasting brand begins with knowing exactly what it stands for.',
       note: 'Positioning & Narrative'
     },
     {
@@ -51,13 +51,6 @@ export const preloader: PreloaderConfig = {
       pillar: 'Visual Identity',
       quote: 'Identity is silent architecture—built to be recognised at a glance and trusted over time.',
       note: 'Systems, Marks & Type'
-    },
-    {
-      id: 'tactile',
-      index: '03',
-      pillar: 'Tactile Craft',
-      quote: 'Every surface, package, and word is a physical conversation between strategy and human touch.',
-      note: 'Packaging & Applications'
     }
   ]
 };
@@ -81,12 +74,7 @@ export const showreel = {
 export const intro = {
   heading: ['Meaning first,', 'then the form.'] as [string, string],
   lead: 'ArtSwapy helps businesses find what makes them distinct, then shapes it into a brand people can recognise, trust and remember.',
-  body: 'Work starts with strategy and carries through to identity, packaging, communications and the everyday places a brand shows up.',
-  panorama: {
-    alt: 'Drawn concept marks for three brand identities, set side by side in flat colour',
-    credit: 'Concept marks drawn for this site',
-    placeholder: true
-  }
+  body: 'Work starts with strategy and carries through to identity, packaging, communications and the everyday places a brand shows up.'
 };
 
 export const work = {

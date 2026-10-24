@@ -29,3 +29,17 @@ npm-debug.log*
 out/
 next-env.d.ts
 *.tsbuildinfo
+
+# Agent & IDE harness
+.agent/
+.agents/
+.codex/
+.gemini/
+.gsd/
+GSD-STYLE.md
+PROJECT_RULES.md
+VERSION
+adapters/
+model_capabilities.yaml
+scripts/
+skills-lock.json

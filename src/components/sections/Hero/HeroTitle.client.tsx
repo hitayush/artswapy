@@ -247,6 +247,9 @@ export default function HeroTitle() {
       <div className="hero-name-stage">
         <div className="hero-name-mask">
           <h1 className="hero-name" aria-label={site.name}>
+            <span className="sr-only">
+              {site.name} (Art Swapy) — Independent Brand Strategy, Visual Identity &amp; Packaging Design Studio by {site.founder}
+            </span>
             {TITLE_CHARS.map((char, globalIndex) => (
               <span
                 key={globalIndex}

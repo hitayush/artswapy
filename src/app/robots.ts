@@ -1,14 +1,30 @@
 import type { MetadataRoute } from 'next';
-import { site } from '@/content/site';
+import { canonicalUrl, SITE_URL } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/'
-    },
-    sitemap: new URL('/sitemap.xml', site.url).toString()
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/'
+      },
+      {
+        userAgent: [
+          'Googlebot',
+          'Bingbot',
+          'GPTBot',
+          'OAI-SearchBot',
+          'ChatGPT-User',
+          'PerplexityBot',
+          'ClaudeBot',
+          'Google-Extended'
+        ],
+        allow: '/'
+      }
+    ],
+    host: SITE_URL,
+    sitemap: canonicalUrl('/sitemap.xml')
   };
 }

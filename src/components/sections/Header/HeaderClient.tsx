@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import TextLink from '@/components/primitives/TextLink';
 import CTAButton from '@/components/primitives/CTAButton';
 import CopyEmail from '@/components/primitives/CopyEmail';
+import ThemeToggle from '@/components/primitives/ThemeToggle.client';
 import { getLenis, scrollToHash } from '@/lib/motion/lenis';
 import type { MailtoTemplate, NavLink } from '@/types/content';
 
@@ -175,6 +176,7 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
           ))}
         </nav>
         <div className="header-actions">
+          <ThemeToggle />
           <span className="header-cta">
             <CTAButton href={mailto} label={cta} size="sm" />
           </span>
@@ -210,6 +212,10 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
             ))}
           </nav>
           <div className="menu-foot">
+            <div className="menu-theme-row">
+              <span className="eyebrow">Appearance</span>
+              <ThemeToggle showLabel />
+            </div>
             <CTAButton href={mailto} label={cta} block />
             <CopyEmail address={address} variant="button" template={template} />
           </div>

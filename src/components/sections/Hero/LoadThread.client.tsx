@@ -220,9 +220,10 @@ export default function LoadThread() {
       );
     }
 
-    // Pacing per quote: comfortable reading window (~0.92s hold + 0.36s transition)
-    const holdDuration = 0.92;
-    const transitionDuration = 0.36;
+    // Pacing per quote: comfortable reading window, fast and responsive on mobile
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    const holdDuration = isMobile ? 0.62 : 0.88;
+    const transitionDuration = isMobile ? 0.28 : 0.34;
     const stepSlot = holdDuration + transitionDuration;
 
     quotes.forEach((_, idx) => {
