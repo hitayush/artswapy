@@ -1,5 +1,3 @@
-'use client';
-
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
 import { about, preloader, site } from '@/content/site';
 
@@ -67,12 +65,12 @@ export default function HeroPreloader() {
               <div className="as-quote-step-group">
                 <span className="as-quote-step-badge">
                   <span className="as-quote-idx">{firstQuote.index}</span>
-                  <span className="as-quote-total"> / {totalQuotes}</span>
+                  <span className="as-quote-total">/{totalQuotes}</span>
                 </span>
                 <span className="as-quote-divider" aria-hidden="true">—</span>
                 <span className="as-quote-pillar">{firstQuote.pillar}</span>
+                <span className="as-quote-dot" aria-hidden="true">·</span>
               </div>
-              <span className="as-quote-note hide-mobile">{firstQuote.note}</span>
             </div>
 
             {/* Stacked Quote Deck (grid overlap prevents any layout shift) */}
@@ -143,8 +141,8 @@ export default function HeroPreloader() {
 
           {/* Bottom Studio Footnote */}
           <div className="as-preloader-sub-row mono">
-            <span>STRATEGY · IDENTITY · PACKAGING</span>
-            <span className="hide-mobile">NAGPUR, IN · WORKING WORLDWIDE</span>
+            <span>{preloader.footerLeft ?? 'STRATEGY  CONSULTING  DESIGN'}</span>
+            <span>{preloader.footerRight ?? 'NAGPUR, IN  WORKING WORLDWIDE'}</span>
             <span className="as-ready-indicator">PREPARING PORTFOLIO</span>
           </div>
         </footer>

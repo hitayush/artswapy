@@ -10,7 +10,7 @@ const idx = (i: number) => ({ '--i': i }) as React.CSSProperties;
 export default function ContactRows() {
   const [email, whatsapp, location, availability] = contact.routes;
   return (
-    <RevealRoot as="section" id="contact" className="contact" aria-labelledby="contact-title" rootMargin="0px 0px -8% 0px">
+    <RevealRoot as="section" id="contact-channels" className="contact" aria-labelledby="contact-title" rootMargin="0px 0px -8% 0px">
       <div className="section-header contact-header">
         <div className="section-kicker-row">
           <span className="eyebrow" data-r="rise">[ DIRECT ENQUIRIES ]</span>

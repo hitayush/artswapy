@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { mailto } from '@/lib/mailto';
+import { playSfx } from '@/lib/audio/sfx';
 import type { MailtoTemplate } from '@/types/content';
 
 async function copyText(text: string, selectEl: HTMLElement | null): Promise<boolean> {
@@ -41,6 +42,7 @@ export default function CopyEmail({
 
   const run = async () => {
     const ok = await copyText(address, addrRef.current);
+    playSfx('stamp');
     setState(ok ? 'copied' : 'selected');
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setState('idle'), 1600);

@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { site } from '@/content/site';
+import { hero, site } from '@/content/site';
 import { gsap } from '@/lib/motion/gsap';
+import { playCharHover, playSfx } from '@/lib/audio/sfx';
 
 const COLS = 16;
 const ROWS = 4;
@@ -34,6 +35,7 @@ export default function HeroTitle() {
 
     let activeIdx: number | null = null;
     let prevNeighbors: number[] = [];
+    let prevClosestCharIdx = -1;
     let rafId: number | null = null;
     let pointerX = 0;
     let pointerY = 0;
@@ -140,6 +142,11 @@ export default function HeroTitle() {
       if (hudChar && closestCharIdx >= 0 && TITLE_CHARS[closestCharIdx]) {
         hudChar.textContent = TITLE_CHARS[closestCharIdx];
       }
+
+      if (closestCharIdx >= 0 && closestCharIdx !== prevClosestCharIdx) {
+        prevClosestCharIdx = closestCharIdx;
+        playCharHover(closestCharIdx, TITLE_CHARS.length);
+      }
     };
 
     const onMouseMove = (e: MouseEvent) => {
@@ -154,6 +161,7 @@ export default function HeroTitle() {
     const clearHover = () => {
       isInside = false;
       activeIdx = null;
+      prevClosestCharIdx = -1;
       prevNeighbors.forEach((nIdx) => {
         const el = cellsRef.current[nIdx];
         if (el) el.classList.remove('cell-active', 'cell-near');
@@ -175,6 +183,7 @@ export default function HeroTitle() {
 
     const onClickWave = (e: MouseEvent) => {
       if (document.documentElement.dataset.intro === 'play') return;
+      playSfx('stamp');
       const inners = charInnersRef.current.filter((el): el is HTMLSpanElement => el !== null);
       const bars = charBarsRef.current.filter((el): el is HTMLSpanElement => el !== null);
       if (inners.length === 0) return;
@@ -218,12 +227,18 @@ export default function HeroTitle() {
       }
     };
 
+    const onMouseEnter = () => {
+      playSfx('hover');
+    };
+
+    container.addEventListener('mouseenter', onMouseEnter, { passive: true });
     container.addEventListener('mousemove', onMouseMove, { passive: true });
     container.addEventListener('mouseleave', clearHover, { passive: true });
     container.addEventListener('click', onClickWave);
 
     return () => {
       if (rafId !== null) window.cancelAnimationFrame(rafId);
+      container.removeEventListener('mouseenter', onMouseEnter);
       container.removeEventListener('mousemove', onMouseMove);
       container.removeEventListener('mouseleave', clearHover);
       container.removeEventListener('click', onClickWave);
@@ -237,12 +252,10 @@ export default function HeroTitle() {
       data-cursor="interactive"
       title="Move cursor or click to interact with ArtSwapy"
     >
-      {/* Architectural Specimen Frame Marks */}
-      <div className="hero-specimen-ruler" aria-hidden="true">
-        <span className="mono">SPECIMEN // DISPLAY MONUMENT</span>
-        <span className="mono hide-mobile">GRID 16×04 · SPACE GROTESK 700</span>
-        <span className="mono">SCALE 1:1</span>
-      </div>
+      {/* Centered founder introduction above the ArtSwapy wordmark */}
+      <p className="hero-founder-byline hero-founder-byline-row hero-rise-item" style={{ '--i': 0 } as React.CSSProperties}>
+        {hero.founderTitle}
+      </p>
 
       <div className="hero-name-stage">
         <div className="hero-name-mask">
@@ -256,6 +269,9 @@ export default function HeroTitle() {
                 className="hero-char-mask"
                 ref={(el) => {
                   charMasksRef.current[globalIndex] = el;
+                }}
+                onPointerEnter={() => {
+                  playCharHover(globalIndex, TITLE_CHARS.length);
                 }}
                 aria-hidden="true"
               >

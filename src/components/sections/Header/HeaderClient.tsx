@@ -5,6 +5,8 @@ import TextLink from '@/components/primitives/TextLink';
 import CTAButton from '@/components/primitives/CTAButton';
 import CopyEmail from '@/components/primitives/CopyEmail';
 import ThemeToggle from '@/components/primitives/ThemeToggle.client';
+import SoundToggle from '@/components/primitives/SoundToggle.client';
+import ArtSwapyLogo from '@/components/primitives/ArtSwapyLogo';
 import { getLenis, scrollToHash } from '@/lib/motion/lenis';
 import type { MailtoTemplate, NavLink } from '@/types/content';
 
@@ -50,8 +52,8 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
           entries.forEach((e) => (e.isIntersecting ? live.add(e.target) : live.delete(e.target)));
           setInverse(live.size > 0);
         },
-        // Only the top 64px (the header band) counts.
-        { rootMargin: `0px 0px -${Math.max(0, window.innerHeight - 64)}px 0px` }
+        // Trigger slightly ahead of the 64px header band so inverse ink cross-fades seamlessly
+        { rootMargin: `0px 0px -${Math.max(0, window.innerHeight - 108)}px 0px` }
       );
       els.forEach((el) => io?.observe(el));
     };
@@ -163,10 +165,9 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
       <div className="header-bg inverse" aria-hidden="true" />
       <div className="header-inner">
         <div className="wordmark-group">
-          <TextLink href="#top" className="wordmark" ariaLabel={`${name}, back to top`}>
-            {name}
+          <TextLink href="#top" className="wordmark logo-link" ariaLabel={`${name}, back to top`}>
+            <ArtSwapyLogo />
           </TextLink>
-          <span className="wordmark-sub">Branding Studio</span>
         </div>
         <nav aria-label="Primary" className="nav">
           {nav.map((n) => (
@@ -176,6 +177,7 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
           ))}
         </nav>
         <div className="header-actions">
+          <SoundToggle />
           <ThemeToggle />
           <span className="header-cta">
             <CTAButton href={mailto} label={cta} size="sm" />
@@ -215,6 +217,10 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
             <div className="menu-theme-row">
               <span className="eyebrow">Appearance</span>
               <ThemeToggle showLabel />
+            </div>
+            <div className="menu-theme-row" style={{ marginTop: 8 }}>
+              <span className="eyebrow">Audio Feedback</span>
+              <SoundToggle showLabel />
             </div>
             <CTAButton href={mailto} label={cta} block />
             <CopyEmail address={address} variant="button" template={template} />

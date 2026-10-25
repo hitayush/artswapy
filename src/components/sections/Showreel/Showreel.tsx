@@ -3,7 +3,6 @@
 import { useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import { showreel } from '@/content/site';
-import { scrollToHash } from '@/lib/motion/lenis';
 import ShowreelPlayer from './ShowreelPlayer.client';
 
 export default function Showreel() {
@@ -18,7 +17,12 @@ export default function Showreel() {
 
   const handleLearnMore = (e: React.MouseEvent) => {
     e.preventDefault();
-    scrollToHash('#studio');
+    const lenis = (window as unknown as { __lenis?: { scrollTo: (target: string) => void } }).__lenis;
+    const workEl = document.querySelector('#work');
+    if (workEl) {
+      if (lenis) lenis.scrollTo('#work');
+      else workEl.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useGSAP(
@@ -42,29 +46,37 @@ export default function Showreel() {
           const vRect = viewport.getBoundingClientRect();
           const slotRect = videoSlot.getBoundingClientRect();
 
-          // 1. Initial State: Full Screen spanning the entire viewport
-          const fullW = vRect.width;
-          const fullH = vRect.height;
-          const fullX = 0;
-          const fullY = 0;
+          const fullW = Math.max(1, vRect.width);
+          const fullH = Math.max(1, vRect.height);
 
-          // 2. Final compact target dimensions matching the left slot in stage grid
           const finalW = slotRect.width;
-          const finalH = slotRect.height || (slotRect.width * (9 / 16));
+          const finalH = slotRect.height || slotRect.width * (9 / 16);
           const finalX = slotRect.left - vRect.left;
           const finalY = slotRect.top - vRect.top;
 
-          return { fullW, fullH, fullX, fullY, finalW, finalH, finalX, finalY };
+          return {
+            fullW,
+            fullH,
+            finalX,
+            finalY,
+            scaleX: finalW / fullW,
+            scaleY: finalH / fullH
+          };
         };
 
         let r = getRects();
 
-        // Initial state at scroll = 0: Full screen video covering viewport
+        // Initial state at scroll = 0: Full screen video covering viewport (GPU transform-only scrub)
         gsap.set(videoCard, {
           left: 0,
           top: 0,
           width: r.fullW,
           height: r.fullH,
+          x: 0,
+          y: 0,
+          scaleX: 1,
+          scaleY: 1,
+          transformOrigin: '0 0',
           borderRadius: 0,
           boxShadow: '0 32px 80px -16px rgba(0, 0, 0, 0.5)',
           zIndex: 30
@@ -82,62 +94,76 @@ export default function Showreel() {
           scrollTrigger: {
             trigger: container,
             start: 'top top',
-            end: '+=130%',
+            end: '+=100%',
             pin: viewport,
             pinSpacing: true,
-            scrub: 0.6,
+            scrub: 0.5,
             invalidateOnRefresh: true,
             refreshPriority: 10,
             anticipatePin: 1,
             fastScrollEnd: true,
             onRefresh: () => {
               r = getRects();
+              gsap.set(videoCard, { width: r.fullW, height: r.fullH });
             }
           }
         });
 
-        // 1. Shrink video from full screen into left slot
-        tl.to(videoCard, {
-          left: () => r.finalX,
-          top: () => r.finalY,
-          width: () => r.finalW,
-          height: () => r.finalH,
-          borderRadius: '8px',
-          boxShadow: '0 16px 36px -12px rgba(22, 22, 20, 0.14)',
-          ease: 'power2.inOut',
-          duration: 1
-        }, 0);
+        // 1. Shrink video from full screen into left slot via GPU transform
+        tl.to(
+          videoCard,
+          {
+            x: () => r.finalX,
+            y: () => r.finalY,
+            scaleX: () => r.scaleX,
+            scaleY: () => r.scaleY,
+            borderRadius: '8px',
+            boxShadow: '0 16px 36px -12px rgba(22, 22, 20, 0.14)',
+            ease: 'power1.inOut',
+            duration: 1
+          },
+          0
+        );
 
         // 2. Top meta bar fades in as video begins shrinking
         if (topBar) {
-          tl.to(topBar, {
-            opacity: 1,
-            y: 0,
-            ease: 'power2.out',
-            duration: 0.45
-          }, 0.25);
+          tl.to(
+            topBar,
+            {
+              opacity: 1,
+              y: 0,
+              ease: 'power2.out',
+              duration: 0.4
+            },
+            0.2
+          );
         }
 
         // 3. Fade in and slide in the quote on the right as the video clears the space
-        tl.to(quoteCol, {
-          opacity: 1,
-          x: 0,
-          ease: 'power2.out',
-          duration: 0.45
-        }, 0.52);
+        tl.to(
+          quoteCol,
+          {
+            opacity: 1,
+            x: 0,
+            ease: 'power2.out',
+            duration: 0.5
+          },
+          0.35
+        );
 
         // 4. Reveal bottom editorial bar
         if (bottomBar) {
-          tl.to(bottomBar, {
-            opacity: 1,
-            y: 0,
-            ease: 'power2.out',
-            duration: 0.4
-          }, 0.6);
+          tl.to(
+            bottomBar,
+            {
+              opacity: 1,
+              y: 0,
+              ease: 'power2.out',
+              duration: 0.45
+            },
+            0.5
+          );
         }
-
-        // 5. Brief hold so the viewer can read the settled quote and see the video
-        tl.to({}, { duration: 0.3 });
 
         const refresh = () => {
           ScrollTrigger.sort();
@@ -182,10 +208,7 @@ export default function Showreel() {
         {/* Top meta bar */}
         <div ref={topBarRef} className="showreel-topbar">
           <div className="showreel-meta">
-            <span className="showreel-tag">
-              [ ✦ SHOWREEL ]
-            </span>
-            <span className="showreel-cue">Craft in motion · 2025</span>
+            <span className="showreel-tag">SHOWREEL : PORTFOLIO 2026</span>
           </div>
           <span className="showreel-cue showreel-sound-cue">Sound off by default · Click to unmute</span>
         </div>
@@ -195,19 +218,17 @@ export default function Showreel() {
           {/* Static Slot for Grid Layout calculation */}
           <div ref={videoSlotRef} className="showreel-video-slot" aria-hidden="true" />
 
-          {/* Right: Editorial Quote exactly matching reference website */}
+          {/* Right: Editorial Quote */}
           <div ref={quoteColRef} className="showreel-quote-col">
-            <span className="showreel-quote-kicker">
-              [ ! ] Be the brand they never stop talking about
-            </span>
+            <span className="showreel-quote-kicker">[ ! ] BE THE BRAND THEY NEVER STOP TALKING ABOUT</span>
 
             <blockquote className="showreel-quote-statement">
-              Design on the web isn&apos;t static anymore. Today&apos;s brands need energy, personality and meaning. We bring together strategy, design and storytelling to build digital experiences that grab attention, move fast and make people feel.
+              Most brands don’t have a design problem. They have a clarity problem. I bring brand strategy and design together to find what makes you different and turn it into a brand people notice, trust and remember.
             </blockquote>
           </div>
         </div>
 
-        {/* Bottom editorial split matching reference */}
+        {/* Bottom editorial split */}
         <div ref={bottomBarRef} className="showreel-bottom-bar">
           <div className="showreel-sub-left">
             <span className="showreel-sub-kicker">Designing Iconic Brands Daily.</span>
@@ -219,12 +240,12 @@ export default function Showreel() {
             </p>
 
             <a
-              href="#studio"
+              href="#work"
               onClick={handleLearnMore}
               className="showreel-learn-more"
-              aria-label="Learn more about our studio and philosophy"
+              aria-label="Explore selected case studies"
             >
-              <span>Learn More</span>
+              <span>Explore Work</span>
               <svg
                 width="16"
                 height="16"
@@ -256,4 +277,3 @@ export default function Showreel() {
     </section>
   );
 }
-

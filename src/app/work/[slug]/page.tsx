@@ -140,7 +140,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
         </div>
 
         {/* Feature Hero Image */}
-        <div className="cs-hero-media" data-r="shutter">
+        <div className="cs-hero-media" data-r="shutter" data-cursor="explore">
           {project.image ? (
             <img
               src={project.image}

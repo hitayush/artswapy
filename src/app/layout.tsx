@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Space_Grotesk } from 'next/font/google';
 import SmoothScroll from '@/components/providers/SmoothScroll';
+import SoundEffects from '@/components/providers/SoundEffects.client';
 import CustomCursor from '@/components/layout/CustomCursor.client';
 import {
   buildHomeJsonLd,
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
         <SmoothScroll />
+        <SoundEffects />
         <CustomCursor />
         {children}
       </body>

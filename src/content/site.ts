@@ -4,6 +4,7 @@
    Replace with confirmed content, then flip the flag before launch.
    ========================================================================== */
 import type {
+  AboutStat,
   ContactRoute,
   MailtoTemplate,
   NavLink,
@@ -21,7 +22,11 @@ export const site = {
     address: 'swapnilgathibandhe2494@gmail.com',
     placeholder: false
   },
-  credits: { left: 'Brand design and consulting', right: 'Independent practice' }
+  credits: {
+    left: 'Brand design and consulting',
+    developer: 'Developed with ❤️ & ☕ by Hitayush Dange',
+    right: 'Independent practice'
+  }
 };
 
 export const navLinks: NavLink[] = [
@@ -37,35 +42,66 @@ export const preloader: PreloaderConfig = {
   placeholder: false,
   placeholderLabel: '',
   skipLabel: 'Skip intro',
+  footerLeft: 'STRATEGY  CONSULTING  DESIGN',
+  footerRight: 'NAGPUR, IN  WORKING WORLDWIDE',
   quotes: [
     {
-      id: 'conviction',
+      id: 'think',
       index: '01',
-      pillar: 'Brand Strategy',
-      quote: 'Clarity precedes form. A lasting brand begins with knowing exactly what it stands for.',
-      note: 'Positioning & Narrative'
+      pillar: 'Think clearly.',
+      quote: 'Youre not here',
+      note: 'Strategy'
     },
     {
-      id: 'architecture',
+      id: 'distinct',
       index: '02',
-      pillar: 'Visual Identity',
-      quote: 'Identity is silent architecture—built to be recognised at a glance and trusted over time.',
-      note: 'Systems, Marks & Type'
+      pillar: 'Look distinct.',
+      quote: 'just for a logo.',
+      note: 'Consulting'
+    },
+    {
+      id: 'remember',
+      index: '03',
+      pillar: 'Be remembered.',
+      quote: 'Youre here to build a brand.',
+      note: 'Design'
     }
   ]
 };
 
 export const hero = {
+  tag: '01 // BRAND STRATEGY, CONSULTING & DESIGN',
+  founderTitle: 'Swapnil Gathibandhe — Brand Strategy Consultant & Brand Designer',
   line: 'An independent brand practice led by Swapnil Gathibandhe: strategy, identity and packaging.',
   portrait: {
-    src: '/images/swapnil-portrait.png',
+    src: '/images/founder-image.png',
     alt: 'Portrait of Swapnil Gathibandhe, founder of ArtSwapy',
     placeholder: false
-  }
+  },
+  stats: [
+    {
+      kicker: 'EXPERTISE',
+      text: 'Brand Strategy, Consulting / & Brand Design'
+    },
+    {
+      kicker: 'HOW I WORK',
+      text: 'One-to-one with founders. / I consult, design and deliver.'
+    },
+    {
+      kicker: 'WHAT YOU GET',
+      text: 'A brand that makes sense / and makes an impression.'
+    }
+  ]
 };
 
 export const showreel = {
-  tag: 'Showreel',
+  tag: 'SHOWREEL : PORTFOLIO 2026',
+  headline: '[ ! ] BE THE BRAND THEY NEVER STOP TALKING ABOUT',
+  statement:
+    'Most brands don’t have a design problem. They have a clarity problem. I bring brand strategy and design together to find what makes you different and turn it into a brand people notice, trust and remember.',
+  subKicker: 'Designing Iconic Brands Daily.',
+  subDesc:
+    'Your brand has a story. We make sure it’s seen, felt and remembered. We design logos, build brands and create moments that turn attention into action.',
   title: 'Logo Design Process — From Start to Finish',
   youtubeId: 'pTjizuQOoYo',
   caption: 'Craft, strategy and execution in motion.'
@@ -78,10 +114,18 @@ export const intro = {
 };
 
 export const work = {
-  heading: 'Selected work',
+  tag: 'Case studies',
+  heading: 'Where Strategy Takes Shape.',
+  body: 'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.',
   enquiry: {
     subjectPrefix: 'Project enquiry — like ',
     body: 'Hi Swapnil,\n\nI saw the concept project and would like something like it.\nMy business is …\nWhat I need help with: …\n\nThanks,'
+  },
+  nextStep: {
+    tag: '[ ✦ NEXT STEP ]',
+    headline: 'Have a business? Let’s give it a brand.',
+    body: 'Start with a strategy session. Leave with clarity, a distinct identity and a brand ready to be remembered.',
+    button: 'Book a Strategy Session'
   }
 };
 
@@ -477,162 +521,216 @@ export const projects: Project[] = [
 
 export const services = {
   heading: 'Services',
+  subtitle: 'Strategic thinking and hands-on design, from your first brand decision to long-term growth.',
   items: [
     {
-      id: 'strategy',
-      title: 'Strategy',
-      fact: 'Positioning, voice, story',
-      description: 'Positioning, voice and the story that holds a brand together.'
+      id: 'growth-strategy',
+      title: 'Growth Strategy',
+      fact: 'Positioning, audience, roadmap',
+      description:
+        'I help you define what your brand stands for, who it’s for and why it should be chosen over the rest. You get a clear strategy and growth roadmap that guides every design, marketing and business decision that follows.'
     },
     {
-      id: 'identity',
-      title: 'Identity',
-      fact: 'Logo, type, colour, system',
-      description: 'The name, mark, type and colour, built as a system that scales.'
+      id: 'logo-design',
+      title: 'Logo Design',
+      fact: 'Mark, type, colour, identity',
+      description:
+        'Your logo is the face of your brand, so I design it to be simple, distinctive and built to last. Every mark comes with a complete identity system of typography, colours and guidelines, so your brand stays consistent, clear and recognizable everywhere.'
     },
     {
       id: 'packaging',
       title: 'Packaging',
-      fact: 'Packaging and print',
-      description: 'Packaging and print built from the identity, ready for the shelf.'
+      fact: 'Structure, label, print-ready',
+      description:
+        'Packaging is often a customer’s first real touch of your brand, and I design it to win that moment on the shelf. From label design to finishes and print-ready files, every detail is crafted to look premium and sell.'
     },
     {
-      id: 'communications',
-      title: 'Communications',
-      fact: 'Campaign and voice',
-      description: 'How the brand speaks in campaigns, print and everyday messages.'
+      id: 'social-media',
+      title: 'Social Media',
+      fact: 'Content direction, grid, voice',
+      description:
+        'I audit your social presence and show you exactly what to post, how it should look and how your brand should sound. You get a clear content direction and visual system that turns scrolling into following, and following into buying.'
     },
     {
-      id: 'applications',
-      title: 'Applications',
-      fact: 'Digital and physical touchpoints',
-      description: 'Digital and physical touchpoints that feel like one brand.'
+      id: 'branding-partner',
+      title: 'Branding Partner',
+      fact: 'Ongoing strategy & design support',
+      description:
+        'For brands that are growing, I work as your long-term branding partner, a strategist and designer on call without the agency overhead. From new launches to campaigns and refreshes, your brand stays consistent, sharp and moving forward.'
     }
   ] satisfies Service[]
 };
 
 export const process = {
-  heading: 'How a project moves',
+  label: '[ FIVE-STEP PROCESS ]',
+  rightText: 'From First Conversation to Final Results',
+  heading: 'How I Work',
   stages: [
     {
-      id: 'strategy',
+      id: 'audit',
       index: '01',
-      phase: 'Phase 01 · Discovery & Strategy',
-      name: 'Strategy',
-      line: 'Who you are, who it is for, and why anyone should care.',
-      description: 'Uncovering the authentic core of your business. We analyze competitive whitespace, audience psychology, and brand positioning before sketching a single mark.',
-      gives: 'Positioning and voice',
+      shortName: 'Audit',
+      phase: 'Phase 01 · Listen & Assess',
+      name: 'Brand Audit',
+      line: 'Where your brand stands today, honestly.',
+      description:
+        'We begin with a one-to-one audit meeting. I review your current brand, visuals, social presence and competitors to see what’s working, what’s not and where the real opportunity lies.',
+      timeline: '2–3 Days · Direct Founder Collaboration',
+      gives: 'Audit and insights',
+      deliverablesBox: 'Audit and insights',
       deliverables: [
-        'Brand Architecture & Positioning',
-        'Target Audience Matrix & Personas',
-        'Competitive Whitespace Audit',
-        'Core Narrative & Brand Voice'
+        'One-to-One Discovery Meeting',
+        'Current Brand & Visual Audit',
+        'Competitor & Market Snapshot',
+        'Strengths, Gaps & Opportunities'
       ],
-      duration: '1–2 Weeks',
-      output: 'Strategic Deck & Creative Brief'
+      duration: '2–3 Days',
+      output: 'Brand Audit Report'
     },
     {
-      id: 'identity',
+      id: 'discovery',
       index: '02',
-      phase: 'Phase 02 · System & Form',
-      name: 'Identity',
-      line: 'The name, mark, type and colour that carry it.',
-      description: 'Translating strategy into an unmistakable visual signature. Bespoke typography, responsive logomarks, dynamic grids, and curated color palettes built to endure.',
-      gives: 'Logo and identity system',
+      shortName: 'Discovery',
+      phase: 'Phase 02 · Understand & Define',
+      name: 'Discovery',
+      line: 'What you need, and who you’re really for.',
+      description:
+        'I dig into your business goals, your customers and what makes you different. This step turns assumptions into clarity, so every decision after this has a reason behind it.',
+      timeline: '3–5 Days · Direct Founder Collaboration',
+      gives: 'Goals and audience',
+      deliverablesBox: 'Goals and audience',
       deliverables: [
-        'Primary & Responsive Logo Marks',
-        'Bespoke Typographic System',
-        'Color Harmony & Contrast Rules',
-        'Comprehensive Brand Guidelines'
+        'Business Goals & Challenges Brief',
+        'Target Audience Profiles',
+        'Customer Needs & Motivations',
+        'Unique Value Definition'
       ],
-      duration: '2–3 Weeks',
-      output: 'Complete Brand Identity System'
+      duration: '3–5 Days',
+      output: 'Discovery & Audience Brief'
     },
     {
-      id: 'packaging',
+      id: 'strategy',
       index: '03',
-      phase: 'Phase 03 · Tactile & Physical',
-      name: 'Packaging',
-      line: 'The identity made physical, shelf-ready.',
-      description: 'Bringing the brand to life in the physical world. Precision die-lines, label typography, material selection, foil stamping, and tactile print finishes.',
-      gives: 'Packaging design',
+      shortName: 'Strategy',
+      phase: 'Phase 03 · Think & Plan',
+      name: 'Strategy',
+      line: 'A clear plan before a single pixel moves.',
+      description:
+        'I build your brand strategy, covering positioning, messaging and visual direction, and map out exactly what will be created, when and why. You approve the plan before any design begins.',
+      timeline: '1–2 Weeks · Direct Founder Collaboration',
+      gives: 'Strategy and roadmap',
+      deliverablesBox: 'Strategy and roadmap',
       deliverables: [
-        'Custom Structural Box Die-Lines',
-        'Label Hierarchy & Typography Specs',
-        'Specialty Finishes (Foil, Emboss, UV)',
-        'Production-Ready Print Files'
-      ],
-      duration: '2 Weeks',
-      output: 'Print-Ready Production Files'
-    },
-    {
-      id: 'communications',
-      index: '04',
-      phase: 'Phase 04 · Voice & Culture',
-      name: 'Communications',
-      line: 'How the brand speaks in print and campaign.',
-      description: 'Creating high-impact advertising, editorial print, launch campaigns, and social design systems that command attention and ignite engagement.',
-      gives: 'Campaign and print',
-      deliverables: [
-        'Campaign Art Direction & Concepts',
-        'Editorial Print & Poster Series',
-        'Social Grid & Motion Design Kit',
-        'Headline & Storytelling Toolkit'
+        'Brand Positioning & Messaging',
+        'Creative Direction & Moodboards',
+        'Project Scope & Priorities',
+        'Milestone Timeline'
       ],
       duration: '1–2 Weeks',
-      output: 'Launch Campaign Asset Library'
+      output: 'Brand Strategy & Action Plan'
     },
     {
-      id: 'applications',
-      index: '05',
-      phase: 'Phase 05 · Touchpoints & Scale',
-      name: 'Applications',
-      line: 'Every place it shows up, kept consistent.',
-      description: 'Ensuring seamless consistency across digital products, web experiences, retail signage, merchandise, and scalable design token systems.',
-      gives: 'Touchpoints and guidelines',
+      id: 'execution',
+      index: '04',
+      shortName: 'Execution',
+      phase: 'Phase 04 · Design & Deliver',
+      name: 'Execution',
+      line: 'The plan brought to life, on time.',
+      description:
+        'This is where strategy becomes design: logo, identity, packaging or social content, crafted with care and delivered on schedule. You get regular updates and review rounds, never surprises.',
+      timeline: '2–4 Weeks · Direct Founder Collaboration',
+      gives: 'Design and delivery',
+      deliverablesBox: 'Design and delivery',
       deliverables: [
-        'Responsive Web UI Design System',
-        'Environmental & Retail Signage',
-        'Stationery, Collateral & Merch',
-        'Digital Design Tokens & Assets'
+        'Logo & Identity Design',
+        'Packaging & Print Assets',
+        'Social Media Creatives',
+        'Review Rounds & Refinements'
       ],
-      duration: '2 Weeks',
-      output: 'Design System & Master Asset Archive'
+      duration: '2–4 Weeks',
+      output: 'Final Design Assets'
+    },
+    {
+      id: 'report',
+      index: '05',
+      shortName: 'Report',
+      phase: 'Phase 05 · Review & Grow',
+      name: 'Final Report',
+      line: 'Everything delivered, documented and ready to grow.',
+      description:
+        'I hand over every file, guideline and recommendation in one organised package. You walk away knowing exactly how to use your brand and what to do next to keep it growing.',
+      timeline: '2–3 Days · Direct Founder Collaboration',
+      gives: 'Handover and next steps',
+      deliverablesBox: 'Handover and next steps',
+      deliverables: [
+        'Complete Brand Guidelines',
+        'Organised Master File Archive',
+        'Project Summary Report',
+        'Growth Recommendations'
+      ],
+      duration: '2–3 Days',
+      output: 'Final Brand Report & Handover Kit'
     }
   ] satisfies ProcessStage[]
 };
 
 export const about = {
   heading: 'Swapnil Gathibandhe',
-  tag: 'ABOUT THE FOUNDER',
+  tag: 'THE PERSON BEHIND ARTSWAPY',
   name: 'Swapnil Gathibandhe',
-  role: 'Founder & Creative Director',
+  rolesLabel: 'WHAT I DO',
+  roles: [
+    'Founder',
+    'Brand Designer',
+    'Brand Strategist',
+    'Tech Creator'
+  ],
+  story: [
+    'For over a decade, I’ve been building brands from the ground up.',
+    'I start with strategy, because clarity always comes before design.',
+    'Then I craft identities, packaging and content that people notice.',
+    'One person, one vision, from first meeting to final result.'
+  ],
+  statsLeft: [
+    {
+      number: '50+',
+      label: 'Brand Consultations',
+      subline: 'Founders guided to clarity'
+    },
+    {
+      number: '500+',
+      label: 'Logos Designed',
+      subline: 'Marks built to last'
+    }
+  ] as AboutStat[],
+  statsRight: [
+    {
+      number: '10+',
+      label: 'Years of Experience',
+      subline: 'Strategy, design & content'
+    },
+    {
+      number: '3X',
+      label: 'Growth Delivered',
+      subline: 'For brands I’ve partnered with'
+    }
+  ] as AboutStat[],
+  role: 'Brand Strategy Consultant & Brand Designer',
   location: 'Nagpur, India · Working Worldwide',
-  lead: 'ArtSwapy is an independent brand design and consulting practice founded by Swapnil Gathibandhe.',
+  disciplines: [
+    'Brand Strategy',
+    'Brand Identity',
+    'Logo Design',
+    'Packaging Design',
+    'Social Media Direction'
+  ],
+  lead: 'One person, one vision, from first meeting to final result.',
   bio: {
-    text: 'Independent brand designer and creative director focused on branding, identity systems, packaging, and digital experiences. Working closely with visionary founders to build distinct, enduring brands that turn everyday communication into memorable brand experiences.',
+    text: 'For over a decade, I’ve been building brands from the ground up. I start with strategy, because clarity always comes before design. Then I craft identities, packaging and content that people notice.',
     placeholder: false
   },
-  principles: [
-    {
-      num: '01',
-      title: 'Meaning First',
-      body: 'Strategy and positioning before decoration. Every visual decision is anchored in clear business rationale and cultural resonance.'
-    },
-    {
-      num: '02',
-      title: 'Systematic Craft',
-      body: 'Identity systems built to scale with precision — from tactile packaging and print to digital products and motion.'
-    },
-    {
-      num: '03',
-      title: 'Independent Focus',
-      body: 'Direct collaboration with the founder from day one. No agency bloat, no intermediate layers, pure creative velocity.'
-    }
-  ],
-  disciplines: ['Brand Identity', 'Visual Strategy', 'Packaging Design', 'Digital Direction', 'Art Direction'],
   portrait: {
-    src: '/images/swapnil-portrait.png',
+    src: '/images/founder-image.png',
     alt: 'Portrait of Swapnil Gathibandhe, founder of ArtSwapy',
     placeholder: false
   }

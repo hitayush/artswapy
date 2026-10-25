@@ -18,7 +18,7 @@ export default function ShowreelPlayer({ youtubeId, title, caption }: ShowreelPl
   const postToPlayer = (func: string, args: unknown[] = []) => {
     iframeRef.current?.contentWindow?.postMessage(
       JSON.stringify({ event: 'command', func, args }),
-      '*'
+      'https://www.youtube-nocookie.com'
     );
   };
 

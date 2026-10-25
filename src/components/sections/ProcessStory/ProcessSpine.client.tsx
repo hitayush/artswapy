@@ -9,12 +9,24 @@ import type { ProcessStage } from '@/types/content';
 
 const PIN_QUERY = '(min-width: 900px) and (min-height: 541px) and (prefers-reduced-motion: no-preference)';
 
+interface ProcessSpineProps {
+  label?: string;
+  rightText?: string;
+  heading: string;
+  stages: ProcessStage[];
+}
+
 /**
  * Signature move: the process stays pinned on the inverse field while one thread
  * ties five stages together. Rich editorial cards fill the space on both desktop and mobile.
  * Stage index lives in data attributes (no per-frame React state).
  */
-export default function ProcessStory({ heading, stages }: { heading: string; stages: ProcessStage[] }) {
+export default function ProcessStory({
+  label = '[ FIVE-STEP PROCESS ]',
+  rightText = 'From First Conversation to Final Results',
+  heading,
+  stages
+}: ProcessSpineProps) {
   const root = useRef<HTMLElement>(null);
   const trigger = useRef<ScrollTrigger | null>(null);
   const count = stages.length;
@@ -24,8 +36,92 @@ export default function ProcessStory({ heading, stages }: { heading: string; sta
       const section = root.current;
       if (!section) return;
       const layer = section.querySelector<HTMLElement>('.process-layer');
+      const entryVeil = section.querySelector<HTMLElement>('.process-entry-veil');
+      const seam = section.querySelector<HTMLElement>('.process-seam-thread');
+      const header = section.querySelector<HTMLElement>('.process-header');
+      const stagesEl = section.querySelector<HTMLElement>('.stages');
       if (!layer) return;
       const mm = gsap.matchMedia();
+
+      // Seamless synchronized canvas cross-fade from Services (--bg) into Process (--inverse-bg)
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const servicesVeil = document.querySelector<HTMLElement>('.services-exit-veil');
+        const servicesInner = document.querySelector<HTMLElement>('.services-inner');
+
+        const entryTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 92%',
+            end: 'top 14%',
+            scrub: 0.45,
+            invalidateOnRefresh: true
+          }
+        });
+
+        // Both sections share the exact same interpolated background tone at every scroll frame:
+        // Services: (1 - p)*--bg + p*--inverse-bg
+        // Process:  (1 - p)*--bg + p*--inverse-bg
+        if (servicesVeil) {
+          entryTl.fromTo(
+            servicesVeil,
+            { opacity: 0 },
+            { opacity: 1, ease: 'none', duration: 1 },
+            0
+          );
+        }
+
+        if (entryVeil) {
+          entryTl.fromTo(
+            entryVeil,
+            { opacity: 1 },
+            { opacity: 0, ease: 'none', duration: 1 },
+            0
+          );
+        }
+
+        // Services content recedes smoothly as the shared canvas darkens
+        if (servicesInner) {
+          entryTl.fromTo(
+            servicesInner,
+            { y: 0, opacity: 1 },
+            { y: -18, opacity: 0.14, ease: 'power1.inOut', duration: 1 },
+            0
+          );
+        }
+
+        // Process content rises into focus as inverse contrast settles
+        if (header && stagesEl) {
+          entryTl.fromTo(
+            [header, stagesEl],
+            { y: 24, opacity: 0.12 },
+            { y: 0, opacity: 1, ease: 'power2.out', duration: 0.9, stagger: 0.06 },
+            0.1
+          );
+        }
+
+        // Subtle orange horizon thread draws across the boundary
+        if (seam) {
+          entryTl.fromTo(
+            seam,
+            { scaleX: 0, opacity: 0 },
+            {
+              keyframes: [
+                { scaleX: 0.7, opacity: 0.9, duration: 0.5, ease: 'power2.out' },
+                { scaleX: 1, opacity: 0.35, duration: 0.5, ease: 'power2.inOut' }
+              ]
+            },
+            0
+          );
+        }
+
+        return () => {
+          entryTl.scrollTrigger?.kill();
+          entryTl.kill();
+          gsap.set([entryVeil, seam, header, stagesEl, servicesVeil, servicesInner], {
+            clearProps: 'all'
+          });
+        };
+      });
 
       mm.add(PIN_QUERY, () => {
         section.setAttribute('data-pinned', '');
@@ -119,10 +215,12 @@ export default function ProcessStory({ heading, stages }: { heading: string; sta
   return (
     <section ref={root} id="process" className="process" data-inverse-section aria-labelledby="process-title">
       <RevealRoot className="process-layer">
+        <div className="process-entry-veil" aria-hidden="true" />
+        <span className="process-seam-thread" aria-hidden="true" />
         <div className="process-header">
           <div className="process-kicker-row">
-            <span className="eyebrow">[ FIVE-PHASE PROCESS ]</span>
-            <span className="small muted">From Strategic Core to Brand Scale</span>
+            <span className="eyebrow">{label}</span>
+            <span className="small muted">{rightText}</span>
           </div>
           <h2 id="process-title" className="heading process-main-title">
             {heading}
@@ -152,17 +250,17 @@ export default function ProcessStory({ heading, stages }: { heading: string; sta
                 {s.description && <p className="stage-desc">{s.description}</p>}
 
                 <div className="stage-meta-row small">
-                  <span className="stage-duration-tag">Timeline: {s.duration || '1–2 Weeks'}</span>
-                  <span className="stage-meta-bullet" aria-hidden="true">·</span>
-                  <span className="stage-collab-tag">Direct Founder Collaboration</span>
+                  <span className="stage-duration-tag">
+                    {s.timeline || `Timeline: ${s.duration || '1–2 Weeks'} · Direct Founder Collaboration`}
+                  </span>
                 </div>
               </div>
 
               {/* Right Column: Key Deliverables Card */}
               <div className="stage-card">
                 <div className="stage-card-header">
-                  <span className="eyebrow card-label">[ KEY DELIVERABLES ]</span>
-                  <span className="small muted card-gives">{s.gives}</span>
+                  <span className="eyebrow card-label">[ DELIVERABLES ]</span>
+                  <span className="small muted card-gives">{s.deliverablesBox || s.gives}</span>
                 </div>
 
                 {s.deliverables && s.deliverables.length > 0 && (
@@ -205,7 +303,7 @@ export default function ProcessStory({ heading, stages }: { heading: string; sta
             >
               <span className="label-text">
                 <span className="label-num">0{i + 1} </span>
-                {s.name}
+                {s.shortName || s.name}
                 <Thread absolute />
               </span>
             </button>

@@ -61,14 +61,39 @@ export interface Service {
 export interface ProcessStage {
   id: string;
   name: string;
+  shortName?: string;
   line: string;
   gives: string;
   index?: string;
   phase?: string;
   description?: string;
+  timeline?: string;
+  deliverablesBox?: string;
   deliverables?: string[];
   duration?: string;
   output?: string;
+}
+
+export interface AboutStat {
+  number: string;
+  label: string;
+  subline?: string;
+}
+
+export interface AboutContent {
+  heading: string;
+  tag: string;
+  name: string;
+  rolesLabel: string;
+  roles: string[];
+  story: string[];
+  statsLeft: AboutStat[];
+  statsRight: AboutStat[];
+  role: string;
+  location: string;
+  lead: string;
+  bio: { text: string; placeholder?: boolean };
+  portrait: { src: string; alt: string; placeholder?: boolean };
 }
 
 export interface ContactRoute {
@@ -92,6 +117,8 @@ export interface PreloaderConfig {
   placeholder: boolean;
   placeholderLabel: string;
   skipLabel: string;
+  footerLeft?: string;
+  footerRight?: string;
   quotes: PreloaderQuote[];
 }
 

@@ -49,8 +49,8 @@ export default function FooterClose() {
 
       <div className="footer-bottom">
         <div className="footer-credits small">
-          <span>{site.credits.left}</span>
-          <span>{site.credits.right}</span>
+          <span>{site.credits.left} · {site.credits.right}</span>
+          <span className="footer-dev-credit">{site.credits.developer}</span>
         </div>
         <div className="wordmark-big" aria-hidden="true">
           <span>{site.name}</span>

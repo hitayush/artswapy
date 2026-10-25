@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { playSfx } from '@/lib/audio/sfx';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -81,6 +82,7 @@ export default function ThemeToggle({ showLabel = false, className = '' }: Theme
 
   const handleToggle = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
+      playSfx('toggle');
       const current = readDomTheme();
       const next: ThemeMode = current === 'dark' ? 'light' : 'dark';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Link from 'next/link';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import Mark from '@/components/primitives/Mark';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
@@ -11,15 +12,30 @@ import type { MailtoTemplate, Project } from '@/types/content';
 interface Props {
   projects: Project[];
   to: string;
-  enquiry: { subjectPrefix: string; body: string };
+  tag: string;
   heading: string;
+  body: string;
+  enquiry: { subjectPrefix: string; body: string };
+  nextStep: {
+    tag: string;
+    headline: string;
+    body: string;
+    button: string;
+  };
 }
 
-export default function WorkHorizontal({ projects, to, enquiry, heading }: Props) {
+export default function WorkHorizontal({
+  projects,
+  to,
+  tag,
+  heading,
+  body,
+  enquiry,
+  nextStep
+}: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -49,14 +65,6 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
             onUpdate: (self) => {
               if (progressRef.current) {
                 progressRef.current.style.width = `${Math.round(self.progress * 100)}%`;
-              }
-              // Update active index directly on DOM to prevent React re-renders during scrub
-              if (counterRef.current) {
-                const idx = Math.min(
-                  projects.length,
-                  Math.max(1, Math.round(self.progress * (projects.length + 1)))
-                );
-                counterRef.current.textContent = `[ ${String(idx).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')} ]`;
               }
             }
           }
@@ -109,43 +117,30 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
       className="work-horizontal-section"
       aria-label="Selected Work Showcase"
     >
-      {/* Top sticky bar inside pinned section */}
-      <div className="work-h-topbar">
-        <div className="work-h-meta">
-          <span className="ph-tag orange-tag">[ ✦ SELECTED WORK ]</span>
-          <span ref={counterRef} className="small muted mono">[ 01 / {String(projects.length).padStart(2, '0')} ]</span>
-        </div>
-        <div className="work-h-cue small mono">
-          <span className="hide-mobile">Scroll to explore</span>
-          <span className="show-mobile-inline">Swipe to explore</span>{' '}
-          <span className="arrow-cue">→</span>
-        </div>
-      </div>
-
       {/* The horizontal scrolling track */}
       <div className="work-h-viewport">
         <div ref={trackRef} className="work-h-track">
-          {/* Slide 0: Intro Header Card (desktop panoramic lead-in) */}
-          <article className="work-h-card work-h-intro-card hide-mobile">
+          {/* Slide 0: Intro Header Card */}
+          <article className="work-h-card work-h-intro-card">
             <div className="intro-card-inner">
               <div className="intro-badge-row">
-                <span className="ph-tag orange-tag">[ ✦ SELECTED WORK ]</span>
-                <span className="small muted mono">01 / {String(projects.length).padStart(2, '0')}</span>
+                <span className="ph-tag orange-tag">{tag}</span>
               </div>
-              <h2 className="heading work-h-heading">
-                Strategic Craft.<br />Distinctive Brands.
-              </h2>
-              <p className="body muted work-h-intro-body">
-                A curated selection of identities, packaging systems, and digital architectures built for founders ready to stand out.
-              </p>
-              <div className="work-h-scroll-hint">
-                <span className="small mono">Explore work</span>
+
+              <div className="intro-title-block">
+                <h2 className="heading work-h-heading">{heading}</h2>
+                <p className="body muted work-h-intro-body">{body}</p>
+              </div>
+
+              <div className="work-h-scroll-hint small mono">
+                <span className="hide-mobile">Scroll to explore</span>
+                <span className="show-mobile-inline">Swipe to explore</span>
                 <span className="arrow-thread" aria-hidden="true">→</span>
               </div>
             </div>
           </article>
 
-          {/* Project Cards (Dzinr Studio signature scale) */}
+          {/* Project Cards */}
           {projects.map((p, i) => {
             const isFeatured = p.id === 'good-habit' || p.id === 'dhara';
             return (
@@ -158,11 +153,12 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
                   '--card-accent': p.theme?.accent ?? '#ff551f',
                 } as React.CSSProperties}
               >
-                <div className="project-card-frame">
+                <div className="project-card-frame" data-cursor="explore">
                   {p.href ? (
-                    <a
+                    <Link
                       href={p.href}
                       className="project-frame-link"
+                      data-cursor="explore"
                       aria-label={`View ${p.name} case study`}
                     >
                       {p.image ? (
@@ -178,7 +174,7 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
                           <Mark id={p.preview.mark} />
                         </div>
                       )}
-                    </a>
+                    </Link>
                   ) : p.image ? (
                     <img
                       src={p.image}
@@ -198,7 +194,7 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
                 </div>
 
                 <div className="project-card-content">
-                  {/* 3-Column Metadata Row matching Dzinr Studio */}
+                  {/* 3-Column Metadata Row */}
                   <div className="project-meta-bar">
                     <span className="project-year-badge mono">[ {p.year} ]</span>
                     <span className="project-category-center mono">{p.category}</span>
@@ -210,22 +206,32 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
                     <div className="project-title-group">
                       <h3 className="project-title-monument">
                         {p.href ? (
-                          <a href={p.href} className="project-title-link">
+                          <Link href={p.href} className="project-title-link">
                             {p.name}
-                          </a>
+                          </Link>
                         ) : (
                           p.name
                         )}
                       </h3>
                       <p className="project-summary-line">{p.summary}</p>
                     </div>
-                    <a
-                      href={p.href ?? mailto({ to, subject: enquiry.subjectPrefix + p.name, body: enquiry.body } satisfies MailtoTemplate)}
-                      className="project-circle-btn"
-                      aria-label={p.href ? `View ${p.name} case study` : `Start a project like ${p.name}`}
-                    >
-                      <span className="circle-arrow" aria-hidden="true">↗</span>
-                    </a>
+                    {p.href ? (
+                      <Link
+                        href={p.href}
+                        className="project-circle-btn"
+                        aria-label={`View ${p.name} case study`}
+                      >
+                        <span className="circle-arrow" aria-hidden="true">↗</span>
+                      </Link>
+                    ) : (
+                      <a
+                        href={mailto({ to, subject: enquiry.subjectPrefix + p.name, body: enquiry.body } satisfies MailtoTemplate)}
+                        className="project-circle-btn"
+                        aria-label={`Start a project like ${p.name}`}
+                      >
+                        <span className="circle-arrow" aria-hidden="true">↗</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               </article>
@@ -235,15 +241,11 @@ export default function WorkHorizontal({ projects, to, enquiry, heading }: Props
           {/* Outro / Next Section Bridge Card */}
           <article className="work-h-card work-h-outro-card">
             <div className="outro-card-inner">
-              <span className="ph-tag orange-tag">[ ✦ NEXT STAGE ]</span>
-              <h3 className="heading work-h-outro-title">
-                Ready to build your brand?
-              </h3>
-              <p className="body muted work-h-outro-body">
-                From positioning and naming to visual identity and digital touchpoints — let&apos;s build something unforgettable.
-              </p>
+              <span className="ph-tag orange-tag">{nextStep.tag}</span>
+              <h3 className="heading work-h-outro-title">{nextStep.headline}</h3>
+              <p className="body muted work-h-outro-body">{nextStep.body}</p>
               <div className="work-h-outro-action">
-                <CTAButton href="#services" label="Explore Capabilities" />
+                <CTAButton href="#contact" label={nextStep.button} />
               </div>
             </div>
           </article>

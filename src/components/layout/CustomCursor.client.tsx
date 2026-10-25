@@ -1,320 +1,230 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { gsap } from '@/lib/motion/gsap';
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 
-type CursorState = 'default' | 'interactive' | 'on-orange' | 'media' | 'text' | 'white-text';
+// Global custom cursor adapted from ClimbX (components/effects/cursor.tsx)
+// and styled as an ArtSwapy design element (--accent #ff551f & --on-accent #161614).
+//
+// Position is a bare rAF lerp — no springs, no React state on every frame, no per-frame
+// allocation, and the loop parks itself once it catches up. Velocity drives the directional
+// stretch/pinch deformation on `blendSkew`, while scale and the click swell stay pure CSS.
+//
+// Opt in per element with data-cursor="explore" | "button" | "none"; plain <a>/<button>
+// get the button state for free, and project/media cards get the explore state.
+const BASE = 96; // px — every state is a scale of this, so we only ever animate transform
+const SCALE = { dot: 9 / BASE, button: 44 / BASE, explore: 72 / BASE };
+// Fraction of the remaining gap closed per frame. 0.28 ≈ 90% caught up in ~7 frames (~115ms)
+const LERP = 0.28;
+const SETTLED = 0.05; // px — sub-pixel, so parking the loop here is invisible, not a snap
+const STRETCH_AT = 260; // px of lag that would mean full deformation
+const MAX_STRETCH = 0.34; // hard cap — past this the dot reads as a smear, not a cursor
+// Click swell on empty space
+const PULSE_MAX = 2; // 9px dot → 18px at full swell
+const SWELL_UP = "190ms";
+const SWELL_DOWN = "480ms"; // out slower than in — a fast return reads as a twitch
+
+type Mode = keyof typeof SCALE;
 
 export default function CustomCursor() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
+  const [enabled, setEnabled] = useState(false);
+  const [mode, setMode] = useState<Mode>("dot");
+  const [onOrange, setOnOrange] = useState(false);
+  const [away, setAway] = useState(false); // pointer has left the window
+  const blend = useRef<HTMLDivElement>(null);
+  const blendSkew = useRef<HTMLDivElement>(null);
+  const disc = useRef<HTMLDivElement>(null);
+  // The deform loop runs outside React, so it needs the mode as a ref, not as state.
+  const modeRef = useRef<Mode>("dot");
 
   useEffect(() => {
-    const fineMql = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const reduceMql = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setEnabled(true);
 
-    if (!fineMql.matches || reduceMql.matches) {
-      return;
-    }
+    let tx = -200;
+    let ty = -200;
+    let cx = -200;
+    let cy = -200;
+    let raf = 0;
+    let running = false;
 
-    const root = rootRef.current;
-    const ring = ringRef.current;
-    const dot = dotRef.current;
-    const label = labelRef.current;
-    if (!root || !ring || !dot) return;
-
-    let started = false;
-    let isPressed = false;
-    let currentTargetState: CursorState = 'default';
-    let rafId: number | null = null;
-    let lastClientX = -9999;
-    let lastClientY = -9999;
-    let activeSpotlightEl: HTMLElement | null = null;
-
-    // Tight, low-latency GSAP quickTo setters (Emil Kowalski animation guidelines: 120fps GPU tracking)
-    const setDotX = gsap.quickTo(dot, 'x', { duration: 0.024, ease: 'power3.out' });
-    const setDotY = gsap.quickTo(dot, 'y', { duration: 0.024, ease: 'power3.out' });
-    const setRingX = gsap.quickTo(ring, 'x', { duration: 0.09, ease: 'power3.out' });
-    const setRingY = gsap.quickTo(ring, 'y', { duration: 0.09, ease: 'power3.out' });
-
-    const syncCssSpotlight = () => {
-      document.documentElement.style.setProperty('--as-cursor-x', `${lastClientX}px`);
-      document.documentElement.style.setProperty('--as-cursor-y', `${lastClientY}px`);
-      rafId = null;
+    const write = (stretch = 0, angle = 0) => {
+      const move = `translate3d(${cx}px, ${cy}px, 0)`;
+      if (blend.current) blend.current.style.transform = move;
+      // Only the dot/button deforms; explore stays perfectly round so the arrow never spins.
+      const deform =
+        modeRef.current === "explore"
+          ? "none"
+          : `rotate(${angle}rad) scale(${1 + stretch}, ${1 - stretch})`;
+      if (blendSkew.current) blendSkew.current.style.transform = deform;
     };
 
-    const clearActiveSpotlight = () => {
-      if (activeSpotlightEl) {
-        activeSpotlightEl.style.removeProperty('--as-local-x');
-        activeSpotlightEl.style.removeProperty('--as-local-y');
-        activeSpotlightEl = null;
-      }
-    };
-
-    const applyVisualState = () => {
-      if (currentTargetState === 'text') {
-        gsap.to(root, { opacity: 0, duration: 0.12, overwrite: 'auto' });
+    const loop = () => {
+      const dx = tx - cx;
+      const dy = ty - cy;
+      cx += dx * LERP;
+      cy += dy * LERP;
+      if (Math.abs(dx) < SETTLED && Math.abs(dy) < SETTLED) {
+        cx = tx;
+        cy = ty;
+        write(); // back to a perfect circle
+        running = false; // caught up — stop burning frames until the pointer moves
         return;
       }
+      write(Math.min(Math.hypot(dx, dy) / STRETCH_AT, MAX_STRETCH), Math.atan2(dy, dx));
+      raf = requestAnimationFrame(loop);
+    };
 
-      gsap.to(root, { opacity: 1, duration: 0.12, overwrite: 'auto' });
-
-      let ringScale = isPressed ? 0.88 : 1;
-      let ringOpacity = 1;
-      let ringBorderColor = 'rgba(255, 85, 31, 0.72)';
-      let ringBg = 'rgba(255, 85, 31, 0.03)';
-      let ringShadow = 'none';
-      let dotScale = isPressed ? 1.25 : 1;
-      let dotOpacity = 1;
-      let dotBg = '#ff551f';
-      let showLabel = false;
-
-      if (currentTargetState === 'on-orange') {
-        // High-contrast near-black ink cursor when hovering solid orange CTA buttons
-        ringScale = isPressed ? 1.15 : 1.4;
-        ringBorderColor = 'rgba(22, 22, 20, 0.82)';
-        ringBg = 'rgba(22, 22, 20, 0.12)';
-        dotScale = isPressed ? 0.9 : 0.7;
-        dotBg = '#161614';
-      } else if (currentTargetState === 'interactive') {
-        ringScale = isPressed ? 1.2 : 1.45;
-        ringBorderColor = '#ff551f';
-        ringBg = 'rgba(255, 85, 31, 0.12)';
-        dotScale = isPressed ? 0.9 : 0.65;
-        dotBg = '#ff551f';
-      } else if (currentTargetState === 'white-text') {
-        // Spotlight aperture framing the text reveal
-        ringScale = isPressed ? 1.35 : 1.55;
-        ringBorderColor = 'rgba(255, 85, 31, 0.88)';
-        ringBg = 'rgba(255, 85, 31, 0.04)';
-        ringShadow = '0 0 16px rgba(255, 85, 31, 0.22)';
-        dotScale = isPressed ? 0.95 : 0.75;
-        dotBg = '#ff551f';
-      } else if (currentTargetState === 'media') {
-        ringScale = isPressed ? 1.85 : 2.15;
-        ringBorderColor = '#ff551f';
-        ringBg = 'rgba(255, 85, 31, 0.94)';
-        dotScale = 0;
-        dotOpacity = 0;
-        showLabel = true;
-      }
-
-      gsap.to(ring, {
-        scale: ringScale,
-        opacity: ringOpacity,
-        borderColor: ringBorderColor,
-        backgroundColor: ringBg,
-        boxShadow: ringShadow,
-        duration: 0.18,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-
-      gsap.to(dot, {
-        scale: dotScale,
-        opacity: dotOpacity,
-        backgroundColor: dotBg,
-        duration: 0.15,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-
-      if (label) {
-        gsap.to(label, {
-          opacity: showLabel ? 1 : 0,
-          scale: showLabel ? 1 : 0.7,
-          duration: 0.16,
-          ease: 'power2.out',
-          overwrite: 'auto'
-        });
+    const wake = () => {
+      if (!running) {
+        running = true;
+        raf = requestAnimationFrame(loop);
       }
     };
 
-    const isHeroHeadline = (el: HTMLElement) => {
-      return Boolean(
-        el.closest(
-          '.hero-name, .hero-name-mask, .hero-char-mask, .hero-name-stage, #top h1, .hero-center'
-        )
-      );
+    const onMove = (e: PointerEvent) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      setAway((a) => (a ? false : a));
+      wake();
     };
 
-    const isWhiteTextElement = (el: HTMLElement) => {
-      // 1. Strict exclusion of the hero headline
-      if (isHeroHeadline(el)) return false;
-
-      // 2. Check if inside inverse section or dark container
-      const isInverse = Boolean(
-        el.closest('[data-inverse-section], .footer, .showreel, .cs-inverse, .as-spotlight-text')
-      );
-
-      // 3. Check if dark theme is active
-      const isDarkTheme =
-        document.documentElement.getAttribute('data-theme') === 'dark' ||
-        document.documentElement.classList.contains('dark');
-
-      // 4. Must be a typographic element or child of one
-      const isTypo = Boolean(
-        el.closest('h1, h2, h3, h4, h5, h6, p, blockquote, .poster, .wordmark-big, .hero-stat-text, .showreel-quote-statement, .showreel-sub-desc')
-      );
-
-      // 5. Must not be explicitly styled with orange accent, button, or thread
-      const isAccent = Boolean(el.closest('.cta, .accent, [data-accent], .load-thread, .hero-scroll-cue'));
-
-      return !isAccent && isTypo && (isInverse || isDarkTheme);
-    };
-
-    const onPointerMove = (e: PointerEvent) => {
-      if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') {
-        return;
-      }
-      if (!started) {
-        started = true;
-        document.documentElement.classList.add('custom-cursor-active');
-        root.classList.add('visible');
-        gsap.set(dot, { x: e.clientX, y: e.clientY });
-        gsap.set(ring, { x: e.clientX, y: e.clientY });
-      }
-
-      setDotX(e.clientX);
-      setDotY(e.clientY);
-      setRingX(e.clientX);
-      setRingY(e.clientY);
-
-      lastClientX = e.clientX;
-      lastClientY = e.clientY;
-      if (!rafId) {
-        rafId = requestAnimationFrame(syncCssSpotlight);
-      }
-
-      // Precision local coordinates: guarantees 100% concentric alignment even with CSS transforms
+    // pointerover fires on every target change, so it doubles as "what am I on now?"
+    const onOver = (e: PointerEvent) => {
       const target = e.target as HTMLElement | null;
-      if (target && isWhiteTextElement(target)) {
-        const currentEl = target.closest<HTMLElement>(
-          '.wordmark-big span, .footer-invite, .showreel-quote-statement, .showreel-sub-desc, .hero-stat-text, .poster, h1, h2, h3, h4, h5, h6, p, blockquote, span, a'
-        ) || target;
+      const isOrangeTarget = Boolean(
+        target?.closest?.(".cta, .card-featured .project-circle-btn")
+      );
+      setOnOrange((prev) => (prev === isOrangeTarget ? prev : isOrangeTarget));
 
-        if (activeSpotlightEl && activeSpotlightEl !== currentEl) {
-          activeSpotlightEl.style.removeProperty('--as-local-x');
-          activeSpotlightEl.style.removeProperty('--as-local-y');
-        }
+      const el = target?.closest?.(
+        "[data-cursor],a,button,[role='button'],.work-h-project-card,.project-card-frame,.cs-hero-media"
+      );
+      const flag = el?.getAttribute("data-cursor");
+      const isExploreCard = Boolean(
+        el?.matches?.(".work-h-project-card,.project-card-frame,.cs-hero-media")
+      );
 
-        activeSpotlightEl = currentEl;
-        const rect = currentEl.getBoundingClientRect();
-        currentEl.style.setProperty('--as-local-x', `${e.clientX - rect.left}px`);
-        currentEl.style.setProperty('--as-local-y', `${e.clientY - rect.top}px`);
-      } else if (activeSpotlightEl) {
-        clearActiveSpotlight();
-      }
+      const next: Mode =
+        flag === "explore" || isExploreCard
+          ? "explore"
+          : flag === "none" || !el
+            ? "dot"
+            : flag === "button" ||
+                flag === "interactive" ||
+                el.tagName === "A" ||
+                el.tagName === "BUTTON" ||
+                el.getAttribute("role") === "button"
+              ? "button"
+              : "dot";
+
+      modeRef.current = next;
+      setMode((m) => (m === next ? m : next));
     };
 
-    const onPointerOver = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target) return;
-
-      let nextState: CursorState = 'default';
-
-      // 1. Native cursor fields (inputs, textareas, embeds)
-      if (target.closest('input, textarea, select, [contenteditable], iframe, video, [data-native-cursor]')) {
-        nextState = 'text';
-      }
-      // 2. Solid orange CTA buttons
-      else if (target.closest('.cta, .card-featured .project-circle-btn')) {
-        nextState = 'on-orange';
-      }
-      // 3. Interactive links, buttons, toggles, accordions
-      else if (
-        target.closest(
-          'a, button, [role="button"], .project-circle-btn, .hero-scroll-cue, .menu-btn, .nav a, .svc-btn, .theme-toggle'
+    // Click on nothing in particular → the dot swells and falls back.
+    const onDown = (e: PointerEvent) => {
+      if (
+        (e.target as HTMLElement | null)?.closest?.(
+          "a,button,[role='button'],input,textarea,select,[data-cursor],.work-h-project-card,.project-card-frame,.cs-hero-media"
         )
-      ) {
-        nextState = 'interactive';
-      }
-      // 4. Project cards & case study media frames
-      else if (target.closest('.work-h-project-card, .project-card-frame, .work-row, .cs-hero-media')) {
-        nextState = 'media';
-      }
-      // 5. White text hover spotlight (hero headline strictly excluded)
-      else if (isWhiteTextElement(target)) {
-        nextState = 'white-text';
-      }
-
-      if (nextState === currentTargetState) {
+      )
         return;
-      }
-
-      currentTargetState = nextState;
-      applyVisualState();
+      const el = disc.current;
+      if (!el) return;
+      el.style.transitionDuration = SWELL_UP;
+      el.style.transform = `scale(${PULSE_MAX})`;
     };
 
-    const onPointerDown = () => {
-      isPressed = true;
-      applyVisualState();
+    const onOut = (e: MouseEvent) => {
+      if (!e.relatedTarget) setAway(true);
     };
+    const onIn = () => setAway(false);
+    const onBlur = () => setAway(true);
 
-    const onPointerUp = () => {
-      isPressed = false;
-      applyVisualState();
-    };
-
-    const onMouseLeave = () => {
-      gsap.to(root, { opacity: 0, duration: 0.14 });
-      lastClientX = -9999;
-      lastClientY = -9999;
-      document.documentElement.style.setProperty('--as-cursor-x', '-9999px');
-      document.documentElement.style.setProperty('--as-cursor-y', '-9999px');
-      clearActiveSpotlight();
-    };
-
-    const onMouseEnter = () => {
-      if (started && currentTargetState !== 'text') {
-        gsap.to(root, { opacity: 1, duration: 0.14 });
-      }
-    };
-
-    const onReducedMotionChange = (e: MediaQueryListEvent) => {
-      if (e.matches) {
-        document.documentElement.classList.remove('custom-cursor-active');
-        root.classList.remove('visible');
-        document.documentElement.style.removeProperty('--as-cursor-x');
-        document.documentElement.style.removeProperty('--as-cursor-y');
-        clearActiveSpotlight();
-      }
-    };
-
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('pointerover', onPointerOver, { passive: true });
-    window.addEventListener('pointerdown', onPointerDown, { passive: true });
-    window.addEventListener('pointerup', onPointerUp, { passive: true });
-    document.addEventListener('mouseleave', onMouseLeave);
-    document.addEventListener('mouseenter', onMouseEnter);
-    reduceMql.addEventListener('change', onReducedMotionChange);
-
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerover", onOver, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    document.addEventListener("mouseout", onOut, { passive: true });
+    document.addEventListener("mouseover", onIn, { passive: true });
+    window.addEventListener("blur", onBlur, { passive: true });
     return () => {
-      document.documentElement.classList.remove('custom-cursor-active');
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerover', onPointerOver);
-      window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointerup', onPointerUp);
-      document.removeEventListener('mouseleave', onMouseLeave);
-      document.removeEventListener('mouseenter', onMouseEnter);
-      reduceMql.removeEventListener('change', onReducedMotionChange);
-      if (rafId) cancelAnimationFrame(rafId);
-      document.documentElement.style.removeProperty('--as-cursor-x');
-      document.documentElement.style.removeProperty('--as-cursor-y');
-      clearActiveSpotlight();
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerover", onOver);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("blur", onBlur);
+      document.removeEventListener("mouseout", onOut);
+      document.removeEventListener("mouseover", onIn);
     };
   }, []);
 
+  // The swell falls back the moment it lands.
+  const onSwelled = () => {
+    const el = disc.current;
+    if (!el || el.style.transform === "scale(1)") return;
+    el.style.transitionDuration = SWELL_DOWN;
+    el.style.transform = "scale(1)";
+  };
+
+  if (!enabled) return null;
+
+  const box = { width: BASE, height: BASE, marginLeft: -BASE / 2, marginTop: -BASE / 2 } as const;
+  const morph = "transition-transform duration-300 ease-[cubic-bezier(0.33,1,0.68,1)]";
+
+  // ArtSwapy design tokens for each state:
+  // - dot (9px): solid ArtSwapy Electric Orange (--accent: #ff551f)
+  // - button (44px): translucent orange lens + crisp orange ring (or near-black ink ring on orange CTAs)
+  // - explore (72px): solid ArtSwapy Electric Orange disc with near-black ink ArrowUpRight
+  const discStyle: React.CSSProperties =
+    mode === "button"
+      ? onOrange
+        ? {
+            backgroundColor: "rgba(22, 22, 20, 0.16)",
+            boxShadow: "inset 0 0 0 3.5px var(--on-accent, #161614)",
+          }
+        : {
+            backgroundColor: "rgba(255, 85, 31, 0.16)",
+            boxShadow: "inset 0 0 0 3.5px var(--accent, #ff551f)",
+          }
+      : {
+          backgroundColor: "var(--accent, #ff551f)",
+          boxShadow:
+            mode === "explore"
+              ? "0 12px 28px -6px rgba(255, 85, 31, 0.45), inset 0 0 0 2px rgba(22, 22, 20, 0.14)"
+              : "none",
+        };
+
   return (
-    <div ref={rootRef} className="as-cursor-root" aria-hidden="true">
-      <div ref={ringRef} className="as-cursor-ring">
-        <span ref={labelRef} className="as-cursor-label mono">
-          VIEW
-        </span>
+    <div
+      aria-hidden="true"
+      ref={blend}
+      className="pointer-events-none fixed left-0 top-0 z-[9999]"
+      style={{ transform: "translate3d(-200px, -200px, 0)", contain: "layout style size" }}
+    >
+      <div ref={blendSkew} style={box}>
+        <div
+          className={`relative h-full w-full ${morph}`}
+          style={{ transform: `scale(${away ? 0 : SCALE[mode]})` }}
+        >
+          <div
+            ref={disc}
+            onTransitionEnd={onSwelled}
+            className="h-full w-full rounded-full transition-[transform,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={discStyle}
+          />
+          <div
+            className="absolute inset-0 flex items-center justify-center transition-opacity duration-150"
+            style={{
+              opacity: mode === "explore" ? 1 : 0,
+              color: "var(--on-accent, #161614)",
+            }}
+          >
+            <ArrowUpRight size={34} strokeWidth={2.25} />
+          </div>
+        </div>
       </div>
-      <div ref={dotRef} className="as-cursor-dot" />
     </div>
   );
 }

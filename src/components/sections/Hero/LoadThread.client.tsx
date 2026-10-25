@@ -4,35 +4,18 @@ import { preloader } from '@/content/site';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import { getLenis } from '@/lib/motion/lenis';
 
-/**
- * Wait for actual document + webfont readiness, bounded by a fail-safe cap
- * so slow external assets never trap the visitor on the loading screen.
- */
-function waitForPageReady(maxWaitMs = 2000): Promise<void> {
+/** Wait for the document load without holding the page for optional webfonts. */
+function waitForPageReady(): Promise<void> {
   if (typeof window === 'undefined') return Promise.resolve();
-
-  const windowLoaded =
-    document.readyState === 'complete'
-      ? Promise.resolve()
-      : new Promise<void>((resolve) => {
-          window.addEventListener('load', () => resolve(), { once: true });
-        });
-
-  const fontsReady =
-    typeof document !== 'undefined' && 'fonts' in document && document.fonts?.ready
-      ? document.fonts.ready.then(() => undefined).catch(() => undefined)
-      : Promise.resolve();
-
-  const failSafe = new Promise<void>((resolve) => {
-    window.setTimeout(resolve, maxWaitMs);
+  if (document.readyState === 'complete') return Promise.resolve();
+  return new Promise<void>((resolve) => {
+    window.addEventListener('load', () => resolve(), { once: true });
   });
-
-  return Promise.race([Promise.all([windowLoaded, fontsReady]).then(() => undefined), failSafe]);
 }
 
 /**
  * LoadThread orchestrates the ArtSwapy editorial quote preloader,
- * tracks real page/font readiness, locks background scrolling while active,
+ * tracks document readiness without locking background scrolling,
  * and hands off seamlessly into the Hero section.
  */
 export default function LoadThread() {
@@ -71,8 +54,6 @@ export default function LoadThread() {
 
     const unlockScroll = () => {
       html.dataset.intro = 'done';
-      document.body.style.overflow = '';
-      html.style.overflow = '';
       getLenis()?.start();
       ScrollTrigger.refresh();
     };
@@ -93,11 +74,6 @@ export default function LoadThread() {
       settleHeroImmediately();
       return;
     }
-
-    // Lock background scroll while preloader is active
-    getLenis()?.stop();
-    html.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
 
     const quotes = preloader.quotes;
     const totalQuotesStr = String(quotes.length).padStart(2, '0');
@@ -158,8 +134,7 @@ export default function LoadThread() {
       skipBtn?.addEventListener('click', finishReduced);
       window.addEventListener('keydown', onKeyDown);
 
-      const minDisplay = new Promise<void>((r) => window.setTimeout(r, 320));
-      Promise.all([waitForPageReady(600), minDisplay]).then(finishReduced);
+      waitForPageReady().then(finishReduced);
 
       return () => {
         cancelled = true;
@@ -371,17 +346,6 @@ export default function LoadThread() {
         );
       }
 
-      // Unlock scroll as shutters begin to part so the hero feels immediately responsive
-      handoffTl.call(
-        () => {
-          html.style.overflow = '';
-          document.body.style.overflow = '';
-          getLenis()?.start();
-        },
-        [],
-        0.32
-      );
-
       // 4. Part architectural split shutters revealing the Hero underneath
       if (shutterTop && shutterBottom) {
         handoffTl.to(
@@ -557,12 +521,13 @@ export default function LoadThread() {
       });
     });
 
-    // Coordinate quote sequence completion with actual page + font readiness
+    // Keep the editorial sequence moving while assets load, then leave as soon
+    // as either the sequence or the document is ready.
     const sequenceFinished = new Promise<void>((resolve) => {
       quoteTl.eventCallback('onComplete', () => resolve());
     });
 
-    Promise.all([sequenceFinished, waitForPageReady(2000)]).then(() => {
+    Promise.race([sequenceFinished, waitForPageReady()]).then(() => {
       runHeroHandoff(false);
     });
 

@@ -6,8 +6,11 @@ export default function WorkIndex() {
     <WorkHorizontal
       projects={projects}
       to={site.email.address}
-      enquiry={work.enquiry}
+      tag={work.tag}
       heading={work.heading}
+      body={work.body}
+      enquiry={work.enquiry}
+      nextStep={work.nextStep}
     />
   );
 }
