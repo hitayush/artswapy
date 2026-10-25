@@ -195,15 +195,15 @@ export default function LoadThread() {
       );
     }
 
-    // Pacing per quote: comfortable reading window, fast and responsive on mobile
+    // Pacing per quote: comfortable reading window, poised and editorial
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-    const holdDuration = isMobile ? 0.62 : 0.88;
-    const transitionDuration = isMobile ? 0.28 : 0.34;
+    const holdDuration = isMobile ? 1.05 : 1.35;
+    const transitionDuration = isMobile ? 0.34 : 0.42;
     const stepSlot = holdDuration + transitionDuration;
 
     quotes.forEach((_, idx) => {
       const slotStart = idx * stepSlot;
-      const targetProgress = idx === quotes.length - 1 ? 96 : Math.round(((idx + 1) / quotes.length) * 94);
+      const targetProgress = idx === quotes.length - 1 ? 95 : Math.round(((idx + 1) / quotes.length) * 92);
       const pipFill = quotePipFills[idx];
 
       // Animate active pip fill across the quote's reading window
@@ -216,12 +216,12 @@ export default function LoadThread() {
         );
       }
 
-      // Advance overall progress bar smoothly during this quote
+      // Advance overall progress bar smoothly during this quote and transition
       quoteTl.to(
         progressObj,
         {
           value: targetProgress,
-          duration: holdDuration,
+          duration: stepSlot,
           ease: 'power1.inOut',
           onUpdate: () => updateProgressUI(progressObj.value)
         },
@@ -264,7 +264,7 @@ export default function LoadThread() {
               applyQuoteMeta(nextIdx);
             },
             [],
-            changeTime + transitionDuration * 0.45
+            changeTime + transitionDuration * 0.4
           );
 
           quoteTl.fromTo(
@@ -276,11 +276,41 @@ export default function LoadThread() {
               duration: transitionDuration,
               ease: 'power3.out'
             },
-            changeTime + transitionDuration * 0.45
+            changeTime + transitionDuration * 0.4
           );
         }
       }
     });
+
+    // After the final quote, smoothly bring progress to 100%
+    const finalStart = (quotes.length - 1) * stepSlot + holdDuration;
+    quoteTl.to(
+      progressObj,
+      {
+        value: 100,
+        duration: 0.42,
+        ease: 'power2.out',
+        onStart: () => {
+          if (readyIndicatorEl) readyIndicatorEl.textContent = 'PORTFOLIO READY';
+          if (statusLabelEl) statusLabelEl.textContent = '[ 100% · READY ]';
+          if (statusTextEl) statusTextEl.textContent = 'ENTERING ARTSWAPY STUDIO';
+          quotePips.forEach((pip) => {
+            pip.dataset.state = 'done';
+          });
+        },
+        onUpdate: () => updateProgressUI(progressObj.value)
+      },
+      finalStart
+    );
+
+    // Poised editorial rest on 100% before triggering the shutter handoff
+    quoteTl.to(
+      {},
+      {
+        duration: isMobile ? 0.45 : 0.65
+      },
+      finalStart + 0.42
+    );
 
     // Seamless Handoff into Hero Section
     const runHeroHandoff = (fast = false) => {
@@ -288,7 +318,7 @@ export default function LoadThread() {
       isHandingOff = true;
       quoteTl.pause();
 
-      const timeScale = fast ? 1.45 : 1;
+      const timeScale = fast ? 1.75 : 1;
       const handoffTl = gsap.timeline({
         defaults: { overwrite: 'auto' },
         onComplete: () => {
@@ -307,7 +337,7 @@ export default function LoadThread() {
         progressObj,
         {
           value: 100,
-          duration: 0.2,
+          duration: fast ? 0.12 : 0.24,
           ease: 'power2.out',
           onStart: () => {
             if (readyIndicatorEl) readyIndicatorEl.textContent = 'PORTFOLIO READY';
@@ -325,10 +355,10 @@ export default function LoadThread() {
           seamThread,
           {
             scaleX: 1,
-            duration: 0.32,
+            duration: fast ? 0.22 : 0.42,
             ease: 'power3.inOut'
           },
-          0.04
+          fast ? 0.02 : 0.06
         );
       }
 
@@ -339,10 +369,10 @@ export default function LoadThread() {
           {
             opacity: 0,
             scale: 0.985,
-            duration: 0.26,
+            duration: fast ? 0.2 : 0.32,
             ease: 'power2.in'
           },
-          0.14
+          fast ? 0.1 : 0.2
         );
       }
 
@@ -352,19 +382,31 @@ export default function LoadThread() {
           shutterTop,
           {
             yPercent: -100,
-            duration: 0.56,
+            duration: fast ? 0.42 : 0.72,
             ease: 'power3.inOut'
           },
-          0.32
+          fast ? 0.2 : 0.44
         );
         handoffTl.to(
           shutterBottom,
           {
             yPercent: 100,
-            duration: 0.56,
+            duration: fast ? 0.42 : 0.72,
             ease: 'power3.inOut'
           },
-          0.32
+          fast ? 0.2 : 0.44
+        );
+      }
+
+      if (seamThread) {
+        handoffTl.to(
+          seamThread,
+          {
+            opacity: 0,
+            duration: fast ? 0.2 : 0.32,
+            ease: 'power2.out'
+          },
+          fast ? 0.24 : 0.54
         );
       }
 
@@ -521,13 +563,13 @@ export default function LoadThread() {
       });
     });
 
-    // Keep the editorial sequence moving while assets load, then leave as soon
-    // as either the sequence or the document is ready.
+    // Let the editorial sequence tell its complete story while ensuring document readiness,
+    // then seamlessly part the split shutters into the Hero section.
     const sequenceFinished = new Promise<void>((resolve) => {
       quoteTl.eventCallback('onComplete', () => resolve());
     });
 
-    Promise.race([sequenceFinished, waitForPageReady()]).then(() => {
+    Promise.all([sequenceFinished, waitForPageReady()]).then(() => {
       runHeroHandoff(false);
     });
 

@@ -6,6 +6,9 @@ export default function WorkIndex() {
     <WorkHorizontal
       projects={projects}
       to={site.email.address}
+      sectionHeading={work.sectionHeading}
+      supportingHeading={work.supportingHeading}
+      description={work.description}
       tag={work.tag}
       heading={work.heading}
       body={work.body}

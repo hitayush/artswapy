@@ -3,39 +3,53 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 import { usePathname } from 'next/navigation';
-import { cubicBezier } from '@/lib/ease';
-import { ScrollTrigger } from '@/lib/motion/gsap';
+import { gsap, ScrollTrigger } from '@/lib/motion/gsap';
 import { findHashTarget, getLenis, scrollToHash, setLenis } from '@/lib/motion/lenis';
 
-// The page scrolls on the exact cubicBezier(0.16, 1, 0.3, 1) curve from ClimbX.
-const EASE = cubicBezier(0.16, 1, 0.3, 1);
-
-// One Lenis instance for the whole app (from ClimbX components/layout/smooth-scroll.tsx),
-// wired to GSAP ScrollTrigger so pinned sections stay synchronized.
+/**
+ * Global Lenis smooth scroll provider.
+ * Synchronized with GSAP's ticker for 100% lockstep frame updates with ScrollTrigger.
+ */
 export default function SmoothScroll() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // native scroll
+    // Under prefers-reduced-motion, keep native accessible scroll
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    // Premium studio smooth scroll physics:
+    // duration 1.2s gives that signature buttery, luxurious flywheel feel without sluggishness
     const lenis = new Lenis({
-      // Fast, immediate departure and silky settle: every wheel notch immediately moves
-      // elements continuously down the page with zero sluggishness or delay.
-      duration: 0.85,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.05,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.0,
+      syncTouch: false, // native touch feel on touchscreens, silky wheel on desktop
+      autoResize: true,
     });
 
+    // 1. Notify ScrollTrigger on every Lenis scroll
     lenis.on('scroll', ScrollTrigger.update);
-    setLenis(lenis);
 
-    // If preloader is locking scroll on initial boot, pause Lenis until Hero handoff
+    // 2. Drive Lenis directly via GSAP's ticker for 100% lockstep frame sync
+    const updateTicker = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(updateTicker);
+    gsap.ticker.lagSmoothing(0);
+
+    setLenis(lenis);
+    (window as unknown as { __lenis?: unknown }).__lenis = lenis;
+
+    // 3. Pause Lenis while preloader intro is playing
     if (document.documentElement.dataset.intro === 'play') {
       lenis.stop();
     }
 
+    // 4. Smooth in-page anchor navigation interceptor
     const handleHashClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const anchor = (e.target as HTMLElement | null)?.closest?.('a[href]');
@@ -51,22 +65,16 @@ export default function SmoothScroll() {
 
     window.addEventListener('click', handleHashClick);
 
-    let raf = 0;
-    const frame = (time: number) => {
-      lenis.raf(time);
-      raf = requestAnimationFrame(frame);
-    };
-    raf = requestAnimationFrame(frame);
-
     return () => {
       window.removeEventListener('click', handleHashClick);
-      cancelAnimationFrame(raf);
+      gsap.ticker.remove(updateTicker);
       lenis.destroy();
       setLenis(null);
+      (window as unknown as { __lenis?: unknown }).__lenis = null;
     };
   }, []);
 
-  // route change → start the new page at the top (or target hash), without a smooth scroll-back
+  // Route change → immediately position at top or target hash without backwards scroll
   useEffect(() => {
     const lenis = getLenis();
     const hash = window.location.hash;

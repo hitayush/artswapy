@@ -5,9 +5,13 @@
    ========================================================================== */
 import type {
   AboutStat,
+  ClosingCTA,
   ContactRoute,
   MailtoTemplate,
   NavLink,
+  PhoneContact,
+  SocialLink,
+  IntroContent,
   PreloaderConfig,
   ProcessStage,
   Project,
@@ -22,6 +26,32 @@ export const site = {
     address: 'swapnilgathibandhe2494@gmail.com',
     placeholder: false
   },
+  phone: {
+    display: '+91 98230 34567',
+    value: '+919823034567',
+    whatsapp: 'https://wa.me/919823034567',
+    placeholder: false
+  } satisfies PhoneContact,
+  socials: [
+    {
+      id: 'instagram',
+      label: 'Instagram',
+      handle: '@artswapy',
+      href: 'https://instagram.com/artswapy'
+    },
+    {
+      id: 'x',
+      label: 'X (Twitter)',
+      handle: '@artswapy',
+      href: 'https://x.com/artswapy'
+    },
+    {
+      id: 'linkedin',
+      label: 'LinkedIn',
+      handle: 'Swapnil Gathibandhe',
+      href: 'https://linkedin.com/in/swapnil-gathibandhe'
+    }
+  ] satisfies SocialLink[],
   credits: {
     left: 'Brand design and consulting',
     developer: 'Developed with ❤️ & ☕ by Hitayush Dange',
@@ -49,7 +79,7 @@ export const preloader: PreloaderConfig = {
       id: 'think',
       index: '01',
       pillar: 'Think clearly.',
-      quote: 'Youre not here',
+      quote: "You're not here",
       note: 'Strategy'
     },
     {
@@ -63,7 +93,7 @@ export const preloader: PreloaderConfig = {
       id: 'remember',
       index: '03',
       pillar: 'Be remembered.',
-      quote: 'Youre here to build a brand.',
+      quote: "You're here to build a brand.",
       note: 'Design'
     }
   ]
@@ -107,16 +137,34 @@ export const showreel = {
   caption: 'Craft, strategy and execution in motion.'
 };
 
-export const intro = {
-  heading: ['Meaning first,', 'then the form.'] as [string, string],
-  lead: 'ArtSwapy helps businesses find what makes them distinct, then shapes it into a brand people can recognise, trust and remember.',
-  body: 'Work starts with strategy and carries through to identity, packaging, communications and the everyday places a brand shows up.'
+export const intro: IntroContent = {
+  label: 'EXPERTISE',
+  sublabel: 'Strategy · Consulting · Design',
+  heading: 'Brand Strategy, Consulting & Brand Design',
+  points: [
+    {
+      kicker: 'HOW I WORK',
+      statement: 'One-to-one with founders. I consult, design and deliver.'
+    },
+    {
+      kicker: 'WHAT YOU GET',
+      statement: 'A brand that makes sense and makes an impression.'
+    }
+  ],
+  lead: 'One-to-one with founders. I consult, design and deliver.',
+  body: 'A brand that makes sense and makes an impression.'
 };
 
 export const work = {
+  sectionHeading: 'Case studies',
+  supportingHeading: 'Where Strategy Takes Shape.',
+  description:
+    'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.',
+  // Aliases for compatibility with other components
   tag: 'Case studies',
   heading: 'Where Strategy Takes Shape.',
-  body: 'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.',
+  body:
+    'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.',
   enquiry: {
     subjectPrefix: 'Project enquiry — like ',
     body: 'Hi Swapnil,\n\nI saw the concept project and would like something like it.\nMy business is …\nWhat I need help with: …\n\nThanks,'
@@ -736,14 +784,27 @@ export const about = {
   }
 };
 
+export const closingCTA: ClosingCTA = {
+  tag: '[ ✦ NEXT STEP ]',
+  headline: 'Have a business? Let’s give it a brand.',
+  body: 'Start with a strategy session. Leave with clarity, a distinct identity and a brand ready to be remembered.',
+  button: 'Book a Strategy Session',
+  bookingUrl: undefined,
+  href: '#contact'
+};
+
 export const contact = {
-  heading: ['Let’s make it', 'meaningful.'] as [string, string],
-  cta: 'Start a project',
+  tag: '[ ✦ NEXT STEP ]',
+  heading: ['Have a business?', 'Let’s give it a brand.'] as [string, string],
+  headline: 'Have a business? Let’s give it a brand.',
+  body: 'Start with a strategy session. Leave with clarity, a distinct identity and a brand ready to be remembered.',
+  cta: 'Book a Strategy Session',
+  bookingUrl: undefined as string | undefined,
   hello: 'Hello',
   mailto: {
     to: site.email.address,
-    subject: 'Project enquiry',
-    body: 'Hi Swapnil,\n\nMy business is …\nWhat I need help with: …\nTimeline: …\n\nThanks,'
+    subject: 'Strategy session enquiry',
+    body: 'Hi Swapnil,\n\nI’d like to book a strategy session for my business.\n\nBusiness name: …\nCurrent stage: …\nGoals: …\n\nThanks,'
   } satisfies MailtoTemplate,
   setName: {
     label: 'Your business name',
@@ -752,8 +813,11 @@ export const contact = {
     sample: 'Your name'
   },
   routes: [
-    { id: 'email', label: 'Email', value: site.email.address, placeholder: site.email.placeholder },
-    { id: 'whatsapp', label: 'WhatsApp', value: 'https://wa.me/919823034567', placeholder: true },
+    { id: 'email', label: 'Email', value: site.email.address, href: `mailto:${site.email.address}`, placeholder: false },
+    { id: 'phone', label: 'Phone / WhatsApp', value: site.phone.display, href: site.phone.whatsapp, placeholder: false },
+    { id: 'instagram', label: 'Instagram', value: '@artswapy', href: 'https://instagram.com/artswapy', placeholder: false },
+    { id: 'x', label: 'X (Twitter)', value: '@artswapy', href: 'https://x.com/artswapy', placeholder: false },
+    { id: 'linkedin', label: 'LinkedIn', value: 'Swapnil Gathibandhe', href: 'https://linkedin.com/in/swapnil-gathibandhe', placeholder: false },
     { id: 'location', label: 'Location', value: 'Nagpur, India', placeholder: false },
     { id: 'availability', label: 'Availability', value: 'Available for new projects', placeholder: false }
   ] satisfies ContactRoute[]

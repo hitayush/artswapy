@@ -6,12 +6,14 @@ import { createElement, useEffect, useRef, type HTMLAttributes, type ReactNode }
 export default function RevealRoot({
   as = 'div',
   children,
-  rootMargin = '0px 0px 60px 0px',
+  rootMargin = '0px 0px -8% 0px',
+  threshold = 0.05,
   ...rest
 }: {
   as?: 'div' | 'section' | 'footer';
   children: ReactNode;
   rootMargin?: string;
+  threshold?: number;
 } & HTMLAttributes<HTMLElement>) {
   const ref = useRef<HTMLElement>(null);
 
@@ -29,11 +31,11 @@ export default function RevealRoot({
           io.disconnect();
         }
       },
-      { rootMargin, threshold: 0 }
+      { rootMargin, threshold }
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [rootMargin]);
+  }, [rootMargin, threshold]);
 
   return createElement(as, { ref, 'data-reveal': '', ...rest }, children);
 }

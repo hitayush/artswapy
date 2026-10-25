@@ -70,6 +70,7 @@ export default function HeroPreloader() {
                 <span className="as-quote-divider" aria-hidden="true">—</span>
                 <span className="as-quote-pillar">{firstQuote.pillar}</span>
                 <span className="as-quote-dot" aria-hidden="true">·</span>
+                <span className="as-quote-note">{firstQuote.note}</span>
               </div>
             </div>
 

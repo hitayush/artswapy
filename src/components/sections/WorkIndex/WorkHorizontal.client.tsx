@@ -12,9 +12,12 @@ import type { MailtoTemplate, Project } from '@/types/content';
 interface Props {
   projects: Project[];
   to: string;
-  tag: string;
-  heading: string;
-  body: string;
+  sectionHeading?: string;
+  supportingHeading?: string;
+  description?: string;
+  tag?: string;
+  heading?: string;
+  body?: string;
   enquiry: { subjectPrefix: string; body: string };
   nextStep: {
     tag: string;
@@ -27,15 +30,44 @@ interface Props {
 export default function WorkHorizontal({
   projects,
   to,
+  sectionHeading,
+  supportingHeading,
+  description,
   tag,
   heading,
   body,
   enquiry,
   nextStep
 }: Props) {
+  const finalSectionHeading = sectionHeading ?? tag ?? 'Case studies';
+  const finalSupportingHeading = supportingHeading ?? heading ?? 'Where Strategy Takes Shape.';
+  const finalDescription =
+    description ??
+    body ??
+    'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.';
+
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+
+  // Keyboard accessibility: align pinned track when tabbing into off-screen cards
+  const handleFocusCapture = (e: React.FocusEvent) => {
+    const target = e.target as HTMLElement;
+    const card = target.closest('.work-h-card') as HTMLElement | null;
+    const track = trackRef.current;
+    if (!card || !track) return;
+
+    const st = ScrollTrigger.getById('work-scroll');
+    if (st) {
+      const maxDistance = track.scrollWidth - window.innerWidth;
+      if (maxDistance > 0) {
+        const cardOffset = card.offsetLeft;
+        const progress = Math.min(1, Math.max(0, cardOffset / maxDistance));
+        const scrollPos = st.start + (st.end - st.start) * progress;
+        window.scrollTo({ top: scrollPos, behavior: 'smooth' });
+      }
+    }
+  };
 
   useGSAP(
     () => {
@@ -52,6 +84,7 @@ export default function WorkHorizontal({
           x: () => -getDistance(),
           ease: 'none',
           scrollTrigger: {
+            id: 'work-scroll',
             trigger: section,
             pin: true,
             pinSpacing: true,
@@ -69,6 +102,32 @@ export default function WorkHorizontal({
             }
           }
         });
+
+        // Editorial text reveal on intro card
+        gsap.fromTo(
+          ['.work-h-section-heading', '.work-h-supporting-heading', '.work-h-intro-body', '.work-h-scroll-hint'],
+          { opacity: 0, y: 22 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 85%',
+              once: true
+            }
+          }
+        );
+
+        // Horizontal trackpad gesture support (swiping sideways converts to vertical scroll)
+        const onWheel = (e: WheelEvent) => {
+          if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 4) {
+            window.scrollBy({ top: e.deltaX, behavior: 'auto' });
+          }
+        };
+        section.addEventListener('wheel', onWheel, { passive: true });
 
         const refresh = () => {
           ScrollTrigger.sort();
@@ -91,6 +150,7 @@ export default function WorkHorizontal({
         ScrollTrigger.refresh();
 
         return () => {
+          section.removeEventListener('wheel', onWheel);
           window.removeEventListener('resize', refresh);
           window.removeEventListener('orientationchange', refresh);
           images.forEach((img) => img.removeEventListener('load', refresh));
@@ -115,21 +175,20 @@ export default function WorkHorizontal({
       ref={sectionRef}
       id="work"
       className="work-horizontal-section"
-      aria-label="Selected Work Showcase"
+      aria-label="Case Studies Showcase"
     >
       {/* The horizontal scrolling track */}
       <div className="work-h-viewport">
-        <div ref={trackRef} className="work-h-track">
+        <div ref={trackRef} className="work-h-track" onFocusCapture={handleFocusCapture}>
           {/* Slide 0: Intro Header Card */}
-          <article className="work-h-card work-h-intro-card">
+          <article className="work-h-card work-h-intro-card" aria-label="Case studies introduction">
             <div className="intro-card-inner">
-              <div className="intro-badge-row">
-                <span className="ph-tag orange-tag">{tag}</span>
-              </div>
-
-              <div className="intro-title-block">
-                <h2 className="heading work-h-heading">{heading}</h2>
-                <p className="body muted work-h-intro-body">{body}</p>
+              <div className="intro-top-block">
+                <div className="intro-title-block">
+                  <h2 className="work-h-section-heading">{finalSectionHeading}</h2>
+                  <p className="work-h-supporting-heading">{finalSupportingHeading}</p>
+                  <p className="body muted work-h-intro-body">{finalDescription}</p>
+                </div>
               </div>
 
               <div className="work-h-scroll-hint small mono">
@@ -239,11 +298,13 @@ export default function WorkHorizontal({
           })}
 
           {/* Outro / Next Section Bridge Card */}
-          <article className="work-h-card work-h-outro-card">
+          <article className="work-h-card work-h-outro-card" aria-label="Next steps">
             <div className="outro-card-inner">
-              <span className="ph-tag orange-tag">{nextStep.tag}</span>
-              <h3 className="heading work-h-outro-title">{nextStep.headline}</h3>
-              <p className="body muted work-h-outro-body">{nextStep.body}</p>
+              <div className="outro-top-block">
+                <span className="eyebrow work-outro-kicker mono">{nextStep.tag}</span>
+                <h3 className="heading work-h-outro-title">{nextStep.headline}</h3>
+                <p className="body muted work-h-outro-body">{nextStep.body}</p>
+              </div>
               <div className="work-h-outro-action">
                 <CTAButton href="#contact" label={nextStep.button} />
               </div>

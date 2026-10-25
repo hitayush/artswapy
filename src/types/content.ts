@@ -96,12 +96,35 @@ export interface AboutContent {
   portrait: { src: string; alt: string; placeholder?: boolean };
 }
 
+export interface SocialLink {
+  id: 'instagram' | 'x' | 'linkedin' | string;
+  label: string;
+  handle: string;
+  href: string;
+}
+
+export interface PhoneContact {
+  display: string;
+  value: string;
+  whatsapp: string;
+  placeholder?: boolean;
+}
+
 export interface ContactRoute {
-  id: 'email' | 'whatsapp' | 'location' | 'availability';
+  id: 'email' | 'whatsapp' | 'phone' | 'instagram' | 'x' | 'linkedin' | 'location' | 'availability' | string;
   label: string;
   value: string;
   href?: string;
   placeholder?: boolean;
+}
+
+export interface ClosingCTA {
+  tag: string;
+  headline: string;
+  body: string;
+  button: string;
+  bookingUrl?: string;
+  href?: string;
 }
 
 export interface PreloaderQuote {
@@ -120,5 +143,19 @@ export interface PreloaderConfig {
   footerLeft?: string;
   footerRight?: string;
   quotes: PreloaderQuote[];
+}
+
+export interface IntroPoint {
+  kicker: string;
+  statement: string;
+}
+
+export interface IntroContent {
+  label: string;
+  sublabel?: string;
+  heading: string;
+  points: IntroPoint[];
+  lead?: string;
+  body?: string;
 }
 

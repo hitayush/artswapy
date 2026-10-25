@@ -16,8 +16,10 @@ export default function ServicesPoster() {
             </span>
           </div>
           <div className="section-title-row">
-            <h2 id="services-title" className="heading" data-r="rise" style={idx(1)}>
-              {services.heading}
+            <h2 id="services-title" className="heading">
+              <span className="mask" data-r="lines" style={idx(1)}>
+                <span>{services.heading}</span>
+              </span>
             </h2>
             <p className="small muted section-subtitle" data-r="rise" style={idx(2)}>
               {services.subtitle}
