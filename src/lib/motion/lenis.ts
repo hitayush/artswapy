@@ -49,14 +49,20 @@ export function scrollToHash(hash: string, opts: { immediate?: boolean } = {}) {
   const el = findHashTarget(hash);
   if (!el) return;
 
+  if (typeof window !== 'undefined') {
+    ScrollTrigger.update();
+  }
+
   let targetY: number;
-  const trigger =
+  const pinnedTrigger =
     typeof window !== 'undefined'
-      ? ScrollTrigger.getAll().find((t) => t.trigger === el || t.pin === el)
+      ? ScrollTrigger.getAll().find(
+          (t) => (t.pin === el || (t.trigger === el && Boolean(t.vars.pin))) && typeof t.start === 'number'
+        )
       : null;
 
-  if (trigger && typeof trigger.start === 'number') {
-    targetY = trigger.start;
+  if (pinnedTrigger && typeof pinnedTrigger.start === 'number') {
+    targetY = pinnedTrigger.start;
   } else {
     const rect = el.getBoundingClientRect();
     targetY = Math.max(0, rect.top + window.scrollY - HEADER_H);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { initSfx, isSfxMuted, toggleSfx } from '@/lib/audio/sfx';
+import { initSfx, isSfxMuted, registerUserGesture, toggleSfx } from '@/lib/audio/sfx';
 
 interface SoundToggleProps {
   showLabel?: boolean;
@@ -32,6 +32,7 @@ export default function SoundToggle({ showLabel = false, className = '' }: Sound
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    registerUserGesture();
     const nextMuted = toggleSfx();
     setMuted(nextMuted);
   };

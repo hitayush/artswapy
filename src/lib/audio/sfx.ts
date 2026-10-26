@@ -7,9 +7,67 @@ const SFX_EVENT = 'artswapy-sfx-change';
 
 let audioContext: AudioContext | null = null;
 let audioBuffer: AudioBuffer | null = null;
+let rawArrayBufferPromise: Promise<ArrayBuffer> | null = null;
 let isAudioFetching = false;
 let isMuted = false;
 let lastHoverTime = 0;
+let hasUserGesture = false;
+let lastScrollTime = 0;
+
+if (typeof window !== 'undefined') {
+  const markScroll = () => {
+    lastScrollTime = performance.now();
+  };
+  window.addEventListener('scroll', markScroll, { passive: true, capture: true });
+  window.addEventListener('wheel', markScroll, { passive: true, capture: true });
+}
+
+/** Check if page is currently scrolling (to prevent hover sounds while scrolling under cursor) */
+export function isPageScrolling(): boolean {
+  if (typeof window === 'undefined') return false;
+  return performance.now() - lastScrollTime < 180;
+}
+
+/** Explicitly mark that a genuine user gesture has occurred (pointerdown, click, keydown, touchstart) */
+export function registerUserGesture() {
+  hasUserGesture = true;
+  preloadSfx(true);
+}
+
+/** Check whether a genuine user gesture has occurred on the page */
+export function hasUserGestureOccurred(): boolean {
+  if (typeof window === 'undefined') return false;
+  const browserActive =
+    typeof navigator !== 'undefined' &&
+    'userActivation' in navigator &&
+    Boolean((navigator.userActivation as { hasBeenActive?: boolean }).hasBeenActive);
+  return hasUserGesture || browserActive;
+}
+
+/** Check whether audio playback has been legitimately unlocked by a user gesture */
+export function isAudioUnlocked(): boolean {
+  return hasUserGestureOccurred() && audioContext !== null;
+}
+
+/** Fetch raw wav bytes in the background without creating or resuming AudioContext */
+export function fetchAudioBytes(): Promise<ArrayBuffer> {
+  if (rawArrayBufferPromise) return rawArrayBufferPromise;
+  rawArrayBufferPromise = (async () => {
+    try {
+      let res = await fetch('/audio/sfx.wav');
+      if (!res.ok) {
+        res = await fetch('/sfx.wav');
+      }
+      if (!res.ok) throw new Error(`Failed to load sfx: ${res.status}`);
+      return await res.arrayBuffer();
+    } catch (err) {
+      console.warn('[ArtSwapy SFX] Could not fetch audio bytes:', err);
+      rawArrayBufferPromise = null;
+      throw err;
+    }
+  })();
+  return rawArrayBufferPromise;
+}
 
 /** Initialize sound preferences from localStorage */
 export function initSfx() {
@@ -53,40 +111,43 @@ export function toggleSfx(): boolean {
   return next;
 }
 
-/** Ensure AudioContext is initialized and resumed */
-function getAudioContext(): AudioContext | null {
+/** Ensure AudioContext is initialized and resumed only after a genuine user gesture */
+function getAudioContext(userInitiated = false): AudioContext | null {
   if (typeof window === 'undefined') return null;
+  if (!userInitiated && !audioContext) return null;
   if (!audioContext) {
     const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (AudioCtx) {
       audioContext = new AudioCtx();
     }
   }
-  if (audioContext && audioContext.state === 'suspended') {
+  if (audioContext && audioContext.state === 'suspended' && userInitiated) {
     audioContext.resume().catch(() => {});
   }
   return audioContext;
 }
 
 /** Preload the audio file into memory as an AudioBuffer for zero latency */
-export async function preloadSfx(): Promise<void> {
+export async function preloadSfx(userInitiated = false): Promise<void> {
   if (typeof window === 'undefined' || audioBuffer || isAudioFetching) return;
-  const ctx = getAudioContext();
+
+  // On idle without user gesture, fetch the bytes only (no AudioContext violation)
+  if (!userInitiated && !audioContext) {
+    fetchAudioBytes().catch(() => {});
+    return;
+  }
+
+  const ctx = getAudioContext(userInitiated);
   if (!ctx) return;
 
   isAudioFetching = true;
   try {
-    // Try primary path, fallback to root path if needed
-    let res = await fetch('/audio/sfx.wav');
-    if (!res.ok) {
-      res = await fetch('/sfx.wav');
-    }
-    if (!res.ok) throw new Error(`Failed to load sfx: ${res.status}`);
-
-    const arrayBuffer = await res.arrayBuffer();
-    audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+    const arrayBuffer = await fetchAudioBytes();
+    // Clone buffer for decodeAudioData since it detaches the source ArrayBuffer
+    const cloned = arrayBuffer.slice(0);
+    audioBuffer = await ctx.decodeAudioData(cloned);
   } catch (err) {
-    console.warn('[ArtSwapy SFX] Could not preload audio:', err);
+    console.warn('[ArtSwapy SFX] Could not decode audio buffer:', err);
   } finally {
     isAudioFetching = false;
   }
@@ -98,21 +159,28 @@ export function playSfx(kind: SoundKind = 'click') {
 
   const now = performance.now();
   if (kind === 'hover') {
-    // Throttle hover triggers to avoid buzzing on fast cursor sweeps
+    // 1. Do not play hover sound while page is scrolling
+    if (isPageScrolling()) return;
+    // 2. Do not attempt to unlock/play hover sound before a user gesture has occurred
+    if (!hasUserGestureOccurred()) return;
+    // 3. Throttle hover triggers to avoid buzzing on fast cursor sweeps
     if (now - lastHoverTime < 65) return;
     lastHoverTime = now;
   }
 
-  const ctx = getAudioContext();
+  const isUserGesture = kind !== 'hover' || hasUserGestureOccurred();
+  const ctx = getAudioContext(isUserGesture);
   if (!ctx) return;
 
-  // If buffer isn't decoded yet, trigger preload and play on finish
+  // If buffer isn't decoded yet, trigger preload with userInitiated flag and play on finish
   if (!audioBuffer) {
-    preloadSfx().then(() => {
-      if (audioBuffer && !isMuted) {
-        executePlayback(ctx, audioBuffer, kind);
-      }
-    });
+    if (isUserGesture) {
+      preloadSfx(true).then(() => {
+        if (audioBuffer && !isMuted) {
+          executePlayback(ctx, audioBuffer, kind);
+        }
+      });
+    }
     return;
   }
 

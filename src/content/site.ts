@@ -15,7 +15,8 @@ import type {
   PreloaderConfig,
   ProcessStage,
   Project,
-  Service
+  Service,
+  ShowreelContent
 } from '@/types/content';
 
 export const site = {
@@ -124,17 +125,27 @@ export const hero = {
   ]
 };
 
-export const showreel = {
+export const showreel: ShowreelContent = {
   tag: 'SHOWREEL : PORTFOLIO 2026',
   headline: '[ ! ] BE THE BRAND THEY NEVER STOP TALKING ABOUT',
   statement:
     'Most brands don’t have a design problem. They have a clarity problem. I bring brand strategy and design together to find what makes you different and turn it into a brand people notice, trust and remember.',
-  subKicker: 'Designing Iconic Brands Daily.',
-  subDesc:
-    'Your brand has a story. We make sure it’s seen, felt and remembered. We design logos, build brands and create moments that turn attention into action.',
   title: 'Logo Design Process — From Start to Finish',
   youtubeId: 'pTjizuQOoYo',
-  caption: 'Craft, strategy and execution in motion.'
+  caption: 'Craft, strategy and execution in motion.',
+  nextPreview: {
+    kicker: '[ UP NEXT : SELECTED WORK ]',
+    heading: 'Where Strategy Takes Shape',
+    subline: 'Five complete brand systems — positioning, visual identity, structural packaging & digital application.',
+    actionLabel: 'Explore Case Studies',
+    projects: [
+      { num: '01', name: 'Aaranya', cat: 'Skincare' },
+      { num: '02', name: 'Common Ground', cat: 'Coffee' },
+      { num: '03', name: 'Good Habit', cat: 'Beverage' },
+      { num: '04', name: 'Kavita', cat: 'Editorial' },
+      { num: '05', name: 'Dhara', cat: 'Ceramics' }
+    ]
+  }
 };
 
 export const intro: IntroContent = {

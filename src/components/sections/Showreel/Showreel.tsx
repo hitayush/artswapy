@@ -2,6 +2,8 @@
 
 import { Fragment, useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
+import { scrollToHash } from '@/lib/motion/lenis';
+import { playSfx } from '@/lib/audio/sfx';
 import { showreel } from '@/content/site';
 import ShowreelPlayer from './ShowreelPlayer.client';
 
@@ -13,20 +15,9 @@ export default function Showreel() {
   const textRef = useRef<HTMLParagraphElement>(null);
   const videoSlotRef = useRef<HTMLDivElement>(null);
   const videoCardRef = useRef<HTMLDivElement>(null);
-  const actionRowRef = useRef<HTMLDivElement>(null);
+  const nextBridgeRef = useRef<HTMLDivElement>(null);
 
-  const handleLearnMore = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const lenis = (window as unknown as { __lenis?: { scrollTo: (target: string) => void } }).__lenis;
-    const workEl = document.querySelector('#work');
-    if (workEl) {
-      if (lenis) lenis.scrollTo('#work');
-      else workEl.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const fullStatement = `${showreel.statement} ${showreel.subDesc}`;
-  const words = fullStatement.split(/\s+/).filter(Boolean);
+  const words = showreel.statement.split(/\s+/).filter(Boolean);
 
   useGSAP(
     () => {
@@ -37,7 +28,6 @@ export default function Showreel() {
       const textEl = textRef.current;
       const videoSlot = videoSlotRef.current;
       const videoCard = videoCardRef.current;
-      const actionRow = actionRowRef.current;
 
       if (!container || !viewport || !videoSlot || !videoCard || !textEl) return;
 
@@ -109,7 +99,6 @@ export default function Showreel() {
 
         if (topBar) gsap.set(topBar, { opacity: 0, y: -20 });
         if (kickerRow) gsap.set(kickerRow, { opacity: 0, y: -15 });
-        if (actionRow) gsap.set(actionRow, { opacity: 0, y: 20 });
         gsap.set(allWords, { opacity: 0.12, y: 8 });
 
         const tl = gsap.timeline({
@@ -177,7 +166,7 @@ export default function Showreel() {
 
         // 3. Reveal text line by line in sync with the scroll transition
         const textStart = 0.22;
-        const textEnd = 0.88;
+        const textEnd = 0.92;
         const totalSpan = textEnd - textStart;
         const lineStep = lines.length > 1 ? totalSpan / lines.length : totalSpan;
 
@@ -195,17 +184,18 @@ export default function Showreel() {
           );
         });
 
-        // 4. Reveal bottom editorial action row
-        if (actionRow) {
+        // 4. Reveal next section preview bridge as manifesto settles
+        if (nextBridgeRef.current) {
+          gsap.set(nextBridgeRef.current, { opacity: 0, y: 22 });
           tl.to(
-            actionRow,
+            nextBridgeRef.current,
             {
               opacity: 1,
               y: 0,
               ease: 'power2.out',
-              duration: 0.25
+              duration: 0.32
             },
-            0.82
+            0.78
           );
         }
 
@@ -225,7 +215,8 @@ export default function Showreel() {
           window.removeEventListener('orientationchange', refresh);
           tl.scrollTrigger?.kill();
           tl.kill();
-          gsap.set([videoCard, topBar, kickerRow, actionRow, allWords], { clearProps: 'all' });
+          gsap.set([videoCard, topBar, kickerRow, allWords], { clearProps: 'all' });
+          if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { clearProps: 'all' });
         };
       });
 
@@ -260,21 +251,23 @@ export default function Showreel() {
         setFinalState();
         if (topBar) gsap.set(topBar, { opacity: 1, y: 0 });
         if (kickerRow) gsap.set(kickerRow, { opacity: 1, y: 0 });
-        if (actionRow) gsap.set(actionRow, { opacity: 1, y: 0 });
+        if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { opacity: 1, y: 0 });
         const allWords = textEl.querySelectorAll<HTMLElement>('.showreel-word');
         gsap.set(allWords, { opacity: 1, y: 0 });
 
         window.addEventListener('resize', setFinalState);
         return () => {
           window.removeEventListener('resize', setFinalState);
-          gsap.set([videoCard, topBar, kickerRow, actionRow, allWords], { clearProps: 'all' });
+          gsap.set([videoCard, topBar, kickerRow, allWords], { clearProps: 'all' });
+          if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { clearProps: 'all' });
         };
       });
 
       // Mobile: natural vertical stacked flow without pinning
       mm.add('(max-width: 899px)', () => {
         const allWords = textEl.querySelectorAll<HTMLElement>('.showreel-word');
-        gsap.set([videoCard, topBar, kickerRow, actionRow, allWords], { clearProps: 'all' });
+        gsap.set([videoCard, topBar, kickerRow, allWords], { clearProps: 'all' });
+        if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { clearProps: 'all' });
       });
 
       return () => {
@@ -321,34 +314,51 @@ export default function Showreel() {
             </p>
           </div>
 
-          {/* Action Row */}
-          <div ref={actionRowRef} className="showreel-action-row">
-            <span className="showreel-sub-kicker">{showreel.subKicker}</span>
+          {/* Next Section Bridge: Previews the upcoming Case Studies section and eliminates empty space */}
+          {showreel.nextPreview && (
+            <div ref={nextBridgeRef} className="showreel-next-bridge">
+              <div className="showreel-next-kicker-row">
+                <div className="showreel-next-kicker-meta">
+                  <span className="eyebrow showreel-next-kicker">{showreel.nextPreview.kicker}</span>
+                  <span className="showreel-next-dot" aria-hidden="true" />
+                  <span className="small muted mono showreel-next-count">5 Complete Systems</span>
+                </div>
+                <button
+                  type="button"
+                  className="showreel-next-jump-link small mono"
+                  onClick={() => scrollToHash('#work')}
+                  onPointerEnter={() => playSfx('hover')}
+                >
+                  <span>{showreel.nextPreview.actionLabel}</span>
+                  <span className="jump-arrow" aria-hidden="true">↓</span>
+                </button>
+              </div>
 
-            <a
-              href="#work"
-              onClick={handleLearnMore}
-              className="showreel-learn-more"
-              aria-label="Explore selected case studies"
-            >
-              <span>Explore Work</span>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="arrow-icon"
-              >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </a>
-          </div>
+              <div className="showreel-next-main-row">
+                <div className="showreel-next-info">
+                  <h3 className="showreel-next-heading">{showreel.nextPreview.heading}</h3>
+                  <p className="showreel-next-subline small muted">{showreel.nextPreview.subline}</p>
+                </div>
+
+                <div className="showreel-next-pills" role="list" aria-label="Featured projects preview">
+                  {showreel.nextPreview.projects.map((p) => (
+                    <button
+                      key={p.name}
+                      type="button"
+                      className="showreel-next-pill"
+                      onClick={() => scrollToHash('#work')}
+                      onPointerEnter={() => playSfx('hover')}
+                    >
+                      <span className="pill-num mono">{p.num}</span>
+                      <span className="pill-name">{p.name}</span>
+                      <span className="pill-cat small muted">{p.cat}</span>
+                      <span className="pill-arrow" aria-hidden="true">→</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Animating Video Card: Starts full screen, scales & moves into the float slot */}

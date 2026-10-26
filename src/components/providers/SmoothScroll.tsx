@@ -18,14 +18,14 @@ export default function SmoothScroll() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     // Premium studio smooth scroll physics:
-    // duration 1.2s gives that signature buttery, luxurious flywheel feel without sluggishness
+    // duration 1.25s gives that signature buttery, luxurious flywheel feel without sluggishness
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.25,
+      easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.0,
+      wheelMultiplier: 0.92,
       touchMultiplier: 1.0,
       syncTouch: false, // native touch feel on touchscreens, silky wheel on desktop
       autoResize: true,
@@ -39,7 +39,8 @@ export default function SmoothScroll() {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
+    // Smooth frame latency hitching during heavy layout/decodes
+    gsap.ticker.lagSmoothing(1000, 16);
 
     setLenis(lenis);
     (window as unknown as { __lenis?: unknown }).__lenis = lenis;

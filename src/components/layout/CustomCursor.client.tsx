@@ -14,8 +14,8 @@ import { ArrowUpRight } from "lucide-react";
 // get the button state for free, and project/media cards get the explore state.
 const BASE = 96; // px — every state is a scale of this, so we only ever animate transform
 const SCALE = { dot: 9 / BASE, button: 44 / BASE, explore: 72 / BASE };
-// Fraction of the remaining gap closed per frame. 0.28 ≈ 90% caught up in ~7 frames (~115ms)
-const LERP = 0.28;
+// Fraction of the remaining gap closed per frame. 0.36 gives an ultra-responsive, silky feel on 60/120/144Hz displays
+const LERP = 0.36;
 const SETTLED = 0.05; // px — sub-pixel, so parking the loop here is invisible, not a snap
 const STRETCH_AT = 260; // px of lag that would mean full deformation
 const MAX_STRETCH = 0.34; // hard cap — past this the dot reads as a smear, not a cursor

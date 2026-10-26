@@ -12,8 +12,25 @@ export default function ShowreelPlayer({ youtubeId, title, caption }: ShowreelPl
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isTheater, setIsTheater] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (document.documentElement.dataset.intro !== 'play') {
+      setShouldLoad(true);
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      if (document.documentElement.dataset.intro !== 'play') {
+        setShouldLoad(true);
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-intro'] });
+    return () => observer.disconnect();
+  }, []);
 
   const postToPlayer = (func: string, args: unknown[] = []) => {
     iframeRef.current?.contentWindow?.postMessage(
@@ -75,15 +92,17 @@ export default function ShowreelPlayer({ youtubeId, title, caption }: ShowreelPl
       data-muted={isMuted}
     >
       <div className="showreel-video-wrap">
-        <iframe
-          ref={iframeRef}
-          src={embedUrl}
-          title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-          allowFullScreen
-          className="showreel-iframe"
-          tabIndex={-1}
-        />
+        {shouldLoad && (
+          <iframe
+            ref={iframeRef}
+            src={embedUrl}
+            title={title}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            className="showreel-iframe"
+            tabIndex={-1}
+          />
+        )}
       </div>
 
       {/* Subtle overlay gradient & interaction cues */}

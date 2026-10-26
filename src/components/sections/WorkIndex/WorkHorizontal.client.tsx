@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
+import { getLenis } from '@/lib/motion/lenis';
 import Mark from '@/components/primitives/Mark';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
 import CTAButton from '@/components/primitives/CTAButton';
@@ -121,10 +122,15 @@ export default function WorkHorizontal({
           }
         );
 
-        // Horizontal trackpad gesture support (swiping sideways converts to vertical scroll)
+        // Horizontal trackpad gesture support (swiping sideways converts to vertical scroll through Lenis)
         const onWheel = (e: WheelEvent) => {
           if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 4) {
-            window.scrollBy({ top: e.deltaX, behavior: 'auto' });
+            const lenis = getLenis();
+            if (lenis) {
+              lenis.scrollTo(lenis.scroll + e.deltaX, { immediate: true });
+            } else {
+              window.scrollBy({ top: e.deltaX, behavior: 'auto' });
+            }
           }
         };
         section.addEventListener('wheel', onWheel, { passive: true });

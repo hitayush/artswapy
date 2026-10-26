@@ -2,6 +2,7 @@ import { hero, site } from '@/content/site';
 import LoadThread from './LoadThread.client';
 import HeroPreloader from './HeroPreloader.client';
 import HeroTitle from './HeroTitle.client';
+import ThemeToggle from '@/components/primitives/ThemeToggle.client';
 
 const STAT_CLASSES = [
   'hero-col-discipline hide-mobile',
@@ -56,29 +57,7 @@ export default function Hero() {
           })}
 
           <div className="hero-actions-wrap hero-col-action hero-rise-item" style={{ '--i': 3 } as React.CSSProperties}>
-            <span className="hero-scroll-label mono hide-mobile">Scroll</span>
-            <a
-              href="#showreel"
-              className="hero-scroll-cue"
-              aria-label="Scroll to showreel and manifesto"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="scroll-arrow"
-                aria-hidden="true"
-              >
-                <path d="M12 5v14" />
-                <path d="m19 12-7 7-7-7" />
-              </svg>
-            </a>
+            <ThemeToggle variant="circle" showLabel labelPosition="left" />
           </div>
         </div>
 

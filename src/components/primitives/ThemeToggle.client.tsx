@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { playSfx } from '@/lib/audio/sfx';
 
 export type ThemeMode = 'light' | 'dark';
+export type ThemeToggleVariant = 'pill' | 'circle';
 
 const STORAGE_KEY = 'artswapy-theme';
 const THEME_EVENT = 'artswapy-theme-change';
@@ -30,9 +31,16 @@ function applyThemeToDom(next: ThemeMode) {
 interface ThemeToggleProps {
   showLabel?: boolean;
   className?: string;
+  variant?: ThemeToggleVariant;
+  labelPosition?: 'left' | 'right';
 }
 
-export default function ThemeToggle({ showLabel = false, className = '' }: ThemeToggleProps) {
+export default function ThemeToggle({
+  showLabel = false,
+  className = '',
+  variant = 'pill',
+  labelPosition = 'right'
+}: ThemeToggleProps) {
   const [theme, setTheme] = useState<ThemeMode>('light');
   const [mounted, setMounted] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -81,7 +89,7 @@ export default function ThemeToggle({ showLabel = false, className = '' }: Theme
   }, []);
 
   const handleToggle = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e: React.MouseEvent<HTMLElement>) => {
       playSfx('toggle');
       const current = readDomTheme();
       const next: ThemeMode = current === 'dark' ? 'light' : 'dark';
@@ -153,7 +161,74 @@ export default function ThemeToggle({ showLabel = false, className = '' }: Theme
   );
 
   const isDark = mounted && theme === 'dark';
-  const label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+  const actionText = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+  const currentModeText = isDark ? 'dark mode' : 'light mode';
+  const ariaLabel = `${actionText} (current: ${currentModeText})`;
+  const tooltipTitle = `Current: ${isDark ? 'Dark theme' : 'Light theme'} · Click to ${isDark ? 'switch to light theme' : 'switch to dark theme'}`;
+
+  if (variant === 'circle') {
+    const textLabel = (
+      <span
+        className="hero-theme-label mono hide-mobile"
+        onClick={handleToggle}
+        title={tooltipTitle}
+        aria-hidden="true"
+      >
+        <span className="hero-theme-label-light">Light mode</span>
+        <span className="hero-theme-label-dark">Dark mode</span>
+      </span>
+    );
+
+    return (
+      <>
+        {showLabel && labelPosition === 'left' && textLabel}
+        <button
+          ref={btnRef}
+          type="button"
+          className={`hero-theme-toggle ${className}`.trim()}
+          onClick={handleToggle}
+          aria-label={ariaLabel}
+          aria-pressed={isDark}
+          title={tooltipTitle}
+          data-theme-state={isDark ? 'dark' : 'light'}
+          data-no-sfx
+        >
+          <span ref={pulseRef} className="theme-toggle-pulse theme-toggle-pulse--circle" aria-hidden="true" />
+          <span className="hero-theme-icon-stage" aria-hidden="true">
+            {/* Sun glyph */}
+            <svg
+              className="theme-icon theme-icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="4.5" />
+              <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77" />
+            </svg>
+            {/* Moon glyph */}
+            <svg
+              className="theme-icon theme-icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+            </svg>
+          </span>
+          <span className="hero-theme-tooltip" role="tooltip" aria-hidden="true">
+            {isDark ? 'Switch to Light' : 'Switch to Dark'}
+          </span>
+        </button>
+        {showLabel && labelPosition === 'right' && textLabel}
+      </>
+    );
+  }
 
   return (
     <button
@@ -161,10 +236,11 @@ export default function ThemeToggle({ showLabel = false, className = '' }: Theme
       type="button"
       className={`theme-toggle ${className}`.trim()}
       onClick={handleToggle}
-      aria-label={label}
+      aria-label={actionText}
       aria-pressed={isDark}
-      title={label}
+      title={actionText}
       data-theme-state={isDark ? 'dark' : 'light'}
+      data-no-sfx
     >
       <span ref={pulseRef} className="theme-toggle-pulse" aria-hidden="true" />
       <span className="theme-toggle-track" aria-hidden="true">

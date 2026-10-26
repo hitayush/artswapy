@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import CTAButton from '@/components/primitives/CTAButton';
 import PlaceholderTag from '@/components/primitives/PlaceholderTag';
+import { playCharHover, playSfx } from '@/lib/audio/sfx';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import type { AboutStat } from '@/types/content';
 
@@ -71,33 +72,43 @@ export default function AboutPin({
     const statElements = section.querySelectorAll<HTMLElement>('.about-stat-val');
     if (!statElements || statElements.length === 0) return;
 
-    statElements.forEach((el) => {
+    const statsData = Array.from(statElements).map((el) => {
       const targetStr = el.getAttribute('data-target') || el.textContent?.trim() || '';
       const match = targetStr.match(/^(\d+)(.*)$/);
-      if (!match) {
-        el.textContent = targetStr;
-        return;
-      }
-
-      const targetVal = parseInt(match[1], 10);
-      const suffix = match[2] || '';
-      const startTime = performance.now();
-      const duration = 1200;
-
-      const tick = (now: number) => {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
-        const current = Math.round(targetVal * ease);
-        el.textContent = `${current}${suffix}`;
-        if (progress < 1) {
-          requestAnimationFrame(tick);
-        } else {
-          el.textContent = targetStr;
-        }
+      return {
+        el,
+        targetStr,
+        targetVal: match ? parseInt(match[1], 10) : null,
+        suffix: match ? match[2] || '' : ''
       };
-
-      requestAnimationFrame(tick);
     });
+
+    const startTime = performance.now();
+    const duration = 1200;
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      statsData.forEach((item) => {
+        if (item.targetVal === null) {
+          item.el.textContent = item.targetStr;
+        } else {
+          const current = Math.round(item.targetVal * ease);
+          item.el.textContent = `${current}${item.suffix}`;
+        }
+      });
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        statsData.forEach((item) => {
+          item.el.textContent = item.targetStr;
+        });
+        playSfx('hover');
+      }
+    };
+
+    requestAnimationFrame(tick);
   };
 
   useGSAP(
@@ -128,86 +139,118 @@ export default function AboutPin({
           }
         });
 
-        // 0. Soft atmosphere reveal: fine architectural grid & ambient orange glow
+        // 0. Soft architectural grid & ambient orange atmosphere
         if (gridLinesEl) {
-          tl.from(gridLinesEl, { opacity: 0, duration: 1, ease: 'power2.out' }, 0);
+          tl.from(gridLinesEl, { opacity: 0, duration: 0.9, ease: 'power2.out' }, 0);
         }
         if (glowEl) {
-          tl.from(glowEl, { opacity: 0, scale: 0.88, duration: 1.2, ease: 'power2.out' }, 0);
+          tl.from(glowEl, { opacity: 0, scale: 0.84, duration: 1.1, ease: 'power2.out' }, 0);
         }
 
-        // 1. Reveal oversized name from behind portrait using clean clip/mask reveal
-        tl.from(
-          bgName,
-          {
-            clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
-            y: 32,
-            opacity: 0,
-            ease: 'power3.out',
-            duration: 0.8
-          },
-          0.1
-        );
+        // 1. Staggered typographic entrance for oversized name lines
+        const nameLines = bgName.querySelectorAll('.about-name-line');
+        if (nameLines.length > 0) {
+          tl.from(
+            nameLines,
+            {
+              y: 45,
+              opacity: 0,
+              stagger: 0.1,
+              duration: 0.85,
+              ease: 'power3.out'
+            },
+            0.08
+          );
+        }
 
-        // 2. Bring portrait into focus with subtle scale grounded to the footer seam
+        // 2. Founder portrait emerges grounded with subtle scale & depth
         tl.from(
           portraitImg,
           {
-            scale: 0.94,
-            opacity: 0.6,
+            scale: 0.93,
+            y: 44,
+            opacity: 0,
             transformOrigin: 'bottom center',
             ease: 'power3.out',
-            duration: 0.8
+            duration: 0.9
           },
-          0.15
+          0.12
         );
 
-        // 3. Reveal left and right founder information panels moving outward from behind portrait
+        // 3. Left Column: Roles kicker and individual items staggered from left
         if (rolesBox) {
+          const rolesKicker = rolesBox.querySelector('.about-label-kicker');
+          if (rolesKicker) {
+            tl.from(rolesKicker, { opacity: 0, x: -16, duration: 0.45, ease: 'power2.out' }, 0.2);
+          }
+          const roleItems = rolesBox.querySelectorAll('.about-role-item');
           tl.from(
-            rolesBox,
+            roleItems,
             {
-              x: 28,
+              x: -26,
               opacity: 0,
-              ease: 'power2.out',
-              duration: 0.6
+              stagger: 0.07,
+              duration: 0.55,
+              ease: 'power2.out'
             },
-            0.25
+            0.26
           );
         }
 
+        // 4. Right Column: Bio kicker, paragraphs, and CTA button
         if (bioBox) {
+          const bioKicker = bioBox.querySelector('.about-label-kicker');
+          if (bioKicker) {
+            tl.from(bioKicker, { opacity: 0, x: 16, duration: 0.45, ease: 'power2.out' }, 0.22);
+          }
+          const bioLines = bioBox.querySelectorAll('.about-bio-line');
           tl.from(
-            bioBox,
+            bioLines,
             {
-              x: -28,
+              y: 16,
               opacity: 0,
-              ease: 'power2.out',
-              duration: 0.6
+              stagger: 0.06,
+              duration: 0.5,
+              ease: 'power2.out'
             },
-            0.3
+            0.28
           );
+          const ctaGroup = bioBox.querySelector('.about-cta-group');
+          if (ctaGroup) {
+            tl.from(
+              ctaGroup,
+              {
+                y: 18,
+                opacity: 0,
+                scale: 0.97,
+                duration: 0.5,
+                ease: 'power3.out'
+              },
+              0.42
+            );
+          }
         }
 
-        // 4. Reveal the 4 statistic cards with restrained stagger
+        // 5. Stat cards staggered upward glide
         if (statCards.length > 0) {
           tl.from(
             statCards,
             {
-              y: 10,
+              y: 22,
               opacity: 0,
+              scale: 0.96,
               stagger: 0.08,
-              ease: 'power2.out',
-              duration: 0.5
+              ease: 'power3.out',
+              duration: 0.55
             },
-            0.45
+            0.38
           );
         }
 
-        // 5. Trigger odometer count-up inside the timeline sequence
-        tl.call(animateCounters, [], 0.3);
+        // 6. Trigger odometer count-up as cards settle
+        tl.call(animateCounters, [], 0.45);
 
-        // If the section is already in view (e.g. refreshed at #about anchor), play immediately
+        // If the section is already in view, play immediately
         if (ScrollTrigger.isInViewport(section, 0.1)) {
           tl.play();
           animateCounters();
@@ -217,24 +260,62 @@ export default function AboutPin({
           gsap.set([bgName, portraitImg], { clearProps: 'all' });
           if (gridLinesEl) gsap.set(gridLinesEl, { clearProps: 'all' });
           if (glowEl) gsap.set(glowEl, { clearProps: 'all' });
-          if (rolesBox) gsap.set(rolesBox, { clearProps: 'all' });
-          if (bioBox) gsap.set(bioBox, { clearProps: 'all' });
+          if (rolesBox) {
+            gsap.set(rolesBox.querySelectorAll('.about-label-kicker, .about-role-item'), { clearProps: 'all' });
+          }
+          if (bioBox) {
+            gsap.set(bioBox.querySelectorAll('.about-label-kicker, .about-bio-line, .about-cta-group'), { clearProps: 'all' });
+          }
           if (statCards.length > 0) gsap.set(statCards, { clearProps: 'all' });
         };
       });
 
-      // Mobile & tablet: unpinned, trigger counters once when section enters view
+      // Mobile & tablet: unpinned, trigger staggered entrance once when section enters view
       mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top 75%',
-          once: true,
-          onEnter: () => animateCounters()
+        const bgName = bgNameRef.current;
+        const portraitImg = portraitImgRef.current;
+        const rolesBox = colLeftRef.current?.querySelector('.about-roles-box');
+        const bioBox = colRightRef.current?.querySelector('.about-bio-box');
+        const statCards = section.querySelectorAll('.about-stat-card');
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+            onEnter: () => animateCounters()
+          }
         });
 
+        if (bgName) {
+          tl.from(bgName, { opacity: 0, y: 24, duration: 0.6, ease: 'power2.out' }, 0);
+        }
+        if (portraitImg) {
+          tl.from(portraitImg, { opacity: 0, y: 30, scale: 0.94, duration: 0.7, ease: 'power3.out' }, 0.1);
+        }
+        if (rolesBox) {
+          const items = rolesBox.querySelectorAll('.about-role-item');
+          tl.from(items, { opacity: 0, x: -18, stagger: 0.06, duration: 0.5, ease: 'power2.out' }, 0.22);
+        }
+        if (bioBox) {
+          tl.from(bioBox, { opacity: 0, y: 18, duration: 0.5, ease: 'power2.out' }, 0.32);
+        }
+        if (statCards.length > 0) {
+          tl.from(statCards, { opacity: 0, y: 18, scale: 0.96, stagger: 0.06, duration: 0.5, ease: 'power3.out' }, 0.4);
+        }
+
         if (ScrollTrigger.isInViewport(section, 0.1)) {
+          tl.play();
           animateCounters();
         }
+
+        return () => {
+          if (bgName) gsap.set(bgName, { clearProps: 'all' });
+          if (portraitImg) gsap.set(portraitImg, { clearProps: 'all' });
+          if (rolesBox) gsap.set(rolesBox.querySelectorAll('.about-role-item'), { clearProps: 'all' });
+          if (bioBox) gsap.set(bioBox, { clearProps: 'all' });
+          if (statCards.length > 0) gsap.set(statCards, { clearProps: 'all' });
+        };
       });
 
       return () => {
@@ -457,8 +538,38 @@ export default function AboutPin({
         {/* Oversized background typography layered behind founder portrait */}
         <div className="about-name-plane" ref={namePlaneRef} aria-hidden="true">
           <div className="about-bg-name" ref={bgNameRef}>
-            <span className="about-name-line line-1">SWAPNIL</span>
-            <span className="about-name-line line-2">GATHIBANDHE</span>
+            <span className="about-name-line line-1">
+              {(name.trim().split(/\s+/)[0] || 'SWAPNIL').split('').map((ch, i) => {
+                const fName = name.trim().split(/\s+/)[0] || 'SWAPNIL';
+                const lName = name.trim().split(/\s+/).slice(1).join(' ') || 'GATHIBANDHE';
+                const total = fName.length + lName.length;
+                return (
+                  <span
+                    key={i}
+                    className="about-name-char"
+                    onPointerEnter={() => playCharHover(i, total)}
+                  >
+                    {ch}
+                  </span>
+                );
+              })}
+            </span>
+            <span className="about-name-line line-2">
+              {(name.trim().split(/\s+/).slice(1).join(' ') || 'GATHIBANDHE').split('').map((ch, i) => {
+                const fName = name.trim().split(/\s+/)[0] || 'SWAPNIL';
+                const lName = name.trim().split(/\s+/).slice(1).join(' ') || 'GATHIBANDHE';
+                const total = fName.length + lName.length;
+                return (
+                  <span
+                    key={i}
+                    className="about-name-char"
+                    onPointerEnter={() => playCharHover(fName.length + i, total)}
+                  >
+                    {ch}
+                  </span>
+                );
+              })}
+            </span>
           </div>
         </div>
 
@@ -470,9 +581,15 @@ export default function AboutPin({
               <span className="about-label-kicker">[ {rolesLabel} ]</span>
               <ul className="about-roles-list" aria-label="Professional roles">
                 {roles.map((r, i) => (
-                  <li key={r} className="about-role-item">
+                  <li
+                    key={r}
+                    className="about-role-item"
+                    tabIndex={0}
+                    onPointerEnter={() => playSfx('hover')}
+                  >
                     <span className="about-role-num mono">0{i + 1}</span>
                     <span className="about-role-title">{r}</span>
+                    <span className="about-role-arrow" aria-hidden="true">→</span>
                   </li>
                 ))}
               </ul>
@@ -480,7 +597,12 @@ export default function AboutPin({
 
             <div className="about-stats-stack">
               {statsLeft.map((stat) => (
-                <div key={stat.label} className="about-stat-card">
+                <div
+                  key={stat.label}
+                  className="about-stat-card"
+                  tabIndex={0}
+                  onPointerEnter={() => playSfx('hover')}
+                >
                   <div className="about-stat-head">
                     <span className="about-stat-val" data-target={stat.number}>
                       {stat.number}
@@ -560,7 +682,12 @@ export default function AboutPin({
 
             <div className="about-stats-stack">
               {statsRight.map((stat) => (
-                <div key={stat.label} className="about-stat-card">
+                <div
+                  key={stat.label}
+                  className="about-stat-card"
+                  tabIndex={0}
+                  onPointerEnter={() => playSfx('hover')}
+                >
                   <div className="about-stat-head">
                     <span className="about-stat-val" data-target={stat.number}>
                       {stat.number}

@@ -1,29 +1,31 @@
 'use client';
 
 import { useEffect } from 'react';
-import { initSfx, playSfx, preloadSfx } from '@/lib/audio/sfx';
+import { fetchAudioBytes, initSfx, playSfx, registerUserGesture } from '@/lib/audio/sfx';
 
 export default function SoundEffects() {
   useEffect(() => {
     initSfx();
 
-    // Warm up the audio context on first user interaction
+    // Warm up and decode the audio context on first genuine user interaction
     const unlockAudio = () => {
-      preloadSfx();
+      registerUserGesture();
       window.removeEventListener('pointerdown', unlockAudio);
       window.removeEventListener('keydown', unlockAudio);
       window.removeEventListener('touchstart', unlockAudio);
+      window.removeEventListener('click', unlockAudio);
     };
 
     window.addEventListener('pointerdown', unlockAudio, { passive: true, once: true });
     window.addEventListener('keydown', unlockAudio, { passive: true, once: true });
     window.addEventListener('touchstart', unlockAudio, { passive: true, once: true });
+    window.addEventListener('click', unlockAudio, { passive: true, once: true });
 
-    // Idle preload so buffer is decoded ahead of time
+    // Idle fetch of audio bytes only (avoids AudioContext autoplay warnings)
     if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(() => preloadSfx());
+      window.requestIdleCallback(() => fetchAudioBytes().catch(() => {}));
     } else {
-      setTimeout(() => preloadSfx(), 1200);
+      setTimeout(() => fetchAudioBytes().catch(() => {}), 1200);
     }
 
     // Global Click Handler for tactile audio feedback
@@ -63,7 +65,7 @@ export default function SoundEffects() {
         if (target.closest('[data-no-sfx]')) return;
 
         const hoverable = target.closest<HTMLElement>(
-          '.nav a, .cta, .btn, .project-circle-btn, .theme-toggle-btn, .sound-toggle-btn, .process-step-pill, .service-row-button, .menu-links a, .email-poster'
+          '.nav a, .cta, .btn, .project-circle-btn, .theme-toggle-btn, .sound-toggle-btn, .process-step-pill, .service-row-button, .menu-links a, .email-poster, .about-role-item, .about-stat-card'
         );
 
         if (hoverable) {
@@ -80,6 +82,7 @@ export default function SoundEffects() {
       window.removeEventListener('pointerdown', unlockAudio);
       window.removeEventListener('keydown', unlockAudio);
       window.removeEventListener('touchstart', unlockAudio);
+      window.removeEventListener('click', unlockAudio);
       window.removeEventListener('click', handleClick, { capture: true });
       if (handlePointerOver) {
         window.removeEventListener('pointerover', handlePointerOver);

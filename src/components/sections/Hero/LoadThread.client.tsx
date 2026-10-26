@@ -410,18 +410,6 @@ export default function LoadThread() {
         );
       }
 
-      if (seamThread) {
-        handoffTl.to(
-          seamThread,
-          {
-            opacity: 0,
-            duration: 0.26,
-            ease: 'power2.out'
-          },
-          0.38
-        );
-      }
-
       // 5. Hero Monumental Headline Kinetic Character Wave & Dual-Layer Roll
       if (charInners.length > 0) {
         handoffTl.fromTo(
