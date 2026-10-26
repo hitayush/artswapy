@@ -41,10 +41,10 @@ export const site = {
       href: 'https://instagram.com/artswapy'
     },
     {
-      id: 'x',
-      label: 'X (Twitter)',
+      id: 'youtube',
+      label: 'YouTube',
       handle: '@artswapy',
-      href: 'https://x.com/artswapy'
+      href: 'https://youtube.com/@artswapy'
     },
     {
       id: 'linkedin',
@@ -827,7 +827,7 @@ export const contact = {
     { id: 'email', label: 'Email', value: site.email.address, href: `mailto:${site.email.address}`, placeholder: false },
     { id: 'phone', label: 'Phone / WhatsApp', value: site.phone.display, href: site.phone.whatsapp, placeholder: false },
     { id: 'instagram', label: 'Instagram', value: '@artswapy', href: 'https://instagram.com/artswapy', placeholder: false },
-    { id: 'x', label: 'X (Twitter)', value: '@artswapy', href: 'https://x.com/artswapy', placeholder: false },
+    { id: 'youtube', label: 'YouTube', value: '@artswapy', href: 'https://youtube.com/@artswapy', placeholder: false },
     { id: 'linkedin', label: 'LinkedIn', value: 'Swapnil Gathibandhe', href: 'https://linkedin.com/in/swapnil-gathibandhe', placeholder: false },
     { id: 'location', label: 'Location', value: 'Nagpur, India', placeholder: false },
     { id: 'availability', label: 'Availability', value: 'Available for new projects', placeholder: false }

@@ -97,7 +97,7 @@ export interface AboutContent {
 }
 
 export interface SocialLink {
-  id: 'instagram' | 'x' | 'linkedin' | string;
+  id: 'instagram' | 'youtube' | 'x' | 'linkedin' | string;
   label: string;
   handle: string;
   href: string;
@@ -111,7 +111,7 @@ export interface PhoneContact {
 }
 
 export interface ContactRoute {
-  id: 'email' | 'whatsapp' | 'phone' | 'instagram' | 'x' | 'linkedin' | 'location' | 'availability' | string;
+  id: 'email' | 'whatsapp' | 'phone' | 'instagram' | 'youtube' | 'x' | 'linkedin' | 'location' | 'availability' | string;
   label: string;
   value: string;
   href?: string;
