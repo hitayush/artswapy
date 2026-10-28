@@ -9,6 +9,7 @@ import PlaceholderTag from '@/components/primitives/PlaceholderTag';
 import CTAButton from '@/components/primitives/CTAButton';
 import RevealRoot from '@/components/primitives/RevealRoot';
 import ThemeToggle from '@/components/primitives/ThemeToggle.client';
+import SofttouchCaseStudy from '@/components/case-studies/SofttouchCaseStudy';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -79,6 +80,15 @@ export default async function CaseStudyPage({ params }: PageProps) {
           __html: JSON.stringify(caseStudyJsonLd).replace(/</g, '\\u003c')
         }}
       />
+      {project.id === 'softtouch' ? (
+        <SofttouchCaseStudy
+          project={project}
+          prevProject={prevProject}
+          nextProject={nextProject}
+          enquiryHref={enquiryHref}
+        />
+      ) : (
+        <>
       {/* Top Navigation Bar */}
       <header className="cs-topbar">
         <div className="cs-topbar-inner">
@@ -277,6 +287,8 @@ export default async function CaseStudyPage({ params }: PageProps) {
           </div>
         </div>
       </RevealRoot>
+      </>
+      )}
     </article>
   );
 }

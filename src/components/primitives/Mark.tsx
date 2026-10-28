@@ -4,6 +4,19 @@ import type { MarkId } from '@/types/content';
 export default function Mark({ id }: { id: MarkId }) {
   return (
     <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      {id === 'softtouch' && (
+        <>
+          <rect width="400" height="500" fill="#E87124" />
+          <g transform="translate(200, 230)" stroke="#f6f4ef" strokeWidth="22" strokeLinecap="round">
+            <line x1="0" y1="-85" x2="0" y2="85" />
+            <line x1="-74" y1="-43" x2="74" y2="43" />
+            <line x1="-74" y1="43" x2="74" y2="-43" />
+            <line x1="-74" y1="-43" x2="-120" y2="-70" />
+            <line x1="-74" y1="43" x2="-120" y2="70" />
+          </g>
+          <rect x="80" y="430" width="240" height="6" fill="#231F20" />
+        </>
+      )}
       {id === 'aaranya' && (
         <>
           <rect width="400" height="500" fill="#7f9170" />

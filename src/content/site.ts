@@ -44,13 +44,13 @@ export const site = {
       id: 'youtube',
       label: 'YouTube',
       handle: '@artswapy',
-      href: 'https://youtube.com/@artswapy'
+      href: 'https://www.youtube.com/@artswapy'
     },
     {
       id: 'linkedin',
       label: 'LinkedIn',
       handle: 'Swapnil Gathibandhe',
-      href: 'https://linkedin.com/in/swapnil-gathibandhe'
+      href: ''
     }
   ] satisfies SocialLink[],
   credits: {
@@ -180,77 +180,77 @@ export const work = {
 /* Selected work — Curated showcase matching Dzinr Studio scale */
 export const projects: Project[] = [
   {
-    id: 'aaranya',
-    name: 'Aaranya',
-    year: '2025',
-    category: 'Botanical Skincare',
-    discipline: 'Brand & Packaging',
-    summary: 'A luxury botanical identity and packaging architecture built for ritual and calm.',
-    placeholder: true,
-    href: '/work/aaranya/',
-    image: '/images/projects/aaranya.jpg',
-    preview: { alt: 'Brand identity mockup for Aaranya skincare', mark: 'aaranya' },
+    id: 'softtouch',
+    name: 'Softtouch',
+    year: '2026',
+    category: 'Coatings & Wallcare',
+    discipline: 'Brand Identity & Packaging Architecture',
+    summary: 'A complete packaging architecture, dynamic visual identity, and retail dealer system for a high-performance architectural coatings manufacturer.',
+    placeholder: false,
+    href: '/work/softtouch/',
+    image: '/images/projects/softtouch/cover.jpg.png',
+    preview: { alt: 'Packaging lineup for Softtouch coatings and emulsions', mark: 'softtouch' },
     theme: {
-      bg: '#141c15',
+      bg: '#1c1613',
       text: '#f6f4ef',
-      accent: '#ff551f'
+      accent: '#E87124'
     },
     caseStudy: {
-      clientType: 'Organic Wellness & Skincare Atelier',
-      timeline: '8 Weeks',
+      clientType: 'Architectural Coatings & Chemical Manufacturer',
+      timeline: '12 Weeks',
       deliverables: [
-        'Brand Positioning & Voice',
-        'Visual Identity & Custom Wordmark',
-        'Cosmetic Packaging Architecture',
-        'Tactile Print & Embossing Specs',
-        'E-Commerce & Digital Direction'
+        'Visual Identity System & Dynamic Wordmark',
+        'Container & Packaging Architecture (Emulsions, Primers, Enamels)',
+        'Technical Die-lines & Label Hierarchy',
+        'Dealer Network Signage & Retail Fascia',
+        'Contractor Loyalty Collateral & Merchandise'
       ],
-      challenge: 'Botanical skincare was crowded with sterile clinical aesthetics or generic kraft-paper tropes. Aaranya needed a commanding, ritual-focused identity that felt ancient yet contemporary, establishing immediate luxury shelf presence.',
-      solution: 'Crafted a contemplative visual world rooted in deep botanical greens, tactile linen textures, and a custom typographic signature. Packaging uses fluted glass, blind debossing, and warm copper thread cues that evoke mindful daily skincare rituals.',
+      challenge: 'The decorative paints and wallcare category is intensely crowded, dominated by legacy conglomerates with high distributor recall. Softtouch needed a distinctive, premium brand identity and packaging architecture that conveyed structural reliability, superior coating chemistry, and immediate shelf standout across tier-1 and tier-2 dealer distribution networks.',
+      solution: 'Engineered an energetic, cohesive identity anchored by a custom fluid dynamic wordmark and high-visibility saffron-orange (#E87124). Built a systematic color-coded packaging taxonomy across interior emulsions, weatherproof exterior coatings, enamels, and wall putty, paired with comprehensive retail dealer fascia and painter collateral.',
       pillars: {
         strategy: {
-          title: '01 · Strategy',
-          summary: 'Rooted in stillness and Ayurvedic wisdom, repositioning skincare from hygiene to an essential restorative ritual.',
+          title: '01 · Strategy & Architecture',
+          summary: 'Structural classification and category tiering across professional and retail coating portfolios.',
           details: [
-            'Market whitespace analysis across premium Ayurvedic skincare',
-            'Core brand narrative: "Botanical Stillness for Modern Lives"',
-            'Bilingual tone-of-voice matrix balancing reverence and clarity'
+            'Portfolio categorization: Premium emulsions, protective weather shields, primers, and construction chemicals',
+            'Ergonomic bucket geometry analysis and injection-molded container specifications',
+            'Clear dual-hierarchy communication system tailored for both professional painters and homeowners'
           ]
         },
         identity: {
           title: '02 · Visual Identity',
-          summary: 'A bespoke serif wordmark paired with organic botanical geometry and an earthy, enduring color system.',
+          summary: 'Dynamic fluid wordmark, high-contrast industrial typography, and high-visibility signature palette.',
           details: [
-            'Drawn botanical icon system inspired by native Indian flora',
-            'Refined serif typography with generous optical breathing room',
-            'Palette of deep forest moss, warm parchment white, and terracotta earth'
+            'Custom fluid brush swoosh wordmark symbolizing smooth, uniform coat application',
+            'Geometric typography system centered on Montserrat for technical specifications and legibility',
+            'High-chroma saffron orange (#E87124) and deep ink (#231F20) high-visibility color foundation'
           ]
         },
         packaging: {
-          title: '03 · Packaging',
-          summary: 'Sustainable amber and frosted glass vessels with tactile unboxing rituals and blind debossed carton sleeves.',
+          title: '03 · Packaging System',
+          summary: 'Industrial container architecture across 20L injection-molded pails, metal enamel tins, and die-cut labels.',
           details: [
-            'Die-cut structural outer boxes with linen-textured paper wrap',
-            'Waterproof screen-printed dropper bottles and cosmetic jars',
-            'Signature copper thread closure indicating uncompromised purity'
+            'Tiered label system: Atmoshield, Evershield, Storm Shield, Aura Interior, and Oleo Enamel',
+            'Technical die-line layouts with certified barcode, regulatory, and MIDC Butibori plant details',
+            'High-impact circular badge emblems highlighting product warranty and weather resistance'
           ]
         },
         communications: {
-          title: '04 · Communications',
-          summary: 'Editorial campaign imagery, brand monographs, and storytelling collateral celebrating ingredient provenance.',
+          title: '04 · Brand Campaign',
+          summary: 'Bilingual regional campaign identity and contractor touchpoints establishing contractor trust.',
           details: [
-            'Founder manifesto and ingredient sourcebook',
-            'Macro-botanical photography guidelines and lighting direction',
-            'Minimalist social grid and print collateral'
+            'Regional brand campaign motto: "खुशियों के रंग सॉफ्टटच के संग" (Khushiyo Ke Rang Softtouch Ke Sang)',
+            'Mobile application interface for contractor engagement and dealer stockists',
+            'Technical shade cards and architectural application guides'
           ]
         },
         applications: {
-          title: '05 · Applications',
-          summary: 'A serene digital flagship and physical boutique experience designed for seamless consumer discovery.',
+          title: '05 · Retail & Collateral',
+          summary: 'High-impact dealer storefront signage, roll-up displays, and field gear for trade professionals.',
           details: [
-            'Responsive luxury e-commerce experience with smooth editorial transitions',
-            'Architectural boutique signage and unboxing insert cards',
-            'Comprehensive brand guidelines manual for global partners'
+            'Standardized dealer network fascia billboards (e.g. Rajeshree & Swastik Traders, Umred)',
+            'High-contrast trade merchandise including technician apparel, durable drinkware, and dealer kits',
+            'Comprehensive brand guidelines manual for nationwide distributor rollouts'
           ]
         }
       }

@@ -9,7 +9,7 @@ export interface MailtoTemplate {
   body: string;
 }
 
-export type MarkId = 'aaranya' | 'common' | 'habit' | 'kavita' | 'dhara';
+export type MarkId = 'softtouch' | 'aaranya' | 'common' | 'habit' | 'kavita' | 'dhara';
 
 export interface CaseStudyPillar {
   title: string;
