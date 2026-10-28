@@ -129,6 +129,16 @@ export default function ShowreelPlayer({ youtubeId, title, caption }: ShowreelPl
           <div className="showreel-actions">
             <button
               type="button"
+              className="showreel-btn showreel-icon-only"
+              onClick={togglePlay}
+              aria-label={isPlaying ? 'Pause showreel video' : 'Play showreel video'}
+              title={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </button>
+
+            <button
+              type="button"
               className="showreel-btn showreel-sound-btn"
               onClick={toggleSound}
               aria-label={isMuted ? 'Unmute video audio' : 'Mute video audio'}
@@ -159,6 +169,23 @@ export default function ShowreelPlayer({ youtubeId, title, caption }: ShowreelPl
         </div>
       </div>
     </div>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <polygon points="6 4 20 12 6 20 6 4" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <rect x="6" y="4" width="4" height="16" />
+      <rect x="14" y="4" width="4" height="16" />
+    </svg>
   );
 }
 

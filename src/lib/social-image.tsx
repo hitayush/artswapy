@@ -33,7 +33,7 @@ export function createSocialImage() {
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div style={{ width: 104, height: 5, backgroundColor: '#b23506' }} />
+          <div style={{ width: 104, height: 5, backgroundColor: '#ff551f' }} />
           <span style={{ fontSize: 20 }}>Swapnil Gathibandhe</span>
         </div>
       </div>

@@ -27,8 +27,7 @@ is in `docs/design/direction-sheet.md`, and the audience hypotheses are in `docs
   3. **Spine**: ties the pinned process stages together, scrubbed by scroll.
   4. **Needle**: crosses the primary button label on hover (Needle pass), and pulls an arrow through an icon button.
   The rule is **at most one *moving* thread on screen at a time**. A static state thread (current nav item)
-  may sit alongside it. On light grounds the thread uses `--thread` (#b23506, 5.6:1). The bright `--accent`
-  is only used on `--inverse-bg`, because bright orange on paper is 2.9:1 and fails as a state cue.
+  may sit alongside it. The thread uses the signature simple orange `--accent` / `--thread` (#ff551f) consistently across all grounds.
 - **Live thing:** *"Set your name"*. In the footer close, a visitor types their business name (up to 24
   characters) and sees it set in the monument type, fitted to the width and with the thread stitched through it. The
   name then fills the "Start a project" email: subject `Project enquiry — {name}`. It is visually secondary to the
@@ -63,13 +62,13 @@ All values are CSS custom properties in `src/styles/tokens.css`. Components refe
 | `--surface` | `#ece9e1` | One tone step for panels and the active row. Surfaces are separated by tone, never by a line |
 | `--ink` | `#161614` | All running text and the monument |
 | `--muted` | `#5b5850` | Secondary notes only (6.5:1 on `--bg`) |
-| `--accent` | `#ff551f` | The primary action fill; the thread on `--inverse-bg` (5.7:1) |
-| `--thread` | `#b23506` | The thread on light grounds, and orange used *as text* (5.6:1 on `--bg`, 5.1:1 on `--surface`) |
+| `--accent` | `#ff551f` | The signature simple orange used universally for primary actions, buttons, and accents |
+| `--thread` | `#ff551f` | The signature thread across all grounds, unified with `--accent` |
 | `--on-accent` | `#161614` | Text on an orange fill (ink on orange is 5.7:1; white on orange fails) |
 | `--inverse-bg` | `#161614` | Footer field and the pinned process |
 | `--inverse-ink` | `#f6f4ef` | Text on inverse (16.5:1) |
 | `--inverse-muted` | `#a8a497` | Secondary text on inverse (7.3:1) |
-| `--focus` | `#b23506` | Focus ring on light grounds; `--accent` on inverse |
+| `--focus` | `#ff551f` | Focus ring across all grounds |
 
 The accent carries one idea, the thread Swapnil runs through a brand, in two forms: the primary action's
 fill and the thread itself. Nothing else is orange. Display text never turns orange on hover, because orange

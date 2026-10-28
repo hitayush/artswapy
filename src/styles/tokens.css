@@ -6,18 +6,18 @@
   --ink: #161614;
   --muted: #5b5850;
   --accent: #ff551f;
-  --thread: #b23506;
+  --thread: #ff551f;
   --on-accent: #161614;
   --inverse-bg: #161614;
   --inverse-ink: #f6f4ef;
   --inverse-muted: #a8a497;
   --hairline: rgba(22, 22, 20, 0.12);
   --inverse-hairline: rgba(246, 244, 239, 0.14);
-  --focus: #b23506;
+  --focus: #ff551f;
 
   /* Concept-project colours (used inside work imagery only) */
   --sage: #7f9170;
-  --terracotta: #c2674a;
+  --terracotta: #ff551f;
   --honey: #e3b95a;
 
   /* Fonts (set by next/font in layout.tsx) */

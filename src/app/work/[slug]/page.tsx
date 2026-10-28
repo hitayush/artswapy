@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : project.summary;
 
   return buildPageMetadata({
-    path: `/work/${project.id}`,
+    path: `/work/${project.id}/`,
     title,
     description,
     image: project.image ?? '/opengraph-image',
@@ -252,13 +252,13 @@ export default async function CaseStudyPage({ params }: PageProps) {
       <RevealRoot as="footer" className="cs-footer">
         <div className="cs-container">
           <div className="cs-pagination-grid" data-r="rise" style={{ '--i': 0 } as React.CSSProperties}>
-            <Link href={prevProject.href ?? `/work/${prevProject.id}`} className="cs-page-nav cs-nav-prev">
+            <Link href={prevProject.href ?? `/work/${prevProject.id}/`} className="cs-page-nav cs-nav-prev">
               <span className="small mono muted">← Previous Study</span>
               <strong className="nav-project-name">{prevProject.name}</strong>
               <span className="small muted">{prevProject.category}</span>
             </Link>
 
-            <Link href={nextProject.href ?? `/work/${nextProject.id}`} className="cs-page-nav cs-nav-next">
+            <Link href={nextProject.href ?? `/work/${nextProject.id}/`} className="cs-page-nav cs-nav-next">
               <span className="small mono muted">Next Study →</span>
               <strong className="nav-project-name">{nextProject.name}</strong>
               <span className="small muted">{nextProject.category}</span>

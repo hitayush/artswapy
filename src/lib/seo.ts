@@ -39,17 +39,22 @@ export const SITE_KEYWORDS = [
 ];
 
 /**
- * Normalizes any relative or absolute path into a canonical absolute URL
- * without trailing slashes (except root which is SITE_URL).
+ * Normalizes any relative or absolute path into a canonical absolute URL.
+ * In accordance with next.config.ts (trailingSlash: true), page routes
+ * maintain a canonical trailing slash, while static assets and image routes retain their file format.
  */
 export function canonicalUrl(path = '/'): string {
   if (/^https?:\/\//i.test(path)) {
     try {
       const parsed = new URL(path);
       if (parsed.hostname === 'artswapy.com' || parsed.hostname === 'www.artswapy.com') {
-        const cleanPath =
-          parsed.pathname === '/' ? '' : parsed.pathname.replace(/\/+$/, '');
-        return `${SITE_URL}${cleanPath}${parsed.search}${parsed.hash}`;
+        const isSpecialFile = /^\/(?:opengraph-image|twitter-image)/i.test(parsed.pathname);
+        const hasExtension = /\.[a-z0-9]+$/i.test(parsed.pathname);
+        if (isSpecialFile || hasExtension) {
+          return `${SITE_URL}${parsed.pathname}${parsed.search}${parsed.hash}`;
+        }
+        const cleanPath = parsed.pathname.replace(/\/+$/, '');
+        return `${SITE_URL}${cleanPath}/${parsed.search}${parsed.hash}`;
       }
     } catch {
       return path;
@@ -57,11 +62,16 @@ export function canonicalUrl(path = '/'): string {
     return path;
   }
   const normalized = path.startsWith('/') ? path : `/${path}`;
-  if (normalized === '/') {
-    return SITE_URL;
+  const isSpecialFile = /^\/(?:opengraph-image|twitter-image)/i.test(normalized);
+  const hasExtension = /\.[a-z0-9]+$/i.test(normalized);
+  if (isSpecialFile || hasExtension) {
+    return `${SITE_URL}${normalized}`;
   }
-  const withoutTrailing = normalized.endsWith('/') ? normalized.slice(0, -1) : normalized;
-  return `${SITE_URL}${withoutTrailing}`;
+  if (normalized === '/') {
+    return `${SITE_URL}/`;
+  }
+  const clean = normalized.replace(/\/+$/, '');
+  return `${SITE_URL}${clean}/`;
 }
 
 export interface PageMetadataOptions {

@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   const projectEntries: MetadataRoute.Sitemap = projects.map((p) => ({
-    url: canonicalUrl(`/work/${p.id}`),
+    url: canonicalUrl(`/work/${p.id}/`),
     images: p.image ? [canonicalUrl(p.image)] : undefined,
     lastModified: now,
     changeFrequency: 'monthly',

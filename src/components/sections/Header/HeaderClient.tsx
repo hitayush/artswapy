@@ -5,7 +5,6 @@ import TextLink from '@/components/primitives/TextLink';
 import CTAButton from '@/components/primitives/CTAButton';
 import CopyEmail from '@/components/primitives/CopyEmail';
 import ThemeToggle from '@/components/primitives/ThemeToggle.client';
-import SoundToggle from '@/components/primitives/SoundToggle.client';
 import ArtSwapyLogo from '@/components/primitives/ArtSwapyLogo';
 import { getLenis, scrollToHash } from '@/lib/motion/lenis';
 import type { MailtoTemplate, NavLink } from '@/types/content';
@@ -177,7 +176,6 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
           ))}
         </nav>
         <div className="header-actions">
-          <SoundToggle />
           <ThemeToggle />
           <span className="header-cta">
             <CTAButton href={mailto} label={cta} size="sm" />
@@ -217,10 +215,6 @@ export default function HeaderClient({ name, nav, cta, mailto, address, template
             <div className="menu-theme-row">
               <span className="eyebrow">Appearance</span>
               <ThemeToggle showLabel />
-            </div>
-            <div className="menu-theme-row" style={{ marginTop: 8 }}>
-              <span className="eyebrow">Audio Feedback</span>
-              <SoundToggle showLabel />
             </div>
             <CTAButton href={mailto} label={cta} block />
             <CopyEmail address={address} variant="button" template={template} />

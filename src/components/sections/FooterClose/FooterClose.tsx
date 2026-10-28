@@ -98,11 +98,11 @@ export default function FooterClose() {
           </div>
 
           <h2 className="footer-invite poster">
-            <span className="mask" data-r="lines">
-              <span>{contact.heading[0]}</span>
-            </span>{' '}
-            <span className="mask" data-r="lines" style={{ '--i': 1 } as React.CSSProperties}>
-              <span>{contact.heading[1]}</span>
+            <span className="footer-invite-line mask" data-r="lines">
+              <span className="footer-invite-text">{contact.heading[0]}</span>
+            </span>
+            <span className="footer-invite-line mask" data-r="lines" style={{ '--i': 1 } as React.CSSProperties}>
+              <span className="footer-invite-text">{contact.heading[1]}</span>
             </span>
           </h2>
 
@@ -134,6 +134,7 @@ export default function FooterClose() {
             {CONTACT_ICONS.map((item) => (
               <a
                 key={item.id}
+                role="listitem"
                 href={item.href}
                 className="footer-icon-link"
                 title={item.title}

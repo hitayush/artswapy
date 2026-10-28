@@ -2,7 +2,7 @@ import { hero, site } from '@/content/site';
 import LoadThread from './LoadThread.client';
 import HeroPreloader from './HeroPreloader.client';
 import HeroTitle from './HeroTitle.client';
-import ThemeToggle from '@/components/primitives/ThemeToggle.client';
+import SoundToggle from '@/components/primitives/SoundToggle.client';
 
 const STAT_CLASSES = [
   'hero-col-discipline hide-mobile',
@@ -57,7 +57,7 @@ export default function Hero() {
           })}
 
           <div className="hero-actions-wrap hero-col-action hero-rise-item" style={{ '--i': 3 } as React.CSSProperties}>
-            <ThemeToggle variant="circle" showLabel labelPosition="left" />
+            <SoundToggle variant="circle" showLabel labelPosition="left" />
           </div>
         </div>
 

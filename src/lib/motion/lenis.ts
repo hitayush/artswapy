@@ -14,7 +14,13 @@ export function getLenis() {
   return instance;
 }
 
-const HEADER_H = 64;
+function getHeaderHeight(): number {
+  if (typeof document !== 'undefined') {
+    const el = document.querySelector('.header') as HTMLElement | null;
+    if (el && el.offsetHeight > 0) return el.offsetHeight;
+  }
+  return 64;
+}
 
 /** Exact parametric cubic-bezier(0.16, 1, 0.3, 1) curve from ClimbX for Lenis scroll runs. */
 export const LENIS_EASE = cubicBezier(0.16, 1, 0.3, 1);
@@ -65,7 +71,7 @@ export function scrollToHash(hash: string, opts: { immediate?: boolean } = {}) {
     targetY = pinnedTrigger.start;
   } else {
     const rect = el.getBoundingClientRect();
-    targetY = Math.max(0, rect.top + window.scrollY - HEADER_H);
+    targetY = Math.max(0, rect.top + window.scrollY - getHeaderHeight());
   }
 
   if (instance) {

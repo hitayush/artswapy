@@ -20,8 +20,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - **Palette (`src/styles/tokens.css`):**
   - Warm white paper ground: `--bg: #f6f4ef`, panel surface: `--surface: #ece9e1`
   - Near-black ink: `--ink: #161614`, secondary muted text: `--muted: #5b5850`
-  - Bright orange accent: `--accent: #ff551f` (primary action fill & thread on dark `#161614` inverse sections; ink on orange is `--on-accent: #161614`)
-  - Accessible dark-orange thread on light grounds: `--thread: #b23506` (5.6:1 contrast)
+  - Bright orange accent: `--accent: #ff551f` (signature simple orange used universally across all buttons, threads, focus rings, and accents; `--thread: #ff551f`; ink on orange is `--on-accent: #161614`)
 - **Typography:** `Space Grotesk` (`--font-display`, weights 600/700) for Monument, Poster, and Heading steps; `DM Sans` (`--font-body`, weights 400/500) for body and metadata.
 - **Inspiration Rule:** Use https://dzinrstudio.com/ as inspiration for motion energy and presentation scale only. Never copy its branding, wording, assets, layout, or exact animation sequences.
 - **Content Honesty:** Never invent real clients, testimonials, metrics, awards, or contact details. Clearly mark concept/sample work with `placeholder: true` and `<PlaceholderTag>`.

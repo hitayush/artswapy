@@ -132,20 +132,7 @@ export const showreel: ShowreelContent = {
     'Most brands don’t have a design problem. They have a clarity problem. I bring brand strategy and design together to find what makes you different and turn it into a brand people notice, trust and remember.',
   title: 'Logo Design Process — From Start to Finish',
   youtubeId: 'pTjizuQOoYo',
-  caption: 'Craft, strategy and execution in motion.',
-  nextPreview: {
-    kicker: '[ UP NEXT : SELECTED WORK ]',
-    heading: 'Where Strategy Takes Shape',
-    subline: 'Five complete brand systems — positioning, visual identity, structural packaging & digital application.',
-    actionLabel: 'Explore Case Studies',
-    projects: [
-      { num: '01', name: 'Aaranya', cat: 'Skincare' },
-      { num: '02', name: 'Common Ground', cat: 'Coffee' },
-      { num: '03', name: 'Good Habit', cat: 'Beverage' },
-      { num: '04', name: 'Kavita', cat: 'Editorial' },
-      { num: '05', name: 'Dhara', cat: 'Ceramics' }
-    ]
-  }
+  caption: 'Craft, strategy and execution in motion.'
 };
 
 export const intro: IntroContent = {
@@ -183,6 +170,7 @@ export const work = {
   nextStep: {
     tag: '[ ✦ NEXT STEP ]',
     headline: 'Have a business? Let’s give it a brand.',
+    heading: ['Have a business?', 'Let’s give it a brand.'] as [string, string],
     body: 'Start with a strategy session. Leave with clarity, a distinct identity and a brand ready to be remembered.',
     button: 'Book a Strategy Session'
   }
@@ -199,7 +187,7 @@ export const projects: Project[] = [
     discipline: 'Brand & Packaging',
     summary: 'A luxury botanical identity and packaging architecture built for ritual and calm.',
     placeholder: true,
-    href: '/work/aaranya',
+    href: '/work/aaranya/',
     image: '/images/projects/aaranya.jpg',
     preview: { alt: 'Brand identity mockup for Aaranya skincare', mark: 'aaranya' },
     theme: {
@@ -276,7 +264,7 @@ export const projects: Project[] = [
     discipline: 'Strategy · Identity',
     summary: 'A positioning and visual identity system for everyday civic dialogue and community culture.',
     placeholder: true,
-    href: '/work/common-ground',
+    href: '/work/common-ground/',
     image: '/images/projects/common-ground.jpg',
     preview: { alt: 'Brand identity mockup for Common Ground cafe and space', mark: 'common' },
     theme: {
@@ -353,7 +341,7 @@ export const projects: Project[] = [
     discipline: 'Packaging · Campaign',
     summary: 'A high-octane consumer wellness drink with electric typography, citrus accents, and bold shelf presence.',
     placeholder: true,
-    href: '/work/good-habit',
+    href: '/work/good-habit/',
     image: '/images/projects/good-habit.jpg',
     preview: { alt: 'Product photography of Good Habit beverage cans', mark: 'habit' },
     theme: {
@@ -430,7 +418,7 @@ export const projects: Project[] = [
     discipline: 'Editorial · Publishing',
     summary: 'A contemporary poetry press with bespoke linen bindings, blind debossing, and signature bookmark thread.',
     placeholder: true,
-    href: '/work/kavita',
+    href: '/work/kavita/',
     image: '/images/projects/kavita.jpg',
     preview: { alt: 'Editorial book design mockup for Kavita press', mark: 'kavita' },
     theme: {
@@ -507,7 +495,7 @@ export const projects: Project[] = [
     discipline: 'Spatial · Monograph',
     summary: 'An architectural studio monograph and material branding system anchored in raw earth and quiet light.',
     placeholder: true,
-    href: '/work/dhara',
+    href: '/work/dhara/',
     image: '/images/projects/dhara.jpg',
     preview: { alt: 'Architectural monograph mockup for Dhara studio', mark: 'dhara' },
     theme: {

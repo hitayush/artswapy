@@ -159,12 +159,6 @@ export interface IntroContent {
   body?: string;
 }
 
-export interface ShowreelPreviewProject {
-  num: string;
-  name: string;
-  cat: string;
-}
-
 export interface ShowreelContent {
   tag: string;
   headline: string;
@@ -172,12 +166,5 @@ export interface ShowreelContent {
   title: string;
   youtubeId: string;
   caption: string;
-  nextPreview?: {
-    kicker: string;
-    heading: string;
-    subline: string;
-    actionLabel: string;
-    projects: ShowreelPreviewProject[];
-  };
 }
 

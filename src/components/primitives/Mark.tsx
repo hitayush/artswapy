@@ -20,10 +20,10 @@ export default function Mark({ id }: { id: MarkId }) {
       )}
       {id === 'common' && (
         <>
-          <rect width="400" height="500" fill="#c2674a" />
+          <rect width="400" height="500" fill="#ff551f" />
           <circle cx="160" cy="230" r="104" fill="#f6f4ef" />
           <circle cx="250" cy="270" r="104" fill="#161614" style={{ mixBlendMode: 'normal' }} />
-          <path d="M205 168a104 104 0 0 1 0 124a104 104 0 0 1 0-124z" fill="#c2674a" />
+          <path d="M205 168a104 104 0 0 1 0 124a104 104 0 0 1 0-124z" fill="#ff551f" />
           <rect x="80" y="430" width="240" height="6" fill="#f6f4ef" />
         </>
       )}
@@ -50,7 +50,7 @@ export default function Mark({ id }: { id: MarkId }) {
       )}
       {id === 'dhara' && (
         <>
-          <rect width="400" height="500" fill="#a8583c" />
+          <rect width="400" height="500" fill="#ff551f" />
           <path d="M130 360V210a70 70 0 0 1 140 0v150z" fill="#e5ddd0" />
           <path d="M165 360V245a35 35 0 0 1 70 0v115z" fill="#161614" />
           <circle cx="200" cy="130" r="24" fill="#e5ddd0" />

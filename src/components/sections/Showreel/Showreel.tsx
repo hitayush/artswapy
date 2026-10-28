@@ -2,8 +2,6 @@
 
 import { Fragment, useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
-import { scrollToHash } from '@/lib/motion/lenis';
-import { playSfx } from '@/lib/audio/sfx';
 import { showreel } from '@/content/site';
 import ShowreelPlayer from './ShowreelPlayer.client';
 
@@ -12,10 +10,9 @@ export default function Showreel() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const topBarRef = useRef<HTMLDivElement>(null);
   const kickerRowRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLParagraphElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
   const videoSlotRef = useRef<HTMLDivElement>(null);
   const videoCardRef = useRef<HTMLDivElement>(null);
-  const nextBridgeRef = useRef<HTMLDivElement>(null);
 
   const words = showreel.statement.split(/\s+/).filter(Boolean);
 
@@ -184,21 +181,6 @@ export default function Showreel() {
           );
         });
 
-        // 4. Reveal next section preview bridge as manifesto settles
-        if (nextBridgeRef.current) {
-          gsap.set(nextBridgeRef.current, { opacity: 0, y: 22 });
-          tl.to(
-            nextBridgeRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              ease: 'power2.out',
-              duration: 0.32
-            },
-            0.78
-          );
-        }
-
         const refresh = () => {
           ScrollTrigger.sort();
           ScrollTrigger.refresh();
@@ -216,7 +198,6 @@ export default function Showreel() {
           tl.scrollTrigger?.kill();
           tl.kill();
           gsap.set([videoCard, topBar, kickerRow, allWords], { clearProps: 'all' });
-          if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { clearProps: 'all' });
         };
       });
 
@@ -251,7 +232,6 @@ export default function Showreel() {
         setFinalState();
         if (topBar) gsap.set(topBar, { opacity: 1, y: 0 });
         if (kickerRow) gsap.set(kickerRow, { opacity: 1, y: 0 });
-        if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { opacity: 1, y: 0 });
         const allWords = textEl.querySelectorAll<HTMLElement>('.showreel-word');
         gsap.set(allWords, { opacity: 1, y: 0 });
 
@@ -259,7 +239,6 @@ export default function Showreel() {
         return () => {
           window.removeEventListener('resize', setFinalState);
           gsap.set([videoCard, topBar, kickerRow, allWords], { clearProps: 'all' });
-          if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { clearProps: 'all' });
         };
       });
 
@@ -267,7 +246,6 @@ export default function Showreel() {
       mm.add('(max-width: 899px)', () => {
         const allWords = textEl.querySelectorAll<HTMLElement>('.showreel-word');
         gsap.set([videoCard, topBar, kickerRow, allWords], { clearProps: 'all' });
-        if (nextBridgeRef.current) gsap.set(nextBridgeRef.current, { clearProps: 'all' });
       });
 
       return () => {
@@ -290,75 +268,30 @@ export default function Showreel() {
           <div className="showreel-meta">
             <span className="showreel-tag">{showreel.tag}</span>
           </div>
-          <span className="showreel-cue showreel-sound-cue">Sound off by default · Click to unmute</span>
+          <span className="showreel-cue showreel-sound-cue">Sound off by default Â· Click to unmute</span>
         </div>
 
-        {/* Content stage: Kicker + Floated slot & Reflowed Manifesto Text + Action row */}
+        {/* Content stage: floated video slot (left) + text column (right: label above heading) */}
         <div className="showreel-content-stage">
-          <div ref={kickerRowRef} className="showreel-kicker-row">
-            <span className="showreel-quote-kicker">{showreel.headline}</span>
-          </div>
-
           <div className="showreel-editorial-flow">
-            {/* Floated Slot: reserves the upper-left media footprint in the flow */}
+            {/* Slot: reserves the left media footprint; the animating video card lands here */}
             <div ref={videoSlotRef} className="showreel-float-slot" aria-hidden="true" />
 
-            {/* Manifesto text reflowing beside then below the floated video slot */}
-            <p ref={textRef} className="showreel-flow-text">
-              {words.map((word, i) => (
-                <Fragment key={i}>
-                  <span className="showreel-word">{word}</span>
-                  {i < words.length - 1 ? ' ' : ''}
-                </Fragment>
-              ))}
-            </p>
-          </div>
-
-          {/* Next Section Bridge: Previews the upcoming Case Studies section and eliminates empty space */}
-          {showreel.nextPreview && (
-            <div ref={nextBridgeRef} className="showreel-next-bridge">
-              <div className="showreel-next-kicker-row">
-                <div className="showreel-next-kicker-meta">
-                  <span className="eyebrow showreel-next-kicker">{showreel.nextPreview.kicker}</span>
-                  <span className="showreel-next-dot" aria-hidden="true" />
-                  <span className="small muted mono showreel-next-count">5 Complete Systems</span>
-                </div>
-                <button
-                  type="button"
-                  className="showreel-next-jump-link small mono"
-                  onClick={() => scrollToHash('#work')}
-                  onPointerEnter={() => playSfx('hover')}
-                >
-                  <span>{showreel.nextPreview.actionLabel}</span>
-                  <span className="jump-arrow" aria-hidden="true">↓</span>
-                </button>
+            <div className="showreel-text-col">
+              <div ref={kickerRowRef} className="showreel-kicker-row">
+                <span className="showreel-quote-kicker">{showreel.headline}</span>
               </div>
 
-              <div className="showreel-next-main-row">
-                <div className="showreel-next-info">
-                  <h3 className="showreel-next-heading">{showreel.nextPreview.heading}</h3>
-                  <p className="showreel-next-subline small muted">{showreel.nextPreview.subline}</p>
-                </div>
-
-                <div className="showreel-next-pills" role="list" aria-label="Featured projects preview">
-                  {showreel.nextPreview.projects.map((p) => (
-                    <button
-                      key={p.name}
-                      type="button"
-                      className="showreel-next-pill"
-                      onClick={() => scrollToHash('#work')}
-                      onPointerEnter={() => playSfx('hover')}
-                    >
-                      <span className="pill-num mono">{p.num}</span>
-                      <span className="pill-name">{p.name}</span>
-                      <span className="pill-cat small muted">{p.cat}</span>
-                      <span className="pill-arrow" aria-hidden="true">→</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <h2 ref={textRef} className="showreel-flow-text">
+                {words.map((word, i) => (
+                  <Fragment key={i}>
+                    <span className="showreel-word">{word}</span>
+                    {i < words.length - 1 ? ' ' : ''}
+                  </Fragment>
+                ))}
+              </h2>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Animating Video Card: Starts full screen, scales & moves into the float slot */}
