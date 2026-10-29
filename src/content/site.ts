@@ -188,7 +188,7 @@ export const projects: Project[] = [
     summary: 'A complete packaging architecture, dynamic visual identity, and retail dealer system for a high-performance architectural coatings manufacturer.',
     placeholder: false,
     href: '/work/softtouch/',
-    image: '/images/projects/softtouch/cover.jpg.png',
+    image: '/images/projects/softtouch/softtouch case study-02.jpg',
     preview: { alt: 'Packaging lineup for Softtouch coatings and emulsions', mark: 'softtouch' },
     theme: {
       bg: '#1c1613',

@@ -24,6 +24,7 @@
   --font-display: var(--font-space), 'Arial Narrow', Arial, sans-serif;
   --font-body: var(--font-dm), system-ui, sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', 'Fira Code', monospace;
+  --font-specimen: var(--font-montserrat), 'Montserrat', sans-serif;
 
   /* Space and layout */
   --margin: clamp(16px, 2.2vw, 32px);
