@@ -32,11 +32,6 @@ export default function LoadThread() {
     const innerContent = document.querySelector<HTMLElement>('.as-preloader-inner');
     const counterVal = document.querySelector<HTMLElement>('.as-counter-val');
     const progressEl = document.querySelector<HTMLElement>('.as-preloader-progress');
-    const quoteIdxEl = document.querySelector<HTMLElement>('.as-quote-idx');
-    const quotePillarEl = document.querySelector<HTMLElement>('.as-quote-pillar');
-    const quoteNoteEl = document.querySelector<HTMLElement>('.as-quote-note');
-    const statusLabelEl = document.querySelector<HTMLElement>('.as-status-label');
-    const statusTextEl = document.querySelector<HTMLElement>('.as-preloader-status-text');
     const readyIndicatorEl = document.querySelector<HTMLElement>('.as-ready-indicator');
     const cornerCrosses = document.querySelectorAll<HTMLElement>('.as-corner-cross');
     const quoteSlides = document.querySelectorAll<HTMLElement>('.as-quote-slide');
@@ -86,15 +81,6 @@ export default function LoadThread() {
     };
 
     const applyQuoteMeta = (index: number) => {
-      const q = quotes[index];
-      if (!q) return;
-      if (quoteIdxEl) quoteIdxEl.textContent = q.index;
-      if (quotePillarEl) quotePillarEl.textContent = q.pillar;
-      if (quoteNoteEl) quoteNoteEl.textContent = q.note;
-      if (statusLabelEl) statusLabelEl.textContent = `[ THOUGHT ${q.index}/${totalQuotesStr} ]`;
-      if (statusTextEl) {
-        statusTextEl.textContent = `${q.pillar.toUpperCase()} — ${q.note.toUpperCase()}`;
-      }
       quotePips.forEach((pip, idx) => {
         pip.dataset.state = idx < index ? 'done' : idx === index ? 'active' : 'upcoming';
       });
@@ -292,8 +278,6 @@ export default function LoadThread() {
         ease: 'power2.out',
         onStart: () => {
           if (readyIndicatorEl) readyIndicatorEl.textContent = 'PORTFOLIO READY';
-          if (statusLabelEl) statusLabelEl.textContent = '[ 100% · READY ]';
-          if (statusTextEl) statusTextEl.textContent = 'ENTERING ARTSWAPY STUDIO';
           quotePips.forEach((pip) => {
             pip.dataset.state = 'done';
           });
@@ -341,8 +325,6 @@ export default function LoadThread() {
           ease: 'power2.out',
           onStart: () => {
             if (readyIndicatorEl) readyIndicatorEl.textContent = 'PORTFOLIO READY';
-            if (statusLabelEl) statusLabelEl.textContent = '[ 100% · READY ]';
-            if (statusTextEl) statusTextEl.textContent = 'ENTERING ARTSWAPY STUDIO';
           },
           onUpdate: () => updateProgressUI(progressObj.value)
         },

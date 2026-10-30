@@ -1,10 +1,6 @@
-import PlaceholderTag from '@/components/primitives/PlaceholderTag';
 import { about, preloader, site } from '@/content/site';
 
 export default function HeroPreloader() {
-  const firstQuote = preloader.quotes[0];
-  const totalQuotes = String(preloader.quotes.length).padStart(2, '0');
-
   return (
     <div
       id="preloader"
@@ -39,13 +35,6 @@ export default function HeroPreloader() {
             </span>
           </div>
 
-          <div className="as-preloader-center-tag">
-            <span className="mono hide-mobile">[ {preloader.kicker} ]</span>
-            {preloader.placeholder && (
-              <PlaceholderTag>{preloader.placeholderLabel}</PlaceholderTag>
-            )}
-          </div>
-
           <button
             id="preloader-skip"
             type="button"
@@ -60,20 +49,6 @@ export default function HeroPreloader() {
         {/* Center Editorial Quote Stage */}
         <div className="as-preloader-center">
           <div className="as-quote-frame">
-            {/* Step & Pillar Kicker Row */}
-            <div className="as-quote-meta-row mono">
-              <div className="as-quote-step-group">
-                <span className="as-quote-step-badge">
-                  <span className="as-quote-idx">{firstQuote.index}</span>
-                  <span className="as-quote-total">/{totalQuotes}</span>
-                </span>
-                <span className="as-quote-divider" aria-hidden="true">—</span>
-                <span className="as-quote-pillar">{firstQuote.pillar}</span>
-                <span className="as-quote-dot" aria-hidden="true">·</span>
-                <span className="as-quote-note">{firstQuote.note}</span>
-              </div>
-            </div>
-
             {/* Stacked Quote Deck (grid overlap prevents any layout shift) */}
             <div className="as-quote-deck" aria-live="polite" aria-atomic="true">
               {preloader.quotes.map((item, idx) => (
@@ -114,13 +89,6 @@ export default function HeroPreloader() {
         {/* Bottom Progress & Handoff Telemetry */}
         <footer className="as-preloader-bottom">
           <div className="as-preloader-telemetry">
-            <div className="as-preloader-status mono" role="status" aria-live="polite">
-              <span className="as-status-label">[ THOUGHT {firstQuote.index}/{totalQuotes} ]</span>
-              <span className="as-preloader-status-text">
-                {firstQuote.pillar.toUpperCase()} — {firstQuote.note.toUpperCase()}
-              </span>
-            </div>
-
             <div className="as-counter-readout" aria-hidden="true">
               <span className="as-counter-val">00</span>
               <span className="as-counter-pct">%</span>

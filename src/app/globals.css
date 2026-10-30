@@ -1447,7 +1447,7 @@ html[data-intro='done'] .as-preloader {
 
 .as-preloader-telemetry {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: flex-end;
   gap: var(--space-3);
 }
@@ -5958,1555 +5958,849 @@ html[data-theme='dark'] .cs-deliverables-box {
 }
 
 /* ==========================================================================
-   Softtouch Bespoke Case Study Styles (22-Section Reference Storyboard)
+   Softtouch Bespoke Case Study Styles (Full-Screen 100svh Storyboard)
    ========================================================================== */
 
-.cs-softtouch-flow {
+.cs-softtouch-flow,
+html[data-theme='dark'] .cs-softtouch-flow {
+  --bg: #f6f4ef !important;
+  --surface: #ece9e1 !important;
+  --surface-card: #ffffff !important;
+  --ink: #161614 !important;
+  --muted: #5b5850 !important;
+  --hairline: rgba(22, 22, 20, 0.12) !important;
+  --hairline-bold: rgba(22, 22, 20, 0.24) !important;
+  --accent: #E87124 !important;
+  --thread: #E87124 !important;
+  --on-accent: #161614 !important;
+  --project-accent: #E87124 !important;
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: var(--bg);
-  color: var(--ink);
+  background: #ffffff !important;
+  color: #161614 !important;
   overflow-x: hidden;
 }
 
-/* Common Media & Layout Primitives */
-.cs-contain-media {
+/* Studio Top Navigation Bar */
+.cs-softtouch-flow .cs-topbar,
+html[data-theme='dark'] .cs-softtouch-flow .cs-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background: rgba(246, 244, 239, 0.96) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(22, 22, 20, 0.12) !important;
+  padding: 14px 0;
+}
+
+.cs-softtouch-flow .cs-topbar-inner {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 2.5vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cs-softtouch-flow .cs-back-link,
+.cs-softtouch-flow .wordmark,
+html[data-theme='dark'] .cs-softtouch-flow .cs-back-link,
+html[data-theme='dark'] .cs-softtouch-flow .wordmark {
+  color: #161614 !important;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cs-softtouch-flow .cs-back-link:hover,
+.cs-softtouch-flow .wordmark:hover {
+  color: #E87124 !important;
+}
+
+.cs-softtouch-flow .cs-topbar-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Common Section & Container Primitives */
+.cs-st-sec {
+  width: 100%;
+  position: relative;
+  display: block;
+}
+
+.cs-st-guttered {
+  max-width: 1920px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 2.5vw, 36px);
+  margin-bottom: clamp(16px, 2.2vw, 28px);
+}
+
+/* Full-viewport stage used ONLY for the immersive orange logo-transition moment */
+.cs-st-logo-viewport {
+  background: #ea7323;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(24px, 4vw, 56px) clamp(16px, 2.5vw, 36px);
+}
+@media (min-width: 768px) {
+  .cs-st-logo-viewport {
+    min-height: 100svh;
+  }
+}
+
+.cs-st-stage-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+}
+
+.cs-st-container {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 2.5vw, 36px);
+  width: 100%;
+}
+
+/* Intrinsic aspect-ratio image handling — never stretch, squash, or letterbox */
+.cs-st-img-natural {
   width: 100%;
   height: auto;
+  display: block;
+}
+
+.cs-st-hero-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cs-st-logo-img {
+  width: 100%;
+  max-width: 1560px;
+  height: auto;
+  max-height: 84svh;
   object-fit: contain;
   display: block;
 }
 
-.cs-cover-media {
+/* Single-Image Panel Wrapper (preserves source background & natural aspect ratio) */
+.cs-st-panel-single {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(22, 22, 20, 0.08);
+  will-change: transform, opacity;
+}
+
+.cs-st-bg-warm-logo {
+  background: #f5f4ef;
+}
+
+.cs-st-bg-apparel {
+  background: #e7955d;
+}
+
+.cs-st-bg-campaign {
+  background: #e97123;
+}
+
+.cs-st-bg-sketches {
+  background: #fefefe;
+}
+
+.cs-st-bg-dielines {
+  background: #f2f2f2;
+}
+@media (min-width: 768px) {
+  .cs-st-bg-dielines {
+    background: linear-gradient(90deg, #c8bbb2 0%, #c8bbb2 34.25%, #f2f2f2 34.25%, #f2f2f2 100%);
+  }
+}
+
+.cs-st-bg-storefront {
+  background: #f6f4ef;
+}
+
+.cs-st-bg-tilted {
+  background: #eb711e;
+}
+
+/* Paired 2-Column & 3-Column Grids with intentional subtle gaps */
+.cs-st-paired-grid-2 {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(12px, 1.5vw, 20px);
+  align-items: start;
+}
+@media (min-width: 768px) {
+  .cs-st-paired-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cs-st-paired-grid-3 {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(12px, 1.5vw, 20px);
+  align-items: start;
+}
+@media (min-width: 640px) {
+  .cs-st-paired-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.cs-st-panel-cell {
+  width: 100%;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(22, 22, 20, 0.08);
+  background: #f6f4ef;
+  will-change: transform, opacity;
+}
+
+.cs-st-cell-type {
+  background: #e97123;
+}
+
+.cs-st-cell-palette {
+  background: #f1f3f2;
+}
+
+/* Branded Collateral & Utility Objects (Full-Screen Viewport Section) */
+.cs-st-merch-fullscreen {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(32px, 5vh, 64px) clamp(16px, 3.5vw, 64px);
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.cs-st-merch-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: clamp(16px, 2.5vh, 28px);
+}
+
+.cs-st-merch-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  gap: clamp(16px, 2.5vw, 36px);
+  flex: 1;
+}
+
+.cs-st-merch-card-mug {
+  background: #ffffff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: clamp(16px, 2.2vw, 32px);
+  box-sizing: border-box;
+}
+
+.cs-st-merch-card-flask {
+  background: #e6e7e9;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: clamp(16px, 2.2vw, 32px);
+  box-sizing: border-box;
+}
+
+.cs-st-merch-card-usb {
+  background: #ffffff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: clamp(16px, 2.2vw, 32px);
+  box-sizing: border-box;
+}
+
+.cs-st-merch-img {
+  width: 100%;
+  height: 100%;
+  max-height: clamp(380px, 64vh, 640px);
+  object-fit: contain;
   display: block;
 }
 
-.cs-caption-on-orange {
-  color: rgba(255, 255, 255, 0.9) !important;
+@media (max-width: 767px) {
+  .cs-st-merch-fullscreen {
+    min-height: auto;
+    padding: 40px 16px;
+  }
+  .cs-st-merch-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .cs-st-merch-card-mug,
+  .cs-st-merch-card-flask,
+  .cs-st-merch-card-usb {
+    min-height: 280px;
+    padding: 24px 16px;
+  }
+  .cs-st-merch-img {
+    max-height: 320px;
+  }
 }
 
-/* ==========================================================================
-   Section 1: Full-width orange hero image with four paint buckets
-   ========================================================================== */
-.cs-section-1-hero {
-  width: 100%;
+.cs-st-cell-range-left {
+  background: #968e83;
+}
+
+.cs-st-cell-range-right {
+  background: #9d9690;
+}
+
+.cs-st-cell-collateral-left {
+  background: #e7945e;
+}
+
+.cs-st-cell-collateral-right {
+  background: #48392e;
+}
+
+/* Compact Note Bar */
+.cs-st-compact-bar {
+  background: #f6f4ef !important;
+  border: 1px solid rgba(22, 22, 20, 0.1);
+  border-radius: 3px;
+  padding: clamp(16px, 2.2vw, 24px) clamp(20px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  will-change: transform, opacity;
+}
+@media (min-width: 768px) {
+  .cs-st-compact-bar {
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+  }
+}
+
+.cs-st-compact-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cs-st-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E87124;
+  display: inline-block;
+}
+
+.cs-st-compact-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #5b5850 !important;
+  margin: 0;
+}
+
+/* Hero: 4 buckets on orange ground */
+.cs-st-hero {
   background: #E87124;
   overflow: hidden;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.cs-hero-full-media {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Intro Panel (Warm-white inset card with SOFTTOUCH title) */
+.cs-st-intro {
+  padding: clamp(20px, 3vw, 40px) 0;
+  background: #ffffff;
 }
 
-.cs-hero-full-img {
-  width: 100%;
-  height: auto;
-  max-height: 90vh;
-  object-fit: cover;
-  display: block;
+.cs-st-intro-card {
+  background: #f6f4ef !important;
+  border: 1px solid rgba(22, 22, 20, 0.1);
+  border-radius: 3px;
+  padding: clamp(28px, 4vw, 56px) clamp(20px, 3.5vw, 48px);
+  will-change: transform, opacity;
 }
 
-/* ==========================================================================
-   Section 2: Inset warm-white project introduction panel
-   ========================================================================== */
-.cs-section-2-intro {
-  padding-block: clamp(48px, 6vw, 96px);
-  background: var(--bg);
-  width: 100%;
-}
-
-.cs-intro-card {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  padding: clamp(36px, 5.5vw, 68px) clamp(24px, 4.5vw, 56px);
-  box-shadow: var(--shadow-card);
-}
-
-.cs-intro-meta-top {
+.cs-st-meta-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 20px;
-  margin-bottom: 24px;
+  gap: 10px 18px;
+  margin-bottom: 16px;
 }
 
-.cs-intro-kicker,
-.cs-intro-cat {
-  font-size: 11.5px;
-  color: var(--muted);
+.cs-st-tag {
+  font-size: 11px;
+  color: #5b5850 !important;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.cs-intro-pill {
+.cs-st-cat {
   font-size: 11px;
   font-weight: 600;
-  color: var(--accent);
+  color: #b84d0e !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cs-st-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #b84d0e !important;
   background: rgba(232, 113, 36, 0.12);
   border: 1px solid rgba(232, 113, 36, 0.28);
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: var(--radius-pill);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.cs-intro-monument-title {
+.cs-st-title-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  text-align: left;
+  margin: 6px 0 20px;
+}
+
+.cs-st-monument-title,
+html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
+  display: block;
+  text-align: left;
   font-family: var(--font-display);
-  font-size: clamp(3.2rem, 7.5vw, 6.4rem);
+  font-size: clamp(2.5rem, 6.5vw, 5.6rem);
   font-weight: 700;
-  line-height: 0.94;
+  line-height: 0.96;
   letter-spacing: -0.04em;
   text-transform: uppercase;
-  color: var(--ink);
-  margin-bottom: 24px;
+  color: #161614 !important;
+  -webkit-text-fill-color: #161614 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  margin: 0;
+  padding-bottom: 12px;
+  overflow-wrap: break-word;
 }
 
-.cs-intro-lead-summary {
+.cs-st-title-thread {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #E87124;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.cs-st-lead-summary {
   font-family: var(--font-body);
-  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  font-size: clamp(1rem, 1.3vw, 1.18rem);
   line-height: 1.55;
-  color: var(--muted);
-  max-width: 860px;
-  margin-bottom: 40px;
+  color: #5b5850 !important;
+  max-width: 780px;
+  margin: 0 0 28px;
 }
 
-.cs-intro-specs-grid {
-  border-top: 1px solid var(--hairline);
-  padding-top: 30px;
+.cs-st-specs-grid {
+  border-top: 1px solid rgba(22, 22, 20, 0.1);
+  padding-top: 22px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 @media (min-width: 640px) {
-  .cs-intro-specs-grid {
+  .cs-st-specs-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 @media (min-width: 1024px) {
-  .cs-intro-specs-grid {
+  .cs-st-specs-grid {
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 14px;
   }
 }
 
-.cs-intro-spec-item {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-xs);
-  padding: 18px 20px;
+.cs-st-spec-box {
+  background: #ece9e1 !important;
+  border: 1px solid rgba(22, 22, 20, 0.08);
+  border-radius: 2px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: border-color var(--t-ui) var(--ease-out), transform var(--t-ui) var(--ease-out);
+  gap: 4px;
 }
-@media (hover: hover) and (pointer: fine) {
-  .cs-intro-spec-item:hover {
-    border-color: rgba(232, 113, 36, 0.4);
-    transform: translateY(-2px);
+
+.cs-st-spec-box .spec-label {
+  font-size: 10.5px;
+  color: #5b5850 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cs-st-spec-box .spec-value {
+  font-size: 13.5px;
+  color: #161614 !important;
+  font-weight: 600;
+}
+
+/* Full-width orange panel with centered white Softtouch logo */
+.cs-st-orange-logo {
+  background: #ea7323;
+  width: 100%;
+}
+
+/* Story Brief / Context */
+.cs-st-story {
+  padding: clamp(20px, 3vw, 40px) 0;
+  background: #ffffff;
+}
+
+.cs-st-story-box {
+  background: #f6f4ef !important;
+  border: 1px solid rgba(22, 22, 20, 0.1);
+  border-radius: 3px;
+  padding: clamp(24px, 3.5vw, 44px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  will-change: transform, opacity;
+}
+@media (min-width: 768px) {
+  .cs-st-story-box {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
   }
 }
 
-/* ==========================================================================
-   Section 3: Full-width orange panel with centered Softtouch logo
-   ========================================================================== */
-.cs-section-3-orange-logo {
-  background: #ea7323;
-  width: 100%;
+.cs-st-story-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cs-st-story-lead {
+  font-size: clamp(0.98rem, 1.25vw, 1.12rem);
+  line-height: 1.55;
+  color: #161614 !important;
+  margin: 0;
+}
+
+/* Typography & Colour Palette System */
+.cs-st-type-palette {
+  background: transparent;
+}
+
+/* Centered Softtouch logo on warm paper ground */
+.cs-st-light-logo {
+  background: transparent;
+}
+
+/* 1. Three branded objects (Mug, Flask, USB) */
+.cs-st-merch {
+  background: transparent;
+}
+
+/* 2. Apparel (Peach/orange backdrop #e7955d inside .cs-st-bg-apparel) */
+.cs-st-apparel {
+  background: transparent;
+}
+
+/* 3. Campaign banner (Orange backdrop #e97123 inside .cs-st-bg-campaign) */
+.cs-st-campaign {
+  background: transparent;
+}
+
+/* Process Note */
+.cs-st-process-note {
+  padding: clamp(16px, 2.5vw, 32px) 0;
+  background: #ffffff;
+}
+
+/* 4. Sketches (Light background #fefefe inside .cs-st-bg-sketches) */
+.cs-st-sketches {
+  background: transparent;
+}
+
+/* 5. Packaging (Split plain bucket left #c8bbb2, label designs right #f2f2f2 inside .cs-st-bg-dielines) */
+.cs-st-die-lines {
+  background: transparent;
+}
+
+/* 6. Product range */
+.cs-st-range {
+  background: transparent;
+}
+
+/* Second Title Panel */
+.cs-st-second-title {
+  padding: clamp(16px, 2.5vw, 32px) 0;
+  background: #ffffff;
+}
+
+/* 7. Print & collateral */
+.cs-st-collateral {
+  background: transparent;
+}
+
+/* 8. Environmental branding (Storefront signage) */
+.cs-st-storefront {
+  background: transparent;
+}
+
+/* 9. Product detail & oversized wordmark */
+.cs-st-detail-wordmark {
+  padding: clamp(32px, 4.5vw, 56px) 0 0 0;
+  margin-bottom: clamp(16px, 2.2vw, 28px);
+  background: #ebe8df;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-block: clamp(60px, 8.5vw, 120px);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.cs-orange-logo-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: var(--container-max);
-  padding-inline: var(--margin);
+.cs-st-detail-wrap {
+  margin-block: auto;
 }
 
-.cs-orange-logo-img {
-  width: 100%;
-  max-width: 900px;
-  height: auto;
+.cs-st-detail-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(22, 22, 20, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.cs-st-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: clamp(24px, 3.5vw, 44px);
+}
+@media (min-width: 768px) {
+  .cs-st-detail-layout {
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+  }
+}
+
+.cs-st-detail-thumb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 2px;
+}
+
+.cs-st-thumb-img {
+  max-height: 260px;
+  width: auto;
   object-fit: contain;
   display: block;
 }
 
-/* ==========================================================================
-   Section 4: Light two-column brand/story text section
-   ========================================================================== */
-.cs-section-4-story {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-story-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-}
-@media (min-width: 768px) {
-  .cs-story-layout {
-    grid-template-columns: 1fr 1.6fr;
-    gap: 64px;
-    align-items: start;
-  }
-}
-
-.cs-story-heading {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3.6vw, 3.2rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin-top: 16px;
-  color: var(--ink);
-}
-
-.cs-story-lead-p {
-  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
-  line-height: 1.65;
-  margin-bottom: 24px;
-  color: var(--ink);
-}
-
-.cs-story-sub-p {
-  font-size: clamp(1rem, 1.35vw, 1.15rem);
-  line-height: 1.65;
-  color: var(--muted);
-  margin-bottom: 0;
-}
-
-/* ==========================================================================
-   Section 5: Typography & colour palette composition
-   ========================================================================== */
-.cs-section-5-type-palette {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--surface);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-type-palette-composition {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-@media (min-width: 768px) {
-  .cs-type-palette-composition {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-}
-
-.cs-type-col-card,
-.cs-palette-col-card {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  padding: clamp(24px, 3.5vw, 36px);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-card-sublabel {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.08em;
-}
-
-.cs-type-specimen-box {
-  background: #E87124;
-  border-radius: var(--radius-xs);
-  padding: clamp(24px, 3.5vw, 36px);
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  height: 100%;
-  justify-content: center;
-  font-family: var(--font-specimen);
-}
-
-.cs-type-sample-name {
-  font-family: var(--font-specimen);
-  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: #ffffff;
-}
-
-.cs-type-sample-alphabet {
-  font-family: var(--font-specimen);
-  font-size: clamp(14px, 1.35vw, 17px);
-  line-height: 1.6;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.95);
-  word-break: break-word;
-}
-
-.cs-type-sample-numbers {
-  font-family: var(--font-display);
-  font-size: 18px;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.cs-type-sample-weights {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 18px;
-  margin-top: 8px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.cs-weight-chip {
-  font-size: 13px;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-}
-
-.cs-palette-chips-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  height: 100%;
-}
-
-.cs-palette-chip-item {
-  border-radius: var(--radius-xs);
-  padding: 20px 24px;
+.cs-st-detail-content {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex: 1;
-  justify-content: center;
 }
 
-.cs-chip-white-border {
-  border: 1px solid var(--hairline);
-}
-
-.cs-chip-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.cs-chip-hex-code {
-  font-size: 16px;
+.cs-st-detail-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  color: #161614 !important;
+  line-height: 1.15;
+  margin: 0;
 }
 
-.cs-chip-name-title {
-  font-size: 13.5px;
-  font-weight: 600;
-  opacity: 0.92;
-}
-
-.cs-chip-specs {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-  font-size: 12px;
-  opacity: 0.85;
-}
-
-/* ==========================================================================
-   Section 6: Centered Softtouch logo on light background
-   ========================================================================== */
-.cs-section-6-light-logo {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-light-logo-panel {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  padding: clamp(40px, 6vw, 76px) clamp(24px, 4vw, 48px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 28px;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-light-logo-wrap {
-  padding-block: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.cs-light-logo-img {
-  max-width: 480px;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-.cs-panel-subcaption {
-  font-size: 12px;
-  color: var(--muted);
+.cs-st-detail-p {
+  font-size: clamp(0.95rem, 1.2vw, 1.08rem);
+  line-height: 1.55;
+  color: #5b5850 !important;
+  margin: 0;
   max-width: 540px;
 }
 
-/* ==========================================================================
-   Section 7: Horizontal row of branded product/object images
-   ========================================================================== */
-.cs-section-7-merch-strip {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--surface);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-merch-strip-card {
+.cs-st-wordmark-strip {
   width: 100%;
-  background: #ffffff;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  padding: clamp(16px, 3vw, 32px);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-merch-strip-img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.cs-merch-triptych-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-}
-@media (min-width: 640px) {
-  .cs-merch-triptych-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-}
-
-.cs-merch-card-item {
-  background: #ffffff;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(12px, 2vw, 24px);
-  transition: transform var(--t-ui) var(--ease-out), border-color var(--t-ui) var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .cs-merch-card-item:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent);
-  }
-}
-
-.cs-packaging-die-line-panel {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-range-split-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-@media (min-width: 768px) {
-  .cs-range-split-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-}
-
-.cs-range-grid-item {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cs-collateral-split-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-@media (min-width: 768px) {
-  .cs-collateral-split-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-}
-
-.cs-collateral-grid-item {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cs-detail-media-inner {
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: center;
-  gap: 32px;
-  padding: clamp(24px, 4vw, 48px);
-}
-@media (min-width: 768px) {
-  .cs-detail-media-inner {
-    grid-template-columns: 340px 1fr;
-    gap: 48px;
-  }
-}
-
-.cs-detail-thumb-box {
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-xs);
-  padding: 24px;
+  align-items: flex-end;
+  padding-top: clamp(24px, 4vw, 48px);
+  padding-bottom: clamp(6px, 1.5vw, 14px);
+  background: #ebe8df;
+  overflow: hidden;
+  line-height: 0.8;
 }
 
-.cs-detail-thumb-img {
-  max-height: 320px;
-  width: auto;
-  object-fit: contain;
-}
-
-.cs-detail-lead-content {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.cs-detail-headline {
+.cs-st-oversized-text {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+  font-size: clamp(4.4rem, 18vw, 17.5rem);
   font-weight: 700;
-  color: var(--ink);
-  line-height: 1.2;
-}
-
-.cs-detail-lead-p {
-  font-size: clamp(1.05rem, 1.35vw, 1.2rem);
-  line-height: 1.65;
-  color: var(--muted);
-}
-
-.cs-oversized-live-text {
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 13vw, 13rem);
-  font-weight: 700;
-  line-height: 0.85;
-  letter-spacing: -0.05em;
+  line-height: 0.8;
+  letter-spacing: -0.055em;
   text-transform: lowercase;
-  color: #ea7323;
+  color: #ffffff;
   user-select: none;
-  opacity: 0.92;
   text-align: center;
+  white-space: nowrap;
+  will-change: transform, opacity;
 }
 
-/* ==========================================================================
-   Section 8: Large orange-toned apparel/T-shirt image
-   ========================================================================== */
-.cs-section-8-apparel {
-  padding-block: clamp(64px, 8.5vw, 120px);
-  background: #ea7323;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.cs-apparel-inner {
-  max-width: var(--container-max);
-  margin-inline: auto;
-  padding-inline: var(--margin);
-  display: flex;
-  justify-content: center;
-}
-
-.cs-apparel-img {
-  width: 100%;
-  max-width: 1100px;
-  height: auto;
-  display: block;
-}
-
-/* ==========================================================================
-   Section 9: Orange Hindi campaign panel with phone mockup
-   ========================================================================== */
-.cs-section-9-campaign {
-  background: var(--surface);
-  padding-block: clamp(64px, 8vw, 110px);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-campaign-banner-media {
-  width: 100%;
-  background: #E87124;
-  display: flex;
-  justify-content: center;
-  margin-bottom: clamp(36px, 5vw, 56px);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.cs-campaign-banner-img {
-  width: 100%;
-  max-width: var(--container-max);
-  height: auto;
-  display: block;
-}
-
-.cs-campaign-content-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-}
-@media (min-width: 768px) {
-  .cs-campaign-content-grid {
-    grid-template-columns: 1.2fr 1fr;
-    gap: 48px;
-    align-items: start;
-  }
-}
-
-.cs-tagline-block {
-  border-left: 3px solid var(--accent);
-  padding-left: 24px;
-}
-
-.cs-block-kicker {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.06em;
-  display: block;
-  margin-bottom: 10px;
-}
-
-.cs-hindi-text {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 2.8vw, 2.5rem);
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1.25;
-  margin-bottom: 6px;
-}
-
-.cs-romanized-text {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
-
-.cs-motto-desc {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-.cs-mobile-app-block {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-xs);
-  padding: 28px;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-app-heading {
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-
-/* ==========================================================================
-   Section 10: Light two-column strategy/content panel
-   ========================================================================== */
-.cs-section-10-strategy {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-strategy-two-col {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-}
-@media (min-width: 768px) {
-  .cs-strategy-two-col {
-    grid-template-columns: 1fr 1fr;
-    gap: 56px;
-  }
-}
-
-.cs-strategy-col {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.cs-strategy-h2 {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--ink);
-}
-
-.cs-strategy-body {
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--muted);
-}
-
-.cs-deliverables-panel {
-  margin-top: 48px;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  padding: clamp(24px, 4vw, 40px);
-}
-
-.cs-deliverables-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.08em;
-  display: block;
-  margin-bottom: 16px;
-}
-
-.cs-deliverables-items-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 768px) {
-  .cs-deliverables-items-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.cs-deliv-item {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  font-size: 14.5px;
-  color: var(--ink);
-}
-
-/* ==========================================================================
-   Section 11: Full-width hand-drawn concept and packaging sketches
-   ========================================================================== */
-.cs-section-11-sketches {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--surface);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-sketches-container {
-  width: 100%;
+/* Split Identity Card */
+.cs-st-split-panel {
+  padding: clamp(20px, 3vw, 40px) 0;
   background: #ffffff;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
+}
+
+.cs-st-split-card {
+  background: #f6f4ef !important;
+  border: 1px solid rgba(22, 22, 20, 0.1);
+  border-radius: 3px;
   overflow: hidden;
-  box-shadow: var(--shadow-card);
-  padding: clamp(16px, 3vw, 36px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.cs-sketches-img {
-  width: 100%;
-  max-width: 1200px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.cs-mechanics-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
-  margin-top: 40px;
+  will-change: transform, opacity;
 }
 @media (min-width: 768px) {
-  .cs-mechanics-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .cs-st-split-card {
+    grid-template-columns: 1.25fr 1fr;
   }
 }
 
-.cs-mech-card {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-xs);
-  padding: 28px 24px;
+.cs-st-split-left {
+  padding: clamp(28px, 4vw, 52px) clamp(20px, 3.5vw, 48px);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  transition: border-color var(--t-ui) var(--ease-out), transform var(--t-ui) var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .cs-mech-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-}
-
-.cs-mech-num {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.08em;
-}
-
-.cs-mech-title {
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1.25;
-}
-
-.cs-mech-desc {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-/* ==========================================================================
-   Section 12: Split packaging section (Containers on left, labels on right)
-   ========================================================================== */
-.cs-section-12-split-packaging {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-split-packaging-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-}
-@media (min-width: 860px) {
-  .cs-split-packaging-grid {
-    grid-template-columns: 1fr 1.35fr;
-    gap: 40px;
-    align-items: start;
-  }
-}
-
-.cs-containers-column,
-.cs-labels-column {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.cs-single-container-card {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-container-img-wrap {
-  width: 100%;
-  display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 220px;
-}
-.cs-container-img-wrap img {
-  max-height: 320px;
-  width: auto;
-}
-
-.cs-enamel-wrap img {
-  max-height: 200px;
-}
-
-.cs-container-card-meta {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--hairline);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.cs-meta-h {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.cs-meta-p {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.cs-single-label-card {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-label-frame {
-  width: 100%;
-  background: #111;
-  overflow-x: auto;
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-label-card-meta {
-  padding: 20px 24px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.cs-label-meta-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.cs-label-badge {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  background: rgba(232, 113, 36, 0.1);
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
-  border: 1px solid rgba(232, 113, 36, 0.2);
-}
-
-/* ==========================================================================
-   Section 13: Product-range photography in a multi-image layout
-   ========================================================================== */
-.cs-section-13-range-gallery {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--surface);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-range-gallery-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.cs-range-image-panel {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-range-full-panel {
-  padding: clamp(16px, 2.5vw, 32px);
-  background: #fbfaf7;
-}
-
-.cs-range-taxonomy-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  margin-top: 44px;
-}
-@media (min-width: 640px) {
-  .cs-range-taxonomy-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (min-width: 1024px) {
-  .cs-range-taxonomy-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.cs-tax-card {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-xs);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   gap: 12px;
-  transition: border-color var(--t-ui) var(--ease-out), transform var(--t-ui) var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .cs-tax-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
+  background: #f6f4ef !important;
 }
 
-.cs-tax-cat {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.cs-tax-name {
+.cs-st-split-title,
+html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-title {
+  display: block;
+  text-align: left;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: clamp(2.5rem, 6.2vw, 5.2rem);
   font-weight: 700;
-  color: var(--ink);
-  line-height: 1.15;
-}
-
-.cs-tax-desc {
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: var(--muted);
-  flex-grow: 1;
-}
-
-.cs-tax-pack {
-  font-size: 11px;
-  color: var(--muted);
-  padding-top: 10px;
-  border-top: 1px solid var(--hairline);
-}
-
-/* ==========================================================================
-   Section 14: Inset light Softtouch title/identity panel
-   ========================================================================== */
-.cs-section-14-inset-title {
-  padding-block: clamp(48px, 6.5vw, 96px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-inset-identity-card {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  padding: clamp(48px, 6vw, 84px) clamp(24px, 5vw, 64px);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-inset-card-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 12px 24px;
-  margin-bottom: 24px;
-}
-
-.cs-card-kicker {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-}
-
-.cs-card-cat {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.cs-inset-monument-wordmark {
-  font-family: var(--font-display);
-  font-size: clamp(3.4rem, 8.5vw, 7.5rem);
-  font-weight: 700;
-  line-height: 0.92;
+  line-height: 0.96;
   letter-spacing: -0.04em;
   text-transform: uppercase;
-  color: var(--ink);
-  margin-bottom: 20px;
+  color: #161614 !important;
+  -webkit-text-fill-color: #161614 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  margin: 0;
+  padding-bottom: 12px;
+  overflow-wrap: break-word;
 }
 
-.cs-inset-card-lead {
-  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-  line-height: 1.55;
-  color: var(--muted);
-  max-width: 680px;
+.cs-st-split-lead {
+  font-size: clamp(0.95rem, 1.2vw, 1.08rem);
+  line-height: 1.5;
+  color: #5b5850 !important;
+  max-width: 480px;
+  margin: 0;
 }
 
-/* ==========================================================================
-   Section 15: Print and collateral mockups (brochure & standing display)
-   ========================================================================== */
-.cs-section-15-collateral {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--surface);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-collateral-card {
+.cs-st-split-right {
+  background: #E87124;
+  min-height: 180px;
   width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
+}
+
+/* 10. Final product composition (Tilted pails on #eb711e orange ground inside .cs-st-bg-tilted) */
+.cs-st-tilted-pails {
+  background: transparent;
   overflow: hidden;
-  box-shadow: var(--shadow-card);
 }
 
-/* ==========================================================================
-   Section 16: Full-width storefront/signage image
-   ========================================================================== */
-.cs-section-16-storefront {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+/* 11. Closing CTA & Navigation */
+.cs-st-closing {
+  padding: clamp(48px, 6.5vw, 88px) 0;
+  background: #f6f4ef !important;
+  border-top: 1px solid rgba(22, 22, 20, 0.1);
+  border-bottom: 1px solid rgba(22, 22, 20, 0.1);
 }
 
-.cs-storefront-media-panel {
-  width: 100%;
-  background: #0f1012;
-  border: 1px solid var(--inverse-hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-retail-features-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-  margin-top: 40px;
-}
-@media (min-width: 768px) {
-  .cs-retail-features-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.cs-retail-feat-card {
-  background: rgba(246, 244, 239, 0.04);
-  border: 1px solid var(--inverse-hairline);
-  border-radius: var(--radius-xs);
-  padding: 24px;
+.cs-enquiry-banner {
+  background: #ffffff;
+  border: 1px solid rgba(22, 22, 20, 0.1);
+  border-radius: 3px;
+  padding: clamp(28px, 4vw, 48px);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.cs-feat-badge {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.cs-feat-title {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--inverse-ink);
-  line-height: 1.25;
-}
-
-.cs-feat-desc {
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--inverse-muted);
-}
-
-/* ==========================================================================
-   Section 17: Light product-detail section with product image & related copy
-   ========================================================================== */
-.cs-section-17-product-detail {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-detail-media-card {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-detail-notes-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  margin-top: 36px;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  will-change: transform, opacity;
 }
 @media (min-width: 768px) {
-  .cs-detail-notes-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .cs-enquiry-banner {
+    flex-direction: row;
+    align-items: center;
   }
 }
 
-.cs-note-box {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-xs);
-  padding: 24px 20px;
+.cs-enquiry-content {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-width: 620px;
 }
 
-.cs-note-tag {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.06em;
-}
-
-.cs-note-title {
+.cs-enquiry-title {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: clamp(1.6rem, 2.5vw, 2.4rem);
   font-weight: 700;
-  color: var(--ink);
-}
-
-.cs-note-body {
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: var(--muted);
-}
-
-/* ==========================================================================
-   Section 18: Oversized Softtouch wordmark on a light background
-   ========================================================================== */
-.cs-section-18-oversized-wordmark {
-  width: 100%;
-  background: var(--surface);
-  padding-block: clamp(56px, 7vw, 100px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-oversized-wordmark-inner {
-  width: 100%;
-  max-width: var(--container-max);
-  padding-inline: var(--margin);
-  display: flex;
-  justify-content: center;
-}
-
-.cs-oversized-wordmark-img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-/* ==========================================================================
-   Section 19: Inset Softtouch identity panel with dark colour block
-   ========================================================================== */
-.cs-section-19-dark-block {
-  padding-block: clamp(48px, 6.5vw, 96px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-dark-contrast-card {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.cs-dark-contrast-top {
-  padding: clamp(36px, 5.5vw, 68px) clamp(24px, 4.5vw, 56px);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.cs-dark-header-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 20px;
-}
-
-.cs-dark-kicker {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-}
-
-.cs-dark-cat {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.cs-dark-contrast-title {
-  font-family: var(--font-display);
-  font-size: clamp(3.2rem, 7vw, 6.2rem);
-  font-weight: 700;
-  line-height: 0.94;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-
-.cs-dark-contrast-lead {
-  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-  line-height: 1.55;
-  color: var(--muted);
-  max-width: 720px;
-}
-
-.cs-dark-color-block-bar {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-@media (min-width: 640px) {
-  .cs-dark-color-block-bar {
-    flex-direction: row;
-  }
-}
-
-.cs-dark-bar-segment {
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.cs-bar-ink {
-  background: #231F20;
-  color: #ffffff;
-}
-
-.cs-bar-orange {
-  background: #E87124;
-  color: #ffffff;
-}
-
-.cs-bar-label {
-  font-size: 12px;
-  letter-spacing: 0.06em;
-}
-
-/* ==========================================================================
-   Section 20: Orange product composition featuring two tilted paint containers
-   ========================================================================== */
-.cs-section-20-tilted-pails {
-  padding-block: clamp(64px, 8.5vw, 120px);
-  background: #ea7323;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.cs-tilted-pails-media {
-  max-width: var(--container-max);
-  margin-inline: auto;
-  padding-inline: var(--margin);
-  display: flex;
-  justify-content: center;
-}
-
-.cs-tilted-pails-img {
-  width: 100%;
-  max-width: 1100px;
-  height: auto;
-  display: block;
-}
-
-/* ==========================================================================
-   Section 21: Project closing/related-work section
-   ========================================================================== */
-.cs-section-21-closing-related {
-  padding-block: clamp(64px, 8vw, 110px);
-  background: var(--surface);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.cs-related-projects-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
-  margin-bottom: 48px;
-}
-@media (min-width: 768px) {
-  .cs-related-projects-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 36px;
-  }
-}
-
-.cs-related-card {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform var(--t-ui) var(--ease-out), border-color var(--t-ui) var(--ease-out), box-shadow var(--t-ui) var(--ease-out);
-  text-decoration: none;
-  color: inherit;
-  box-shadow: var(--shadow-card);
-}
-@media (hover: hover) and (pointer: fine) {
-  .cs-related-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.1);
-  }
-  .cs-related-card:hover .cs-related-img {
-    transform: scale(1.03);
-  }
-}
-
-.cs-related-media-wrap {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: var(--surface);
-  overflow: hidden;
-  position: relative;
-}
-
-.cs-related-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 400ms var(--ease-out);
-}
-
-.cs-related-meta {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.cs-related-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.cs-related-cat {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.cs-related-year {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.cs-related-title {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-
-.cs-related-summary {
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--muted);
-  flex-grow: 1;
-  margin-bottom: 16px;
-}
-
-.cs-related-link-text {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.04em;
+  color: #161614 !important;
+  line-height: 1.15;
+  margin: 0;
 }
 
 .cs-pagination-nav-bar {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
-  padding-top: 36px;
-  border-top: 1px solid var(--hairline);
+  padding-top: 32px;
+  border-top: 1px solid rgba(22, 22, 20, 0.12);
+  will-change: transform, opacity;
 }
 @media (min-width: 640px) {
   .cs-pagination-nav-bar {
@@ -7514,42 +6808,55 @@ html[data-theme='dark'] .cs-deliverables-box {
   }
 }
 
-.cs-page-nav {
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-xs);
+.cs-softtouch-flow .cs-page-nav {
+  background: #ffffff !important;
+  border: 1px solid rgba(22, 22, 20, 0.12) !important;
+  border-radius: 3px;
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   text-decoration: none;
-  color: inherit;
+  color: #161614 !important;
   transition: border-color var(--t-ui) var(--ease-out), transform var(--t-ui) var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  .cs-page-nav:hover {
-    border-color: var(--accent);
+  .cs-softtouch-flow .cs-page-nav:hover {
+    border-color: #E87124 !important;
     transform: translateY(-2px);
   }
 }
 
-.nav-project-name {
+.cs-softtouch-flow .cs-page-nav:focus-visible,
+.cs-softtouch-flow .cs-back-link:focus-visible,
+.cs-softtouch-flow .wordmark:focus-visible {
+  outline: 2px solid #E87124 !important;
+  outline-offset: 3px;
+  transition: none !important;
+}
+
+.cs-softtouch-flow .nav-project-name {
   font-family: var(--font-display);
   font-size: 18px;
   font-weight: 700;
-  color: var(--ink);
+  color: #161614 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cs-softtouch-flow [data-r] {
+  .cs-softtouch-flow *,
+  .cs-softtouch-flow [data-st-media],
+  .cs-softtouch-flow [data-st-media] img,
+  .cs-softtouch-flow [data-st-card],
+  .cs-softtouch-flow [data-st-char],
+  .cs-softtouch-flow [data-st-thread],
+  .cs-softtouch-flow [data-st-item],
+  .cs-softtouch-flow [data-st-split-accent],
+  .cs-softtouch-flow [data-st-thumb],
+  .cs-softtouch-flow [data-st-wordmark] {
     opacity: 1 !important;
     transform: none !important;
+    clip-path: none !important;
     transition: none !important;
-  }
-  .theme-icon,
-  .theme-toggle,
-  .theme-toggle-dot {
-    transition: none !important;
+    animation: none !important;
   }
 }
-

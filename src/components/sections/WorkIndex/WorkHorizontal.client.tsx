@@ -427,7 +427,7 @@ export default function WorkHorizontal({
                 <div className="project-card-content">
                   {/* 3-Column Metadata Row */}
                   <div className="project-meta-bar">
-                    <span className="project-year-badge mono">[ {p.year} ]</span>
+                    <span className="project-year-badge mono">[ {p.year || 'CASE STUDY'} ]</span>
                     <span className="project-category-center mono">{p.category}</span>
                     <span className="project-discipline-right mono">{p.discipline ?? 'Brand & Identity'}</span>
                   </div>

@@ -315,7 +315,7 @@ export function buildCaseStudyJsonLd(project: Project) {
         description: project.caseStudy
           ? `${project.summary} ${project.caseStudy.challenge}`
           : project.summary,
-        datePublished: `${project.year}-01-01`,
+        ...(/^\d{4}$/.test(project.year) ? { datePublished: `${project.year}-01-01` } : {}),
         inLanguage: 'en',
         genre: project.discipline ?? 'Brand Strategy & Identity',
         keywords: [

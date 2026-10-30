@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Space_Grotesk, Montserrat } from 'next/font/google';
+import { DM_Sans, Space_Grotesk } from 'next/font/google';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 import SoundEffects from '@/components/providers/SoundEffects.client';
 import CustomCursor from '@/components/layout/CustomCursor.client';
@@ -12,7 +12,6 @@ import {
 } from '@/lib/seo';
 import './globals.css';
 import { cn } from "@/lib/utils";
-
 
 const space = Space_Grotesk({
   subsets: ['latin'],
@@ -28,14 +27,6 @@ const dm = DM_Sans({
   display: 'swap',
   adjustFontFallback: true,
   variable: '--font-dm'
-});
-
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-  display: 'swap',
-  adjustFontFallback: true,
-  variable: '--font-montserrat'
 });
 
 const baseMetadata = buildPageMetadata({ path: '/' });
@@ -70,7 +61,7 @@ const jsonLd = buildHomeJsonLd();
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn(space.variable, dm.variable, montserrat.variable)} suppressHydrationWarning>
+    <html lang="en" className={cn(space.variable, dm.variable)} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script
