@@ -32,68 +32,95 @@ export default function SofttouchCaseStudy({
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // 1. Immersive Orange Logo Transition Moment (full-viewport stage)
+        // 1. Dual-Layer Logo Color Transition (orange treatment to warm-white treatment)
         const logoStage = root.querySelector<HTMLElement>('.cs-st-orange-logo');
-        const logoMedia = logoStage?.querySelector<HTMLElement>('[data-st-media="single"]');
-        if (logoStage && logoMedia) {
+        const logoDarkVariant = logoStage?.querySelector<HTMLElement>('.cs-st-logo-variant-dark');
+        const logoLightVariant = logoStage?.querySelector<HTMLElement>('.cs-st-logo-variant-light');
+
+        if (logoStage && logoDarkVariant && logoLightVariant) {
+          // Entrance reveal when scrolling into view
           gsap.fromTo(
-            logoMedia,
+            logoDarkVariant,
             { y: 36, scale: 0.96, opacity: 0 },
             {
               y: 0,
               scale: 1,
               opacity: 1,
+              duration: 0.8,
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: logoStage,
                 start: 'top 88%',
-                end: 'top 25%',
+                end: 'top 35%',
                 scrub: 0.45,
                 fastScrollEnd: true
               }
             }
           );
+
+          // Color transition: As the section progresses or approaches the warm-white section,
+          // smoothly crossfade from the orange background & white/orange logo (03.jpg)
+          // to the warm-white background & orange/black logo (04.jpg)
+          const transitionTL = gsap.timeline({
+            scrollTrigger: {
+              trigger: logoStage,
+              start: 'top 15%',
+              end: 'bottom 50%',
+              scrub: 0.5,
+              fastScrollEnd: true
+            }
+          });
+
+          transitionTL
+            .to(logoStage, { backgroundColor: '#f5f4ef', ease: 'none' }, 0)
+            .to(logoDarkVariant, { opacity: 0, ease: 'none' }, 0)
+            .to(logoLightVariant, { opacity: 1, ease: 'none' }, 0);
         }
 
-        // Softtouch Logo Reveal Video Scrubbing (Scroll-driven frame scrub)
+        // 2. Sequential Softtouch Logo Reveal Video (Symbol appears first, then full wordmark reveals left-to-right)
         const lightLogoStage = root.querySelector<HTMLElement>('.cs-st-light-logo');
         const logoVideo = lightLogoStage?.querySelector<HTMLVideoElement>('.cs-st-logo-video');
 
-        let videoScrubST: ScrollTrigger | null = null;
-        let onVideoMetaLoaded: (() => void) | null = null;
+        let videoST: ScrollTrigger | null = null;
 
         if (lightLogoStage && logoVideo) {
-          logoVideo.pause();
-
-          const initVideoScrub = () => {
-            if (videoScrubST) return;
-            const duration = !isNaN(logoVideo.duration) && logoVideo.duration > 0
-              ? logoVideo.duration
-              : 2.0;
-
-            videoScrubST = ScrollTrigger.create({
-              id: 'st-logo-reveal-scrub',
-              trigger: lightLogoStage,
-              start: 'top 85%',
-              end: 'bottom 45%',
-              scrub: true,
-              invalidateOnRefresh: true,
-              onUpdate: (self) => {
-                const targetTime = self.progress * duration;
-                if (!isNaN(targetTime) && Math.abs(logoVideo.currentTime - targetTime) > 0.015) {
-                  logoVideo.currentTime = targetTime;
-                }
-              }
-            });
+          // Start primed at t = 0.25s where the symbol is already crisply visible alone
+          const primeVideo = () => {
+            try {
+              logoVideo.pause();
+              logoVideo.currentTime = 0.25;
+            } catch (_) {}
           };
 
-          if (logoVideo.readyState >= 1) {
-            initVideoScrub();
+          if (logoVideo.readyState >= 2) {
+            primeVideo();
           } else {
-            onVideoMetaLoaded = () => initVideoScrub();
-            logoVideo.addEventListener('loadedmetadata', onVideoMetaLoaded, { once: true });
+            logoVideo.addEventListener('loadeddata', primeVideo, { once: true });
           }
+
+          // Trigger smooth playback when the logo box enters into view
+          videoST = ScrollTrigger.create({
+            trigger: lightLogoStage,
+            start: 'top 75%',
+            once: false,
+            onEnter: () => {
+              // Symbol is visible first, then after a brief natural pause, reveal wordmark
+              logoVideo.currentTime = 0.25;
+              const playPromise = logoVideo.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(() => {});
+              }
+            },
+            onEnterBack: () => {
+              logoVideo.currentTime = 0.25;
+              const playPromise = logoVideo.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(() => {});
+              }
+            }
+          });
         }
+
 
         // 3. Natural-proportion image stages (single & multi-column) — restrained scroll reveals
         const stages = Array.from(root.querySelectorAll<HTMLElement>('[data-st-stage]:not(.cs-st-orange-logo):not(.cs-st-light-logo)'));
@@ -174,11 +201,8 @@ export default function SofttouchCaseStudy({
 
         return () => {
           imgs.forEach((img) => img.removeEventListener('load', onImgLoad));
-          if (logoVideo && onVideoMetaLoaded) {
-            logoVideo.removeEventListener('loadedmetadata', onVideoMetaLoaded);
-          }
-          if (videoScrubST) {
-            videoScrubST.kill();
+          if (videoST) {
+            videoST.kill();
           }
         };
       });
@@ -192,7 +216,7 @@ export default function SofttouchCaseStudy({
           }
         }
         const allAnimated = root.querySelectorAll(
-          '.cs-st-stage-inner, .cs-st-hero-img, [data-st-media], [data-st-media] img, [data-st-card], [data-st-thread], [data-st-item], [data-st-split-accent], [data-st-thumb], [data-st-wordmark]'
+          '.cs-st-stage-inner, .cs-st-hero-img, [data-st-media], [data-st-media] img, [data-st-card], [data-st-thread], [data-st-item], [data-st-thumb]'
         );
         gsap.set(allAnimated, { clearProps: 'all' });
       });
@@ -286,20 +310,32 @@ export default function SofttouchCaseStudy({
 
       {/* =========================================================================
           Immersive Full-Viewport Logo Transition Moment (100svh on desktop)
-          Asset: /images/projects/softtouch/softtouch case study-03.jpg (1918×883)
+          Dual treatments:
+          - Orange ground: /images/projects/softtouch/softtouch case study-03.jpg (white/orange logo)
+          - Warm-white ground: /images/projects/softtouch/softtouch case study-04.jpg (orange/black logo)
           ========================================================================= */}
       <section
         className="cs-st-sec cs-st-orange-logo cs-st-logo-viewport"
         data-st-stage
         aria-label="Softtouch Brand Signature on Orange"
       >
-        <div className="cs-st-stage-inner" data-st-media="single">
+        <div className="cs-st-stage-inner cs-st-transition-stage" data-st-media="single">
+          {/* Orange ground variant (visible first) */}
           <img
             src="/images/projects/softtouch/softtouch case study-03.jpg"
-            alt="Softtouch logo centered on signature vibrant orange ground"
+            alt="Softtouch white and orange logo treatment on signature orange ground"
             width={1918}
             height={883}
-            className="cs-st-img-natural cs-st-logo-img"
+            className="cs-st-img-natural cs-st-logo-variant cs-st-logo-variant-dark"
+            loading="lazy"
+          />
+          {/* Warm-white ground variant (revealed as background shifts to warm white) */}
+          <img
+            src="/images/projects/softtouch/softtouch case study-04.jpg"
+            alt="Softtouch orange and black logo treatment on warm paper ground"
+            width={1918}
+            height={883}
+            className="cs-st-img-natural cs-st-logo-variant cs-st-logo-variant-light"
             loading="lazy"
           />
         </div>
@@ -374,7 +410,7 @@ export default function SofttouchCaseStudy({
           <video
             className="cs-st-logo-video"
             poster="/images/projects/softtouch/softtouch case study-04.jpg"
-            preload="metadata"
+            preload="auto"
             muted
             playsInline
             aria-label="Softtouch animated logo reveal"
@@ -384,16 +420,16 @@ export default function SofttouchCaseStudy({
               src="/images/projects/softtouch/softtouch-logo-reveal.mp4"
               type="video/mp4"
             />
-            {/* Fallback image */}
-            <img
-              src="/images/projects/softtouch/softtouch case study-04.jpg"
-              alt="Softtouch brand logo on warm paper ground"
-              width={1918}
-              height={883}
-              className="cs-st-img-natural"
-              loading="lazy"
-            />
           </video>
+          {/* Static fallback for reduced motion / immediate accessibility */}
+          <img
+            src="/images/projects/softtouch/softtouch case study-04.jpg"
+            alt="Softtouch brand logo on warm paper ground"
+            width={1918}
+            height={883}
+            className="cs-st-img-natural cs-st-logo-static-fallback"
+            loading="lazy"
+          />
         </div>
       </section>
 
@@ -523,8 +559,8 @@ export default function SofttouchCaseStudy({
           <img
             src="/images/projects/softtouch/softtouch case study-12.jpg"
             alt="Hand-drawn concept exploration and structural packaging sketches for Softtouch paint containers and wordmark"
-            width={1916}
-            height={950}
+            width={2388}
+            height={1668}
             className="cs-st-img-natural"
             loading="lazy"
           />
@@ -667,14 +703,13 @@ export default function SofttouchCaseStudy({
       </section>
 
       {/* =========================================================================
-          9. Product detail and identity — Product detail composition (331×410)
-          and oversized Softtouch wordmark
-          Asset: /images/projects/softtouch/softtouch case study-19.jpg
+          9. Packaging Detail — Specimen card with oil paint bucket artwork (331×410)
+          Asset: /images/projects/softtouch/softtouch case study-19.png
           ========================================================================= */}
       <section
-        className="cs-st-sec cs-st-detail-wordmark"
+        className="cs-st-sec cs-st-detail-section"
         data-st-stage
-        aria-label="Product Detail and Oversized Softtouch Wordmark"
+        aria-label="Packaging Detail - Premium Oil Paint Bucket"
       >
         <div className="cs-st-container cs-st-detail-wrap">
           <div className="cs-st-detail-card" data-st-card>
@@ -698,36 +733,6 @@ export default function SofttouchCaseStudy({
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-        {/* Oversized full-bleed lowercase wordmark across warm-beige band */}
-        <div className="cs-st-wordmark-strip" aria-hidden="true">
-          <span className="cs-st-oversized-text" data-st-wordmark>
-            softtouch
-          </span>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          Testimonial Panel — Swapnil Mohota (Founder)
-          ========================================================================= */}
-      <section className="cs-st-sec cs-st-split-panel" aria-label="Client Testimonial Panel">
-        <div className="cs-st-container">
-          <div className="cs-st-split-card" data-st-card>
-            <div className="cs-st-split-left">
-              <div className="cs-st-meta-row" data-st-item>
-                <span className="cs-st-tag mono">[ TESTIMONIAL ]</span>
-                <span className="cs-st-cat mono">SWAPNIL MOHOTA — FOUNDER</span>
-              </div>
-              <div className="cs-st-title-wrap">
-                <h2 className="cs-st-split-title">Hear It From Our Client</h2>
-                <span className="cs-st-title-thread" data-st-thread aria-hidden="true" />
-              </div>
-              <p className="cs-st-split-lead" data-st-item>
-                A glimpse into our creative journey, the collaboration, and the impact of transforming Softtouch&apos;s brand identity and packaging.
-              </p>
-            </div>
-            <div className="cs-st-split-right" data-st-split-accent aria-hidden="true" />
           </div>
         </div>
       </section>

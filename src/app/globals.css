@@ -4399,12 +4399,13 @@ html[data-theme='dark'] .about-stat-card:hover {
   .about {
     height: auto;
     min-height: calc(100vh - var(--header-h, 64px));
-    padding-top: calc(var(--header-h, 64px) + clamp(32px, 4.5vh, 56px));
-    padding-bottom: clamp(60px, 8vh, 96px);
+    padding-top: calc(var(--header-h, 64px) + clamp(28px, 4vh, 48px));
+    padding-bottom: 0;
+    margin-bottom: 0;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     position: relative;
   }
 
@@ -4415,6 +4416,7 @@ html[data-theme='dark'] .about-stat-card:hover {
     margin-inline: auto;
     padding-inline: var(--margin);
     padding-bottom: 0;
+    margin-bottom: 0;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -4457,14 +4459,15 @@ html[data-theme='dark'] .about-stat-card:hover {
 
   .about-stage-grid {
     display: grid;
-    grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.25fr) minmax(280px, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(280px, 1fr) minmax(360px, 1.45fr) minmax(280px, 1fr);
+    grid-template-rows: auto 1fr;
     column-gap: clamp(24px, 3.2vw, 52px);
     row-gap: clamp(24px, 3.5vh, 40px);
     align-items: stretch;
     width: 100%;
     margin-inline: auto;
     margin-top: clamp(20px, 3vh, 36px);
+    margin-bottom: 0;
     position: relative;
     z-index: 2;
   }
@@ -4477,7 +4480,7 @@ html[data-theme='dark'] .about-stat-card:hover {
     z-index: 4;
   }
 
-  /* Column 2: Center portrait spanning both rows, grounded at bottom */
+  /* Column 2: Center portrait spanning both rows, grounded at bottom touching footer */
   .about-col-center {
     grid-column: 2;
     grid-row: 1 / 3;
@@ -4487,6 +4490,8 @@ html[data-theme='dark'] .about-stat-card:hover {
     height: 100%;
     z-index: 3;
     pointer-events: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
 
   /* Row 1, Column 3: Founder introduction bio + CTA aligned at top */
@@ -4497,24 +4502,27 @@ html[data-theme='dark'] .about-stat-card:hover {
     z-index: 4;
   }
 
-  /* Row 2, Column 1: Left metric cards aligned at bottom */
+  /* Row 2, Column 1: Left metric cards aligned at bottom with spacing before footer */
   .about-col-left-bottom {
     grid-column: 1;
     grid-row: 2;
     align-self: end;
     z-index: 4;
+    padding-bottom: clamp(48px, 6vh, 80px);
   }
 
-  /* Row 2, Column 3: Right metric cards aligned at bottom */
+  /* Row 2, Column 3: Right metric cards aligned at bottom with spacing before footer */
   .about-col-right-bottom {
     grid-column: 3;
     grid-row: 2;
     align-self: end;
     z-index: 4;
+    padding-bottom: clamp(48px, 6vh, 80px);
   }
 
   .about-portrait-figure {
     height: 100%;
+    width: 100%;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -4529,6 +4537,8 @@ html[data-theme='dark'] .about-stat-card:hover {
     justify-content: center;
     height: 100%;
     width: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
     will-change: transform;
   }
 
@@ -4540,12 +4550,14 @@ html[data-theme='dark'] .about-stat-card:hover {
     display: block;
     width: auto;
     max-width: 100%;
-    max-height: clamp(380px, 50vh, 520px);
+    height: auto;
+    max-height: clamp(560px, 72vh, 820px);
     object-fit: contain;
     object-position: bottom center;
     filter: drop-shadow(0 14px 28px rgba(22, 22, 20, 0.12));
     margin-top: auto;
-    margin-bottom: 0 !important;
+    margin-bottom: -2px !important;
+    vertical-align: bottom;
     align-self: flex-end;
     transform-origin: bottom center;
     will-change: transform, opacity;
@@ -6174,38 +6186,28 @@ html[data-theme='dark'] .cs-deliverables-box {
    Softtouch Bespoke Case Study Styles (Full-Screen 100svh Storyboard)
    ========================================================================== */
 
-.cs-softtouch-flow,
-html[data-theme='dark'] .cs-softtouch-flow {
-  --bg: #f6f4ef !important;
-  --surface: #ece9e1 !important;
-  --surface-card: #ffffff !important;
-  --ink: #161614 !important;
-  --muted: #5b5850 !important;
-  --hairline: rgba(22, 22, 20, 0.12) !important;
-  --hairline-bold: rgba(22, 22, 20, 0.24) !important;
-  --accent: #E87124 !important;
-  --thread: #E87124 !important;
-  --on-accent: #161614 !important;
-  --project-accent: #E87124 !important;
+.cs-softtouch-flow {
+  --project-accent: #E87124;
+  --accent: #E87124;
+  --thread: #E87124;
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: #ffffff !important;
-  color: #161614 !important;
+  background: var(--bg);
+  color: var(--ink);
   overflow-x: hidden;
 }
 
 /* Studio Top Navigation Bar */
-.cs-softtouch-flow .cs-topbar,
-html[data-theme='dark'] .cs-softtouch-flow .cs-topbar {
+.cs-softtouch-flow .cs-topbar {
   position: sticky;
   top: 0;
   z-index: 50;
   width: 100%;
-  background: rgba(246, 244, 239, 0.96) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(22, 22, 20, 0.12) !important;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--hairline);
   padding: 14px 0;
 }
 
@@ -6219,20 +6221,19 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-topbar {
 }
 
 .cs-softtouch-flow .cs-back-link,
-.cs-softtouch-flow .wordmark,
-html[data-theme='dark'] .cs-softtouch-flow .cs-back-link,
-html[data-theme='dark'] .cs-softtouch-flow .wordmark {
-  color: #161614 !important;
+.cs-softtouch-flow .wordmark {
+  color: var(--ink);
   text-decoration: none;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  transition: color var(--t-hover) var(--ease-out);
 }
 
 .cs-softtouch-flow .cs-back-link:hover,
 .cs-softtouch-flow .wordmark:hover {
-  color: #E87124 !important;
+  color: var(--accent);
 }
 
 .cs-softtouch-flow .cs-topbar-action {
@@ -6308,19 +6309,44 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
   display: block;
 }
 
+/* Dual-layer Logo Color Transition Container */
+.cs-st-transition-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1560px;
+  aspect-ratio: 1918 / 883;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-st-logo-variant {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.cs-st-logo-variant-light {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
 /* Single-Image Panel Wrapper (preserves source background & natural aspect ratio) */
 .cs-st-panel-single {
   width: 100%;
   border-radius: 3px;
   overflow: hidden;
-  border: 1px solid rgba(22, 22, 20, 0.08);
+  border: 1px solid var(--hairline);
   will-change: transform, opacity;
 }
 
 .cs-st-bg-warm-logo {
   background: #f5f4ef;
 }
-
 
 .cs-st-bg-apparel {
   background: #e7955d;
@@ -6382,8 +6408,8 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
   width: 100%;
   border-radius: 3px;
   overflow: hidden;
-  border: 1px solid rgba(22, 22, 20, 0.08);
-  background: #f6f4ef;
+  border: 1px solid var(--hairline);
+  background: var(--surface);
   will-change: transform, opacity;
 }
 
@@ -6467,8 +6493,8 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
 
 /* Compact Note Bar */
 .cs-st-compact-bar {
-  background: #f6f4ef !important;
-  border: 1px solid rgba(22, 22, 20, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
   border-radius: 3px;
   padding: clamp(16px, 2.2vw, 24px) clamp(20px, 3vw, 36px);
   display: flex;
@@ -6504,7 +6530,7 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
 .cs-st-compact-text {
   font-size: 13.5px;
   line-height: 1.5;
-  color: #5b5850 !important;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -6514,15 +6540,15 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
   overflow: hidden;
 }
 
-/* Intro Panel (Warm-white inset card with SOFTTOUCH title) */
+/* Intro Panel */
 .cs-st-intro {
   padding: clamp(20px, 3vw, 40px) 0;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 .cs-st-intro-card {
-  background: #f6f4ef !important;
-  border: 1px solid rgba(22, 22, 20, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
   border-radius: 3px;
   padding: clamp(28px, 4vw, 56px) clamp(20px, 3.5vw, 48px);
   will-change: transform, opacity;
@@ -6538,7 +6564,7 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
 
 .cs-st-tag {
   font-size: 11px;
-  color: #5b5850 !important;
+  color: var(--muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -6546,7 +6572,7 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
 .cs-st-cat {
   font-size: 11px;
   font-weight: 600;
-  color: #b84d0e !important;
+  color: #E87124;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -6554,7 +6580,7 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
 .cs-st-pill {
   font-size: 10.5px;
   font-weight: 600;
-  color: #b84d0e !important;
+  color: #E87124;
   background: rgba(232, 113, 36, 0.12);
   border: 1px solid rgba(232, 113, 36, 0.28);
   padding: 3px 10px;
@@ -6571,8 +6597,7 @@ html[data-theme='dark'] .cs-softtouch-flow .wordmark {
   margin: 6px 0 20px;
 }
 
-.cs-st-monument-title,
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
+.cs-st-monument-title {
   display: block;
   text-align: left;
   font-family: var(--font-display);
@@ -6581,11 +6606,8 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
   line-height: 0.96;
   letter-spacing: -0.04em;
   text-transform: uppercase;
-  color: #161614 !important;
-  -webkit-text-fill-color: #161614 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   margin: 0;
   padding-bottom: 12px;
   overflow-wrap: break-word;
@@ -6596,21 +6618,19 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
   width: 100%;
   height: 3px;
   background: #E87124;
-  opacity: 1 !important;
-  transform: none !important;
 }
 
 .cs-st-lead-summary {
   font-family: var(--font-body);
   font-size: clamp(1rem, 1.3vw, 1.18rem);
   line-height: 1.55;
-  color: #5b5850 !important;
+  color: var(--muted);
   max-width: 780px;
   margin: 0 0 28px;
 }
 
 .cs-st-specs-grid {
-  border-top: 1px solid rgba(22, 22, 20, 0.1);
+  border-top: 1px solid var(--hairline);
   padding-top: 22px;
   display: grid;
   grid-template-columns: 1fr;
@@ -6629,8 +6649,8 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
 }
 
 .cs-st-spec-box {
-  background: #ece9e1 !important;
-  border: 1px solid rgba(22, 22, 20, 0.08);
+  background: var(--surface-subtle);
+  border: 1px solid var(--hairline);
   border-radius: 2px;
   padding: 14px 16px;
   display: flex;
@@ -6640,14 +6660,14 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
 
 .cs-st-spec-box .spec-label {
   font-size: 10.5px;
-  color: #5b5850 !important;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .cs-st-spec-box .spec-value {
   font-size: 13.5px;
-  color: #161614 !important;
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -6660,12 +6680,12 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
 /* Story Brief / Context */
 .cs-st-story {
   padding: clamp(20px, 3vw, 40px) 0;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 .cs-st-story-box {
-  background: #f6f4ef !important;
-  border: 1px solid rgba(22, 22, 20, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
   border-radius: 3px;
   padding: clamp(24px, 3.5vw, 44px);
   display: grid;
@@ -6689,7 +6709,7 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
 .cs-st-story-lead {
   font-size: clamp(0.98rem, 1.25vw, 1.12rem);
   line-height: 1.55;
-  color: #161614 !important;
+  color: var(--ink);
   margin: 0;
 }
 
@@ -6699,7 +6719,7 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.025em;
-  color: #161614 !important;
+  color: var(--ink);
   margin: 2px 0 6px;
 }
 
@@ -6707,7 +6727,7 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
   font-family: var(--font-body);
   font-size: clamp(0.96rem, 1.15vw, 1.06rem);
   line-height: 1.65;
-  color: #5b5850 !important;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -6726,6 +6746,9 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
   width: 100%;
   overflow: hidden;
   background: #f5f4ef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cs-st-logo-video {
@@ -6738,9 +6761,24 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-monument-title {
   background: #f5f4ef;
 }
 
-html[data-theme='dark'] .cs-st-light-logo .cs-st-panel-single {
-  border-color: rgba(246, 244, 239, 0.12);
+/* Reduced motion or poster fallback */
+@media (prefers-reduced-motion: reduce) {
+  .cs-st-logo-video {
+    display: none;
+  }
+  .cs-st-logo-static-fallback {
+    display: block !important;
+  }
 }
+
+.cs-st-logo-static-fallback {
+  display: none;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1918 / 883;
+  object-fit: contain;
+}
+
 
 /* 1. Three branded objects (Mug, Flask, USB) */
 .cs-st-merch {
@@ -6760,7 +6798,7 @@ html[data-theme='dark'] .cs-st-light-logo .cs-st-panel-single {
 /* Process Note */
 .cs-st-process-note {
   padding: clamp(16px, 2.5vw, 32px) 0;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 /* 4. Sketches (Light background #fefefe inside .cs-st-bg-sketches) */
@@ -6781,7 +6819,7 @@ html[data-theme='dark'] .cs-st-light-logo .cs-st-panel-single {
 /* Second Title Panel */
 .cs-st-second-title {
   padding: clamp(16px, 2.5vw, 32px) 0;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 .cs-st-card-centered {
@@ -6800,9 +6838,8 @@ html[data-theme='dark'] .cs-st-light-logo .cs-st-panel-single {
   margin-inline: auto;
 }
 
-.cs-st-title-centered .cs-st-monument-title,
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-title-centered .cs-st-monument-title {
-  text-align: center !important;
+.cs-st-title-centered .cs-st-monument-title {
+  text-align: center;
 }
 
 .cs-st-thread-centered {
@@ -6828,25 +6865,6 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-title-centered .cs-st-monument
   border-radius: 2px;
 }
 
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-second-title {
-  background: var(--bg, #11110f) !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-second-title .cs-st-intro-card {
-  background: #191815 !important;
-  border-color: rgba(246, 244, 239, 0.12) !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-second-title .cs-st-monument-title {
-  color: #f6f4ef !important;
-  -webkit-text-fill-color: #f6f4ef !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-second-title .cs-st-lead-summary {
-  color: #a8a497 !important;
-}
-
-
 /* 7. Print & collateral */
 .cs-st-collateral {
   background: transparent;
@@ -6857,37 +6875,64 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-second-title .cs-st-lead-summa
   background: transparent;
 }
 
-/* 9. Product detail & oversized wordmark */
+/* 9. Packaging Detail Section */
+.cs-st-detail-section,
 .cs-st-detail-wordmark {
-  padding: clamp(32px, 4.5vw, 56px) 0 0 0;
+  padding: clamp(40px, 5.5vw, 72px) 0;
   margin-bottom: clamp(16px, 2.2vw, 28px);
-  background: #ebe8df;
-  overflow: hidden;
+  background: transparent;
+  position: relative;
 }
 
 .cs-st-detail-wrap {
-  margin-block: auto;
+  width: 100%;
+  max-width: 1920px;
+  margin-inline: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline: clamp(16px, 2.5vw, 36px);
 }
 
-.cs-st-detail-card {
-  background: #ebe8df !important;
-  border: 1px solid rgba(22, 22, 20, 0.08);
-  border-radius: 3px;
+/* White/Cream Information Box — Centered, intentional clean specimen box in both light and dark mode */
+.cs-st-detail-card,
+html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-card {
+  width: 100%;
+  max-width: 820px;
+  margin-inline: auto;
+  background: #ffffff !important;
+  border: 1px solid rgba(22, 22, 20, 0.08) !important;
+  border-radius: 4px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
   overflow: hidden;
   will-change: transform, opacity;
 }
 
+html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-card {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 2px 10px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Mobile Layout: Stack image and text neatly */
 .cs-st-detail-layout {
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
-  gap: 24px;
-  padding: clamp(24px, 3.5vw, 44px);
+  justify-items: center;
+  text-align: center;
+  gap: clamp(20px, 4vw, 32px);
+  padding: clamp(28px, 5vw, 40px) clamp(20px, 4.5vw, 36px);
 }
-@media (min-width: 768px) {
+
+/* Desktop Layout: Balanced, centered composition */
+@media (min-width: 720px) {
   .cs-st-detail-layout {
-    grid-template-columns: 280px 1fr;
-    gap: 40px;
+    grid-template-columns: minmax(240px, 290px) 1fr;
+    justify-items: start;
+    align-items: center;
+    text-align: left;
+    gap: clamp(32px, 4.5vw, 56px);
+    padding: clamp(36px, 4.5vw, 48px) clamp(36px, 4.5vw, 54px);
   }
 }
 
@@ -6896,188 +6941,68 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-second-title .cs-st-lead-summa
   justify-content: center;
   align-items: center;
   background: transparent !important;
-  padding: 12px;
-  border-radius: 2px;
+  padding: 0;
+  width: 100%;
 }
 
 .cs-st-thumb-img {
-  max-height: 260px;
+  max-height: clamp(220px, 26vw, 280px);
   width: auto;
   max-width: 100%;
+  height: auto;
   aspect-ratio: 331 / 410;
   object-fit: contain;
   display: block;
 }
 
-.cs-st-detail-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.cs-st-detail-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 2.2vw, 2rem);
-  font-weight: 700;
-  color: #161614 !important;
-  line-height: 1.15;
-  margin: 0;
-}
-
-.cs-st-detail-p {
-  font-size: clamp(0.95rem, 1.2vw, 1.08rem);
-  line-height: 1.55;
-  color: #5b5850 !important;
-  margin: 0;
-  max-width: 540px;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-wordmark {
-  background: #191815 !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-card {
-  background: #191815 !important;
-  border-color: rgba(246, 244, 239, 0.12) !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-thumb {
-  background: transparent !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-title {
-  color: #f6f4ef !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-p {
-  color: #a8a497 !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-wordmark-strip {
-  background: #191815 !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-oversized-text {
-  color: rgba(246, 244, 239, 0.12) !important;
-}
-
-
-.cs-st-wordmark-strip {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-top: clamp(24px, 4vw, 48px);
-  padding-bottom: clamp(6px, 1.5vw, 14px);
-  background: #ebe8df;
-  overflow: hidden;
-  line-height: 0.8;
-}
-
-.cs-st-oversized-text {
-  font-family: var(--font-display);
-  font-size: clamp(4.4rem, 18vw, 17.5rem);
-  font-weight: 700;
-  line-height: 0.8;
-  letter-spacing: -0.055em;
-  text-transform: lowercase;
-  color: #ffffff;
-  user-select: none;
-  text-align: center;
-  white-space: nowrap;
-  will-change: transform, opacity;
-}
-
-/* Split Identity Card */
-.cs-st-split-panel {
-  padding: clamp(20px, 3vw, 40px) 0;
-  background: transparent !important;
-}
-
-.cs-st-split-card {
-  background: #f6f4ef !important;
-  border: 1px solid rgba(22, 22, 20, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr;
-  will-change: transform, opacity;
-}
-@media (min-width: 768px) {
-  .cs-st-split-card {
-    grid-template-columns: 1.25fr 1fr;
+@media (max-width: 719px) {
+  .cs-st-thumb-img {
+    max-height: clamp(190px, 50vw, 240px);
   }
 }
 
-.cs-st-split-left {
-  padding: clamp(28px, 4vw, 52px) clamp(20px, 3.5vw, 48px);
+.cs-st-detail-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 12px;
-  background: #f6f4ef !important;
 }
 
-.cs-st-split-title,
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-title {
-  display: block;
-  text-align: left;
-  font-family: var(--font-display);
-  font-size: clamp(1.65rem, 3.8vw, 3.2rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-  text-transform: none;
-  color: #161614 !important;
-  -webkit-text-fill-color: #161614 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-  margin: 0;
-  padding-bottom: 12px;
-  overflow-wrap: break-word;
-}
-
-.cs-st-split-lead {
-  font-size: clamp(0.95rem, 1.2vw, 1.08rem);
-  line-height: 1.5;
-  color: #5b5850 !important;
-  max-width: 640px;
-  margin: 0;
-}
-
-.cs-st-split-right {
-  background: #E87124;
-  min-height: 180px;
-  width: 100%;
-}
-@media (max-width: 767px) {
-  .cs-st-split-right {
-    min-height: 12px;
-    height: 12px;
+@media (max-width: 719px) {
+  .cs-st-detail-content {
+    align-items: center;
+    text-align: center;
   }
 }
 
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-panel {
-  background: transparent !important;
+.cs-st-detail-card .cs-st-cat {
+  color: #b84d0e !important;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-card {
-  background: var(--surface) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+.cs-st-detail-card .cs-st-detail-title,
+html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-card .cs-st-detail-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.2vw, 2.05rem);
+  font-weight: 700;
+  color: #161614 !important;
+  -webkit-text-fill-color: #161614 !important;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin: 0;
 }
 
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-left {
-  background: transparent !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-title {
-  color: var(--ink) !important;
-  -webkit-text-fill-color: var(--ink) !important;
-}
-
-html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-lead {
-  color: var(--muted) !important;
+.cs-st-detail-card .cs-st-detail-p,
+html[data-theme='dark'] .cs-softtouch-flow .cs-st-detail-card .cs-st-detail-p {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.6;
+  color: #5b5850 !important;
+  margin: 0;
+  max-width: 440px;
 }
 
 /* 10. Final product composition (Tilted pails on #eb711e orange ground inside .cs-st-bg-tilted) */
@@ -7089,14 +7014,14 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-lead {
 /* 11. Closing CTA & Navigation */
 .cs-st-closing {
   padding: clamp(48px, 6.5vw, 88px) 0;
-  background: #f6f4ef !important;
-  border-top: 1px solid rgba(22, 22, 20, 0.1);
-  border-bottom: 1px solid rgba(22, 22, 20, 0.1);
+  background: var(--bg);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .cs-enquiry-banner {
-  background: #ffffff;
-  border: 1px solid rgba(22, 22, 20, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
   border-radius: 3px;
   padding: clamp(28px, 4vw, 48px);
   display: flex;
@@ -7125,7 +7050,7 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-lead {
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 2.5vw, 2.4rem);
   font-weight: 700;
-  color: #161614 !important;
+  color: var(--ink);
   line-height: 1.15;
   margin: 0;
 }
@@ -7135,7 +7060,7 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-lead {
   grid-template-columns: 1fr;
   gap: 16px;
   padding-top: 32px;
-  border-top: 1px solid rgba(22, 22, 20, 0.12);
+  border-top: 1px solid var(--hairline);
   will-change: transform, opacity;
 }
 @media (min-width: 640px) {
@@ -7145,20 +7070,20 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-lead {
 }
 
 .cs-softtouch-flow .cs-page-nav {
-  background: #ffffff !important;
-  border: 1px solid rgba(22, 22, 20, 0.12) !important;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
   border-radius: 3px;
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   text-decoration: none;
-  color: #161614 !important;
+  color: var(--ink);
   transition: border-color var(--t-ui) var(--ease-out), transform var(--t-ui) var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
   .cs-softtouch-flow .cs-page-nav:hover {
-    border-color: #E87124 !important;
+    border-color: var(--accent);
     transform: translateY(-2px);
   }
 }
@@ -7166,7 +7091,7 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-lead {
 .cs-softtouch-flow .cs-page-nav:focus-visible,
 .cs-softtouch-flow .cs-back-link:focus-visible,
 .cs-softtouch-flow .wordmark:focus-visible {
-  outline: 2px solid #E87124 !important;
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
   transition: none !important;
 }
@@ -7175,7 +7100,7 @@ html[data-theme='dark'] .cs-softtouch-flow .cs-st-split-lead {
   font-family: var(--font-display);
   font-size: 18px;
   font-weight: 700;
-  color: #161614 !important;
+  color: var(--ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
