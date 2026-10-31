@@ -2695,26 +2695,18 @@ html[data-theme='dark'] .intro-pillar-card {
 
 /* Slide 0: Intro Card */
 .work-h-intro-card {
-  width: min(86vw, 460px);
-  background: var(--surface);
-  padding: clamp(28px, 4vw, 48px) clamp(24px, 3.2vw, 40px);
+  width: min(86vw, 420px);
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  border-color: var(--inverse-hairline);
+  padding: var(--space-5) var(--space-4);
 }
 .intro-card-inner {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  gap: var(--space-4);
-}
-.intro-top-block {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.intro-title-block {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  align-items: flex-start;
 }
 .work-h-section-heading {
   font-family: var(--font-display);
@@ -2722,38 +2714,29 @@ html[data-theme='dark'] .intro-pillar-card {
   font-weight: 700;
   line-height: 1.0;
   letter-spacing: -0.04em;
-  color: var(--ink);
+  color: var(--inverse-ink);
   margin: 0;
+  max-width: 7ch;
+  text-wrap: balance;
 }
-.work-h-supporting-heading {
-  font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2vw, 1.65rem);
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-  color: var(--thread);
-  margin: 0;
+.work-h-intro-arrow {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  align-self: flex-end;
+  border: 1px solid var(--inverse-hairline-bold);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 32px;
+  line-height: 1;
+  transition: transform var(--t-ui) var(--ease-out), background-color var(--t-ui) var(--ease-out);
 }
-.work-h-intro-body {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: var(--muted);
-  max-width: 32ch;
-  margin: 0;
-}
-.work-h-scroll-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--accent);
-}
-.arrow-thread {
-  font-size: 1.25rem;
-  transition: transform var(--t-ui) var(--ease-out);
-}
-.work-h-intro-card:hover .arrow-thread {
-  transform: translateX(6px);
+@media (hover: hover) and (pointer: fine) {
+  .work-h-intro-card:hover .work-h-intro-arrow {
+    transform: translateX(6px);
+  }
 }
 
 /* Project Cards (Dzinr Studio signature scale) */

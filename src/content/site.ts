@@ -154,12 +154,12 @@ export const intro: IntroContent = {
 };
 
 export const work = {
-  sectionHeading: 'Case studies',
+  sectionHeading: 'Case Studies',
   supportingHeading: 'Where Strategy Takes Shape.',
   description:
     'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.',
   // Aliases for compatibility with other components
-  tag: 'Case studies',
+  tag: 'Case Studies',
   heading: 'Where Strategy Takes Shape.',
   body:
     'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.',

@@ -37,7 +37,7 @@ export default function WorkHorizontal({
   enquiry,
   nextStep
 }: Props) {
-  const finalSectionHeading = sectionHeading ?? tag ?? 'Case studies';
+  const finalSectionHeading = sectionHeading ?? tag ?? 'Case Studies';
 
   const outroHeadingLines: [string, string] = nextStep.heading ?? (
     nextStep.headline.includes('?')
@@ -105,6 +105,32 @@ export default function WorkHorizontal({
             }
           }
         });
+
+        const introCard = track.querySelector<HTMLElement>('.work-h-intro-card');
+        if (introCard) {
+          const introTargets = Array.from(
+            introCard.querySelectorAll<HTMLElement>('.work-h-section-heading, .work-h-intro-arrow')
+          );
+          gsap.fromTo(
+            introTargets,
+            { opacity: 0, y: 22 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.85,
+              stagger: 0.08,
+              ease: 'power3.out',
+              scrollTrigger: {
+                id: 'work-card-intro',
+                trigger: section,
+                start: 'top 85%',
+                end: 'top top',
+                scrub: 0.6,
+                fastScrollEnd: true,
+              }
+            }
+          );
+        }
 
         // Card 0: Smooth scroll-linked entrance as section scrolls into view
         const projectCards = Array.from(track.querySelectorAll<HTMLElement>('.work-h-project-card'));
@@ -317,6 +343,7 @@ export default function WorkHorizontal({
           window.removeEventListener('orientationchange', refresh);
           images.forEach((img) => img.removeEventListener('load', refresh));
 
+          ScrollTrigger.getById('work-card-intro')?.kill();
           ScrollTrigger.getById('work-card-0')?.kill();
           subsequentCards.forEach((_, idx) => {
             ScrollTrigger.getById(`work-card-${idx + 1}`)?.kill();
@@ -328,7 +355,7 @@ export default function WorkHorizontal({
 
           gsap.set(track, { clearProps: 'transform' });
           const animatedElements = track.querySelectorAll(
-            '.project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
+            '.work-h-section-heading, .work-h-intro-arrow, .project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
           );
           gsap.set(animatedElements, { clearProps: 'all' });
         };
@@ -339,7 +366,7 @@ export default function WorkHorizontal({
         if (track) {
           gsap.set(track, { clearProps: 'transform' });
           const animatedElements = track.querySelectorAll(
-            '.project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
+            '.work-h-section-heading, .work-h-intro-arrow, .project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
           );
           gsap.set(animatedElements, { clearProps: 'all' });
         }
@@ -361,6 +388,14 @@ export default function WorkHorizontal({
       {/* The horizontal scrolling track */}
       <div className="work-h-viewport">
         <div ref={trackRef} className="work-h-track" onFocusCapture={handleFocusCapture}>
+          {/* Opening slide: a simple invitation into the case studies */}
+          <article className="work-h-card work-h-intro-card" aria-label="Case studies introduction">
+            <div className="intro-card-inner">
+              <h3 className="work-h-section-heading">{finalSectionHeading}</h3>
+              <span className="work-h-intro-arrow" aria-hidden="true">→</span>
+            </div>
+          </article>
+
           {/* Project Cards */}
           {projects.map((p, i) => {
             const isFeatured = p.id === 'good-habit' || p.id === 'dhara';
