@@ -32,7 +32,63 @@ export default function SofttouchCaseStudy({
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // 1. Dual-Layer Logo Color Transition (orange treatment to warm-white treatment)
+        // 1. Initial Hero Choreographed Entrance Sequence
+        // Hero product lineup image gently breathes in and scales to natural rest
+        const heroStage = root.querySelector<HTMLElement>('.cs-st-hero');
+        const heroImg = heroStage?.querySelector<HTMLElement>('.cs-st-hero-img');
+        const introCard = root.querySelector<HTMLElement>('.cs-st-intro-card');
+
+        if (heroImg) {
+          gsap.fromTo(
+            heroImg,
+            { opacity: 0, scale: 0.98, y: 16 },
+            {
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              duration: 1.1,
+              ease: 'art.soft',
+              delay: 0.08
+            }
+          );
+        }
+
+        // Intro card sequence: tag/category -> monument title -> thread line -> summary -> specs
+        if (introCard) {
+          const metaRow = introCard.querySelector<HTMLElement>('.cs-st-meta-row');
+          const title = introCard.querySelector<HTMLElement>('.cs-st-monument-title');
+          const thread = introCard.querySelector<HTMLElement>('.cs-st-title-thread');
+          const summary = introCard.querySelector<HTMLElement>('.cs-st-lead-summary');
+          const specs = Array.from(introCard.querySelectorAll<HTMLElement>('.cs-st-spec-box'));
+
+          const introTL = gsap.timeline({
+            defaults: { ease: 'art.out' },
+            scrollTrigger: {
+              trigger: introCard,
+              start: 'top 90%',
+              toggleActions: 'play none none none',
+              once: true
+            }
+          });
+
+          if (metaRow) {
+            introTL.fromTo(metaRow, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 }, 0.05);
+          }
+          if (title) {
+            introTL.fromTo(title, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65 }, 0.12);
+          }
+          if (thread) {
+            introTL.fromTo(thread, { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 0.7, ease: 'art.inOut' }, 0.22);
+          }
+          if (summary) {
+            introTL.fromTo(summary, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6 }, 0.3);
+          }
+          if (specs.length > 0) {
+            introTL.fromTo(specs, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, 0.38);
+          }
+        }
+
+        // 2. Dual-Layer Logo Color Transition (orange treatment to warm-white treatment)
         const logoStage = root.querySelector<HTMLElement>('.cs-st-orange-logo');
         const logoDarkVariant = logoStage?.querySelector<HTMLElement>('.cs-st-logo-variant-dark');
         const logoLightVariant = logoStage?.querySelector<HTMLElement>('.cs-st-logo-variant-light');
@@ -41,13 +97,13 @@ export default function SofttouchCaseStudy({
           // Entrance reveal when scrolling into view
           gsap.fromTo(
             logoDarkVariant,
-            { y: 36, scale: 0.96, opacity: 0 },
+            { y: 28, scale: 0.97, opacity: 0 },
             {
               y: 0,
               scale: 1,
               opacity: 1,
               duration: 0.8,
-              ease: 'power2.out',
+              ease: 'art.out',
               scrollTrigger: {
                 trigger: logoStage,
                 start: 'top 88%',
@@ -58,7 +114,7 @@ export default function SofttouchCaseStudy({
             }
           );
 
-          // Color transition: As the section progresses or approaches the warm-white section,
+          // Color transition: As the section approaches the warm-white narrative section,
           // smoothly crossfade from the orange background & white/orange logo (03.jpg)
           // to the warm-white background & orange/black logo (04.jpg)
           const transitionTL = gsap.timeline({
@@ -77,14 +133,13 @@ export default function SofttouchCaseStudy({
             .to(logoLightVariant, { opacity: 1, ease: 'none' }, 0);
         }
 
-        // 2. Sequential Softtouch Logo Reveal Video (Symbol appears first, then full wordmark reveals left-to-right)
+        // 3. Sequential Softtouch Logo Reveal Video (Symbol appears first, then full wordmark reveals left-to-right)
         const lightLogoStage = root.querySelector<HTMLElement>('.cs-st-light-logo');
         const logoVideo = lightLogoStage?.querySelector<HTMLVideoElement>('.cs-st-logo-video');
 
         let videoST: ScrollTrigger | null = null;
 
         if (lightLogoStage && logoVideo) {
-          // Start primed at t = 0.25s where the symbol is already crisply visible alone
           const primeVideo = () => {
             try {
               logoVideo.pause();
@@ -98,13 +153,11 @@ export default function SofttouchCaseStudy({
             logoVideo.addEventListener('loadeddata', primeVideo, { once: true });
           }
 
-          // Trigger smooth playback when the logo box enters into view
           videoST = ScrollTrigger.create({
             trigger: lightLogoStage,
             start: 'top 75%',
             once: false,
             onEnter: () => {
-              // Symbol is visible first, then after a brief natural pause, reveal wordmark
               logoVideo.currentTime = 0.25;
               const playPromise = logoVideo.play();
               if (playPromise !== undefined) {
@@ -121,75 +174,178 @@ export default function SofttouchCaseStudy({
           });
         }
 
-
-        // 3. Natural-proportion image stages (single & multi-column) — restrained scroll reveals
-        const stages = Array.from(root.querySelectorAll<HTMLElement>('[data-st-stage]:not(.cs-st-orange-logo):not(.cs-st-light-logo)'));
+        // 4. Natural-proportion image stages with gentle settling motion
+        const stages = Array.from(
+          root.querySelectorAll<HTMLElement>(
+            '[data-st-stage]:not(.cs-st-orange-logo):not(.cs-st-light-logo)'
+          )
+        );
 
         stages.forEach((stage) => {
           const singleMedia = stage.querySelector<HTMLElement>('[data-st-media="single"]');
           if (singleMedia) {
             gsap.fromTo(
               singleMedia,
-              { y: 24, opacity: 0 },
+              { y: 20, opacity: 0 },
               {
                 y: 0,
                 opacity: 1,
-                duration: 0.65,
-                ease: 'power2.out',
+                duration: 0.7,
+                ease: 'art.out',
                 scrollTrigger: {
                   trigger: stage,
-                  start: 'top 90%',
-                  toggleActions: 'play none none none',
-                  once: true
+                  start: 'top 88%',
+                  toggleActions: 'play none none reverse'
                 }
               }
             );
+
+            // Subtle depth settling on the inner image
+            const img = singleMedia.querySelector<HTMLElement>('img');
+            if (img) {
+              gsap.fromTo(
+                img,
+                { scale: 1.015 },
+                {
+                  scale: 1,
+                  duration: 0.8,
+                  ease: 'art.soft',
+                  scrollTrigger: {
+                    trigger: stage,
+                    start: 'top 88%',
+                    toggleActions: 'play none none reverse'
+                  }
+                }
+              );
+            }
           }
 
           const cols = Array.from(stage.querySelectorAll<HTMLElement>('[data-st-media="col"]'));
           if (cols.length > 0) {
             gsap.fromTo(
               cols,
-              { y: 24, opacity: 0 },
+              { y: 20, opacity: 0 },
               {
                 y: 0,
                 opacity: 1,
                 stagger: 0.08,
-                duration: 0.65,
-                ease: 'power2.out',
+                duration: 0.7,
+                ease: 'art.out',
                 scrollTrigger: {
                   trigger: stage,
-                  start: 'top 90%',
-                  toggleActions: 'play none none none',
-                  once: true
+                  start: 'top 88%',
+                  toggleActions: 'play none none reverse'
                 }
               }
             );
+
+            cols.forEach((col) => {
+              const img = col.querySelector<HTMLElement>('img');
+              if (img) {
+                gsap.fromTo(
+                  img,
+                  { scale: 1.015 },
+                  {
+                    scale: 1,
+                    duration: 0.8,
+                    ease: 'art.soft',
+                    scrollTrigger: {
+                      trigger: stage,
+                      start: 'top 88%',
+                      toggleActions: 'play none none reverse'
+                    }
+                  }
+                );
+              }
+            });
           }
         });
 
-        // 4. Lower cards (excluding .cs-st-intro-card so the intro title, rule, description, and cards are always visible)
+        // 5. Lower text and narrative cards with sequenced content reveals
         const cards = Array.from(
           root.querySelectorAll<HTMLElement>('[data-st-card]:not(.cs-st-intro-card)')
         );
         cards.forEach((card) => {
-          gsap.fromTo(
-            card,
-            { y: 20, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.6,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 92%',
-                toggleActions: 'play none none none',
-                once: true
-              }
+          const cardItems = Array.from(card.querySelectorAll<HTMLElement>('[data-st-item]'));
+          const cardThread = card.querySelector<HTMLElement>('[data-st-thread]');
+          const cardThumb = card.querySelector<HTMLElement>('[data-st-thumb]');
+
+          const cardTL = gsap.timeline({
+            defaults: { ease: 'art.out' },
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 88%',
+              toggleActions: 'play none none reverse'
             }
-          );
+          });
+
+          cardTL.fromTo(card, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65 }, 0);
+
+          if (cardThread) {
+            cardTL.fromTo(
+              cardThread,
+              { scaleX: 0, transformOrigin: 'left center' },
+              { scaleX: 1, duration: 0.6, ease: 'art.inOut' },
+              0.15
+            );
+          }
+
+          if (cardThumb) {
+            cardTL.fromTo(cardThumb, { scale: 0.97, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6 }, 0.1);
+          }
+
+          if (cardItems.length > 0) {
+            cardTL.fromTo(
+              cardItems,
+              { y: 10, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.5, stagger: 0.05 },
+              0.15
+            );
+          }
         });
+
+        // 6. Final closing section transition into related work and footer
+        const closingSec = root.querySelector<HTMLElement>('.cs-st-closing');
+        if (closingSec) {
+          const banner = closingSec.querySelector<HTMLElement>('.cs-enquiry-banner');
+          const navBar = closingSec.querySelector<HTMLElement>('.cs-pagination-nav-bar');
+
+          if (banner) {
+            gsap.fromTo(
+              banner,
+              { y: 20, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.7,
+                ease: 'art.out',
+                scrollTrigger: {
+                  trigger: banner,
+                  start: 'top 88%',
+                  toggleActions: 'play none none reverse'
+                }
+              }
+            );
+          }
+
+          if (navBar) {
+            gsap.fromTo(
+              navBar,
+              { y: 16, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.65,
+                ease: 'art.out',
+                scrollTrigger: {
+                  trigger: navBar,
+                  start: 'top 92%',
+                  toggleActions: 'play none none reverse'
+                }
+              }
+            );
+          }
+        }
 
         const imgs = Array.from(root.querySelectorAll('img'));
         const onImgLoad = () => ScrollTrigger.refresh();

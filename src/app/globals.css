@@ -6335,14 +6335,21 @@ html[data-theme='dark'] .cs-deliverables-box {
 }
 
 
-/* Single-Image Panel Wrapper (preserves source background & natural aspect ratio) */
 .cs-st-panel-single {
   width: 100%;
   border-radius: 3px;
   overflow: hidden;
   border: 1px solid var(--hairline);
   will-change: transform, opacity;
+  transform: translateZ(0);
 }
+
+.cs-st-panel-single img,
+.cs-st-panel-cell img {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
 
 .cs-st-bg-warm-logo {
   background: #f5f4ef;
