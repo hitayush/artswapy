@@ -33,11 +33,20 @@ export default function WorkHorizontal({
   projects,
   to,
   sectionHeading,
+  supportingHeading,
+  description,
   tag,
+  heading,
+  body,
   enquiry,
   nextStep
 }: Props) {
   const finalSectionHeading = sectionHeading ?? tag ?? 'Case Studies';
+  const finalSupportingHeading = supportingHeading ?? heading ?? 'Where Strategy Takes Shape.';
+  const finalDescription =
+    description ??
+    body ??
+    'From the first question to the final mark, see how clear thinking becomes a brand you can’t ignore.';
 
   const outroHeadingLines: [string, string] = nextStep.heading ?? (
     nextStep.headline.includes('?')
@@ -106,24 +115,23 @@ export default function WorkHorizontal({
           }
         });
 
-        const introCard = track.querySelector<HTMLElement>('.work-h-intro-card');
-        if (introCard) {
-          const introTargets = Array.from(
-            introCard.querySelectorAll<HTMLElement>('.work-h-section-heading, .work-h-intro-arrow')
-          );
+        // Intro Card: Smooth scroll-linked entrance as section scrolls into view
+        const introElements = track.querySelectorAll<HTMLElement>(
+          '.work-h-section-heading, .work-h-supporting-heading, .work-h-intro-body, .work-h-scroll-hint'
+        );
+        if (introElements.length > 0) {
           gsap.fromTo(
-            introTargets,
-            { opacity: 0, y: 22 },
+            introElements,
+            { opacity: 0, y: 20 },
             {
               opacity: 1,
               y: 0,
-              duration: 0.85,
               stagger: 0.08,
-              ease: 'power3.out',
+              ease: 'power2.out',
               scrollTrigger: {
                 id: 'work-card-intro',
                 trigger: section,
-                start: 'top 85%',
+                start: 'top 80%',
                 end: 'top top',
                 scrub: 0.6,
                 fastScrollEnd: true,
@@ -355,7 +363,7 @@ export default function WorkHorizontal({
 
           gsap.set(track, { clearProps: 'transform' });
           const animatedElements = track.querySelectorAll(
-            '.work-h-section-heading, .work-h-intro-arrow, .project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
+            '.work-h-section-heading, .work-h-supporting-heading, .work-h-intro-body, .work-h-scroll-hint, .project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
           );
           gsap.set(animatedElements, { clearProps: 'all' });
         };
@@ -366,7 +374,7 @@ export default function WorkHorizontal({
         if (track) {
           gsap.set(track, { clearProps: 'transform' });
           const animatedElements = track.querySelectorAll(
-            '.work-h-section-heading, .work-h-intro-arrow, .project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
+            '.work-h-section-heading, .work-h-supporting-heading, .work-h-intro-body, .work-h-scroll-hint, .project-mask-wrap, .project-photo-anim, .project-meta-bar, .project-title-monument, .project-summary-line, .project-circle-btn, .project-frame-tag, .outro-card-inner'
           );
           gsap.set(animatedElements, { clearProps: 'all' });
         }
@@ -384,35 +392,51 @@ export default function WorkHorizontal({
       className="work-horizontal-section"
       aria-label="Case Studies Showcase"
     >
-      <h2 className="sr-only">{finalSectionHeading}</h2>
       {/* The horizontal scrolling track */}
       <div className="work-h-viewport">
         <div ref={trackRef} className="work-h-track" onFocusCapture={handleFocusCapture}>
-          {/* Opening slide: a simple invitation into the case studies */}
-          <article className="work-h-card work-h-intro-card" aria-label="Case studies introduction">
+          {/* Slide 0: Intro Header Card */}
+          <article className="work-h-card work-h-intro-card" aria-label="Case Studies introduction">
             <div className="intro-card-inner">
-              <h3 className="work-h-section-heading">{finalSectionHeading}</h3>
-              <span className="work-h-intro-arrow" aria-hidden="true">→</span>
+              <div className="intro-top-block">
+                <div className="intro-title-block">
+                  <h2 className="work-h-section-heading">
+                    <span className="work-h-heading-line">Case</span>
+                    <span className="work-h-heading-line">Studies</span>
+                  </h2>
+                  <p className="work-h-supporting-heading">{finalSupportingHeading}</p>
+                  <p className="body muted work-h-intro-body">{finalDescription}</p>
+                </div>
+              </div>
+
+              <div className="work-h-scroll-hint small mono">
+                <span className="hide-mobile">Scroll to explore</span>
+                <span className="show-mobile-inline">Swipe to explore</span>
+                <span className="arrow-thread" aria-hidden="true">→</span>
+              </div>
             </div>
           </article>
 
           {/* Project Cards */}
           {projects.map((p, i) => {
-            const isFeatured = p.id === 'good-habit' || p.id === 'dhara';
+            const hasActiveRoute = Boolean(p.href && !p.comingSoon);
             return (
               <article
-                className={`work-h-card work-h-project-card ${isFeatured ? 'card-featured' : ''}`.trim()}
+                className={`work-h-card work-h-project-card ${p.comingSoon ? "card-coming-soon" : ""}`.trim()}
                 key={p.id}
                 style={{
-                  '--card-bg': p.theme?.bg ?? '#161614',
-                  '--card-ink': p.theme?.text ?? '#f6f4ef',
-                  '--card-accent': p.theme?.accent ?? '#ff551f',
+                  "--card-bg": p.theme?.bg ?? "#161614",
+                  "--card-ink": p.theme?.text ?? "#f6f4ef",
+                  "--card-accent": p.theme?.accent ?? "#ff551f",
                 } as React.CSSProperties}
               >
-                <div className="project-card-frame" data-cursor="explore">
-                  {p.href ? (
+                <div
+                  className="project-card-frame"
+                  {...(hasActiveRoute ? { "data-cursor": "explore" } : {})}
+                >
+                  {hasActiveRoute ? (
                     <Link
-                      href={p.href}
+                      href={p.href!}
                       className="project-frame-link"
                       data-cursor="explore"
                       aria-label={`View ${p.name} case study`}
@@ -436,7 +460,7 @@ export default function WorkHorizontal({
                       </div>
                     </Link>
                   ) : (
-                    <div className="project-mask-wrap">
+                    <div className="project-mask-wrap project-frame-static" aria-hidden="true">
                       <div className="project-photo-anim">
                         {p.image ? (
                           <img
@@ -455,48 +479,60 @@ export default function WorkHorizontal({
                     </div>
                   )}
                   <div className="project-frame-tag mono">
-                    [ 0{i + 1} ] {p.placeholder && <span style={{ marginLeft: 6 }}><PlaceholderTag>Concept</PlaceholderTag></span>}
+                    <span>[ 0{i + 1} ]</span>
+                    {p.comingSoon ? (
+                      <span className="project-soon-badge mono">Coming Soon</span>
+                    ) : (
+                      p.placeholder && (
+                        <span style={{ marginLeft: 6 }}>
+                          <PlaceholderTag>Concept</PlaceholderTag>
+                        </span>
+                      )
+                    )}
                   </div>
                 </div>
 
                 <div className="project-card-content">
                   {/* 3-Column Metadata Row */}
                   <div className="project-meta-bar">
-                    <span className="project-year-badge mono">[ {p.year || 'CASE STUDY'} ]</span>
+                    <span className="project-year-badge mono">
+                      {p.comingSoon ? "[ COMING SOON ]" : `[ ${p.year || "CASE STUDY"} ]`}
+                    </span>
                     <span className="project-category-center mono">{p.category}</span>
-                    <span className="project-discipline-right mono">{p.discipline ?? 'Brand & Identity'}</span>
+                    <span className="project-discipline-right mono">{p.discipline ?? "Brand & Identity"}</span>
                   </div>
 
                   {/* Monumental Title Row */}
                   <div className="project-title-row">
                     <div className="project-title-group">
                       <h3 className="project-title-monument">
-                        {p.href ? (
-                          <Link href={p.href} className="project-title-link">
+                        {hasActiveRoute ? (
+                          <Link href={p.href!} className="project-title-link">
                             {p.name}
                           </Link>
                         ) : (
-                          p.name
+                          <span className="project-title-static">{p.name}</span>
                         )}
                       </h3>
                       <p className="project-summary-line">{p.summary}</p>
                     </div>
-                    {p.href ? (
+                    {hasActiveRoute ? (
                       <Link
-                        href={p.href}
+                        href={p.href!}
                         className="project-circle-btn"
                         aria-label={`View ${p.name} case study`}
                       >
                         <span className="circle-arrow" aria-hidden="true">↗</span>
                       </Link>
                     ) : (
-                      <a
-                        href={mailto({ to, subject: enquiry.subjectPrefix + p.name, body: enquiry.body } satisfies MailtoTemplate)}
-                        className="project-circle-btn"
-                        aria-label={`Start a project like ${p.name}`}
+                      <div
+                        className="project-circle-btn project-circle-btn-soon"
+                        role="status"
+                        aria-label={`${p.name} — Case study coming soon`}
+                        title="Case study coming soon"
                       >
-                        <span className="circle-arrow" aria-hidden="true">↗</span>
-                      </a>
+                        <span className="circle-soon-label mono" aria-hidden="true">SOON</span>
+                      </div>
                     )}
                   </div>
                 </div>

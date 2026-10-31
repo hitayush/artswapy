@@ -575,8 +575,8 @@ export default function AboutPin({
 
         {/* 3-Column Magazine / Stage Layout */}
         <div className="about-stage-grid">
-          {/* Column 1 (Left): Roles + 2 Left Stat Cards */}
-          <div className="about-col about-col-left" ref={colLeftRef}>
+          {/* Top Left: What I Do */}
+          <div className="about-col-left-top" ref={colLeftRef}>
             <div className="about-roles-box">
               <span className="about-label-kicker">[ {rolesLabel} ]</span>
               <ul className="about-roles-list" aria-label="Professional roles">
@@ -594,34 +594,10 @@ export default function AboutPin({
                 ))}
               </ul>
             </div>
-
-            <div className="about-stats-stack">
-              {statsLeft.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="about-stat-card"
-                  tabIndex={0}
-                  onPointerEnter={() => playSfx('hover')}
-                >
-                  <div className="about-stat-head">
-                    <span className="about-stat-val" data-target={stat.number}>
-                      {stat.number}
-                    </span>
-                    <span className="about-stat-pip" aria-hidden="true" />
-                  </div>
-                  <div className="about-stat-body">
-                    <strong className="about-stat-label">{stat.label}</strong>
-                    {stat.subline && (
-                      <span className="about-stat-subline">{stat.subline}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
-          {/* Column 2 (Center): Portrait Cutout with Dynamic Interactive Orange Aura */}
-          <div className="about-col about-col-center">
+          {/* Center Column: Portrait Cutout with Dynamic Interactive Orange Aura */}
+          <div className="about-col-center">
             <figure className="about-portrait-figure" ref={portraitFigureRef}>
               {/* Interactive Dynamic Orange Rim-Light Aura */}
               <div className="about-portrait-aura" ref={auraRef} aria-hidden="true" />
@@ -656,8 +632,8 @@ export default function AboutPin({
             </figure>
           </div>
 
-          {/* Column 3 (Right): Narrative Bio + CTA + 2 Right Stat Cards */}
-          <div className="about-col about-col-right" ref={colRightRef}>
+          {/* Top Right: Narrative Bio + CTA */}
+          <div className="about-col-right-top" ref={colRightRef}>
             <div className="about-bio-box">
               <span className="about-label-kicker">{role}</span>
               <div className="about-bio-story">
@@ -679,7 +655,37 @@ export default function AboutPin({
                 </p>
               </div>
             </div>
+          </div>
 
+          {/* Bottom Left: Left Metric Cards */}
+          <div className="about-col-left-bottom">
+            <div className="about-stats-stack">
+              {statsLeft.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="about-stat-card"
+                  tabIndex={0}
+                  onPointerEnter={() => playSfx('hover')}
+                >
+                  <div className="about-stat-head">
+                    <span className="about-stat-val" data-target={stat.number}>
+                      {stat.number}
+                    </span>
+                    <span className="about-stat-pip" aria-hidden="true" />
+                  </div>
+                  <div className="about-stat-body">
+                    <strong className="about-stat-label">{stat.label}</strong>
+                    {stat.subline && (
+                      <span className="about-stat-subline">{stat.subline}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Right: Right Metric Cards */}
+          <div className="about-col-right-bottom">
             <div className="about-stats-stack">
               {statsRight.map((stat) => (
                 <div

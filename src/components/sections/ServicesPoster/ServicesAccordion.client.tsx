@@ -113,7 +113,6 @@ export default function ServicesAccordion({ services }: { services: Service[] })
                 <div className="svc-drawer-card">
                   <div className="svc-card-header">
                     <span className="eyebrow svc-card-kicker">[ SERVICE FOCUS &amp; SCOPE ]</span>
-                    <span className="svc-card-badge mono">{s.fact}</span>
                   </div>
 
                   <p className="svc-big-definition">

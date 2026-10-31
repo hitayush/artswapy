@@ -187,6 +187,7 @@ export const projects: Project[] = [
     discipline: 'Brand Identity & Packaging',
     summary: 'Brand identity, packaging system, and retail collateral for Softtouch Paints, Textures, Coatings & Wallputty.',
     placeholder: false,
+    comingSoon: false,
     href: '/work/softtouch/',
     image: '/images/projects/softtouch/softtouch case study-02.jpg',
     preview: { alt: 'Softtouch paint buckets lineup on orange background', mark: 'softtouch' },
@@ -204,7 +205,7 @@ export const projects: Project[] = [
     discipline: 'Strategy · Identity',
     summary: 'A positioning and visual identity system for everyday civic dialogue and community culture.',
     placeholder: true,
-    href: '/work/common-ground/',
+    comingSoon: true,
     image: '/images/projects/common-ground.jpg',
     preview: { alt: 'Brand identity mockup for Common Ground cafe and space', mark: 'common' },
     theme: {
@@ -281,7 +282,7 @@ export const projects: Project[] = [
     discipline: 'Packaging · Campaign',
     summary: 'A high-octane consumer wellness drink with electric typography, citrus accents, and bold shelf presence.',
     placeholder: true,
-    href: '/work/good-habit/',
+    comingSoon: true,
     image: '/images/projects/good-habit.jpg',
     preview: { alt: 'Product photography of Good Habit beverage cans', mark: 'habit' },
     theme: {
@@ -358,7 +359,7 @@ export const projects: Project[] = [
     discipline: 'Editorial · Publishing',
     summary: 'A contemporary poetry press with bespoke linen bindings, blind debossing, and signature bookmark thread.',
     placeholder: true,
-    href: '/work/kavita/',
+    comingSoon: true,
     image: '/images/projects/kavita.jpg',
     preview: { alt: 'Editorial book design mockup for Kavita press', mark: 'kavita' },
     theme: {
@@ -435,7 +436,7 @@ export const projects: Project[] = [
     discipline: 'Spatial · Monograph',
     summary: 'An architectural studio monograph and material branding system anchored in raw earth and quiet light.',
     placeholder: true,
-    href: '/work/dhara/',
+    comingSoon: true,
     image: '/images/projects/dhara.jpg',
     preview: { alt: 'Architectural monograph mockup for Dhara studio', mark: 'dhara' },
     theme: {

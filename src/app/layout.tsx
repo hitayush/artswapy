@@ -55,7 +55,7 @@ export const viewport: Viewport = {
 };
 
 /* Runs before paint: resolves saved/system theme without FOUC, marks JS-capable, and activates the editorial intro. */
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var s=localStorage.getItem('artswapy-theme');var m=matchMedia('(prefers-color-scheme: dark)').matches;var t=s==='dark'||s==='light'?s:(m?'dark':'light');d.dataset.theme=t;d.classList.toggle('dark',t==='dark');d.style.colorScheme=t}catch(e){d.dataset.theme='light'}try{var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.motion=r?'reduced':'full';d.dataset.intro='play'}catch(e){d.dataset.intro='done'}})();`;
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var s=localStorage.getItem('artswapy-theme');var m=matchMedia('(prefers-color-scheme: dark)').matches;var t=s==='dark'||s==='light'?s:(m?'dark':'light');d.dataset.theme=t;d.classList.toggle('dark',t==='dark');d.style.colorScheme=t}catch(e){d.dataset.theme='light'}try{var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.motion=r?'reduced':'full';var isHome=window.location.pathname==='/'||window.location.pathname==='';d.dataset.intro=(r||!isHome)?'done':'play'}catch(e){d.dataset.intro='done'}})();`;
 
 const jsonLd = buildHomeJsonLd();
 

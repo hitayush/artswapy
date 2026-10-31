@@ -80,6 +80,14 @@ export default async function CaseStudyPage({ params }: PageProps) {
           __html: JSON.stringify(caseStudyJsonLd).replace(/</g, '\\u003c')
         }}
       />
+      {project.id === 'softtouch' && (
+        <link
+          rel="preload"
+          as="image"
+          href="/images/projects/softtouch/softtouch case study-02.jpg"
+          fetchPriority="high"
+        />
+      )}
       {project.id === 'softtouch' ? (
         <SofttouchCaseStudy
           project={project}

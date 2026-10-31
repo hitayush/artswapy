@@ -88,6 +88,11 @@ export default function SmoothScroll() {
       return;
     }
 
+    if (pathname !== '/' && document.documentElement.dataset.intro === 'play') {
+      document.documentElement.dataset.intro = 'done';
+      lenis?.start();
+    }
+
     if (lenis) {
       lenis.scrollTo(0, { immediate: true });
     } else {

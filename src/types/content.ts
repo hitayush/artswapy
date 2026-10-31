@@ -43,6 +43,7 @@ export interface Project {
   placeholder: boolean;
   preview: { alt: string; mark: MarkId };
   href?: string;
+  comingSoon?: boolean;
   theme?: {
     bg: string;
     text: string;

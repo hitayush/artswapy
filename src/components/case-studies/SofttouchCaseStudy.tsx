@@ -32,22 +32,7 @@ export default function SofttouchCaseStudy({
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // 1. Hero smooth entrance (no cropping or stretching)
-        const heroFrame = root.querySelector<HTMLElement>('.cs-st-hero .cs-st-stage-inner');
-        if (heroFrame) {
-          gsap.fromTo(
-            heroFrame,
-            { y: 24, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.85,
-              ease: 'art.out'
-            }
-          );
-        }
-
-        // 2. Immersive Orange Logo Transition Moment (full-viewport stage)
+        // 1. Immersive Orange Logo Transition Moment (full-viewport stage)
         const logoStage = root.querySelector<HTMLElement>('.cs-st-orange-logo');
         const logoMedia = logoStage?.querySelector<HTMLElement>('[data-st-media="single"]');
         if (logoStage && logoMedia) {
@@ -70,8 +55,48 @@ export default function SofttouchCaseStudy({
           );
         }
 
+        // Softtouch Logo Reveal Video Scrubbing (Scroll-driven frame scrub)
+        const lightLogoStage = root.querySelector<HTMLElement>('.cs-st-light-logo');
+        const logoVideo = lightLogoStage?.querySelector<HTMLVideoElement>('.cs-st-logo-video');
+
+        let videoScrubST: ScrollTrigger | null = null;
+        let onVideoMetaLoaded: (() => void) | null = null;
+
+        if (lightLogoStage && logoVideo) {
+          logoVideo.pause();
+
+          const initVideoScrub = () => {
+            if (videoScrubST) return;
+            const duration = !isNaN(logoVideo.duration) && logoVideo.duration > 0
+              ? logoVideo.duration
+              : 2.0;
+
+            videoScrubST = ScrollTrigger.create({
+              id: 'st-logo-reveal-scrub',
+              trigger: lightLogoStage,
+              start: 'top 85%',
+              end: 'bottom 45%',
+              scrub: true,
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                const targetTime = self.progress * duration;
+                if (!isNaN(targetTime) && Math.abs(logoVideo.currentTime - targetTime) > 0.015) {
+                  logoVideo.currentTime = targetTime;
+                }
+              }
+            });
+          };
+
+          if (logoVideo.readyState >= 1) {
+            initVideoScrub();
+          } else {
+            onVideoMetaLoaded = () => initVideoScrub();
+            logoVideo.addEventListener('loadedmetadata', onVideoMetaLoaded, { once: true });
+          }
+        }
+
         // 3. Natural-proportion image stages (single & multi-column) — restrained scroll reveals
-        const stages = Array.from(root.querySelectorAll<HTMLElement>('[data-st-stage]:not(.cs-st-orange-logo)'));
+        const stages = Array.from(root.querySelectorAll<HTMLElement>('[data-st-stage]:not(.cs-st-orange-logo):not(.cs-st-light-logo)'));
 
         stages.forEach((stage) => {
           const singleMedia = stage.querySelector<HTMLElement>('[data-st-media="single"]');
@@ -149,10 +174,23 @@ export default function SofttouchCaseStudy({
 
         return () => {
           imgs.forEach((img) => img.removeEventListener('load', onImgLoad));
+          if (logoVideo && onVideoMetaLoaded) {
+            logoVideo.removeEventListener('loadedmetadata', onVideoMetaLoaded);
+          }
+          if (videoScrubST) {
+            videoScrubST.kill();
+          }
         };
       });
 
       mm.add('(prefers-reduced-motion: reduce)', () => {
+        const logoVideo = root.querySelector<HTMLVideoElement>('.cs-st-logo-video');
+        if (logoVideo) {
+          logoVideo.pause();
+          if (!isNaN(logoVideo.duration) && logoVideo.duration > 0) {
+            logoVideo.currentTime = logoVideo.duration;
+          }
+        }
         const allAnimated = root.querySelectorAll(
           '.cs-st-stage-inner, .cs-st-hero-img, [data-st-media], [data-st-media] img, [data-st-card], [data-st-thread], [data-st-item], [data-st-split-accent], [data-st-thumb], [data-st-wordmark]'
         );
@@ -226,20 +264,20 @@ export default function SofttouchCaseStudy({
 
             <div className="cs-st-specs-grid">
               <div className="cs-st-spec-box" data-st-item>
-                <span className="spec-label mono">Discipline</span>
-                <strong className="spec-value">{project.discipline ?? 'Brand Identity & Packaging'}</strong>
+                <span className="spec-label mono">WORK</span>
+                <strong className="spec-value">Logo Design &amp; Packaging</strong>
               </div>
               <div className="cs-st-spec-box" data-st-item>
-                <span className="spec-label mono">Category</span>
-                <strong className="spec-value">{project.category}</strong>
+                <span className="spec-label mono">CATEGORY</span>
+                <strong className="spec-value">Paint Industry</strong>
               </div>
               <div className="cs-st-spec-box" data-st-item>
-                <span className="spec-label mono">Scope</span>
-                <strong className="spec-value">Identity, Packaging &amp; Signage</strong>
+                <span className="spec-label mono">LOCATION</span>
+                <strong className="spec-value">Nagpur, India</strong>
               </div>
               <div className="cs-st-spec-box" data-st-item>
-                <span className="spec-label mono">Creative Direction</span>
-                <strong className="spec-value">{site.founder} · {site.name}</strong>
+                <span className="spec-label mono">TIMELINE</span>
+                <strong className="spec-value">20 Days</strong>
               </div>
             </div>
           </div>
@@ -268,18 +306,21 @@ export default function SofttouchCaseStudy({
       </section>
 
       {/* =========================================================================
-          Compact inset warm-white strip between orange logo and typography/palette
+          Softtouch Logo Definition Section
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-story" aria-label="Visual Identity System Note">
+      <section className="cs-st-sec cs-st-story" aria-label="Softtouch Logo Definition">
         <div className="cs-st-container">
-          <div className="cs-st-compact-bar" data-st-card>
-            <div className="cs-st-compact-left" data-st-item>
-              <span className="cs-st-dot" aria-hidden="true" />
-              <span className="mono cs-st-tag">[ VISUAL IDENTITY ]</span>
+          <div className="cs-st-story-box" data-st-card>
+            <div className="cs-st-story-col" data-st-item>
+              <p className="cs-st-story-lead">
+                The Softtouch logo is inspired by a paint splash, designed in a clean and symmetrical style to reflect both creativity and control. While paint is usually free-flowing, the structured form shows the brand&apos;s focus on precision, consistency, and high-quality finishes. The radiating shape represents smooth coverage and the ability to transform any surface with a refined and professional touch.
+              </p>
             </div>
-            <p className="cs-st-compact-text" data-st-item>
-              Wordmark, Montserrat typography, and signature Softtouch orange (#E87124) colour system.
-            </p>
+            <div className="cs-st-story-col" data-st-item>
+              <p className="cs-st-story-lead">
+                The typography and color combination add to the brand&apos;s personality. The mix of black and orange creates a strong yet vibrant look &mdash;black representing trust and durability, and orange reflecting energy and creativity. The name &ldquo;Softtouch&rdquo; itself highlights the brand&apos;s promise of smooth application and elegant results, making it ideal for modern, high-quality painting solutions.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -320,69 +361,79 @@ export default function SofttouchCaseStudy({
       </section>
 
       {/* =========================================================================
-          Centered Softtouch logo on warm-white ground (natural 1918×883 proportions)
-          Asset: /images/projects/softtouch/softtouch case study-04.jpg
+          Centered Softtouch logo on warm-white ground — Animated Logo Reveal
+          Video: /images/projects/softtouch/softtouch-logo-reveal.mp4
+          Fallback poster: /images/projects/softtouch/softtouch case study-04.jpg (1918×883)
           ========================================================================= */}
       <section
         className="cs-st-sec cs-st-light-logo cs-st-guttered"
         data-st-stage
         aria-label="Softtouch Logo on Warm Paper Ground"
       >
-        <div className="cs-st-panel-single cs-st-bg-warm-logo" data-st-media="single">
-          <img
-            src="/images/projects/softtouch/softtouch case study-04.jpg"
-            alt="Softtouch brand logo on warm paper ground"
-            width={1918}
-            height={883}
-            className="cs-st-img-natural"
-            loading="lazy"
-          />
+        <div className="cs-st-panel-single cs-st-bg-warm-logo cs-st-video-container" data-st-media="single">
+          <video
+            className="cs-st-logo-video"
+            poster="/images/projects/softtouch/softtouch case study-04.jpg"
+            preload="metadata"
+            muted
+            playsInline
+            aria-label="Softtouch animated logo reveal"
+            tabIndex={-1}
+          >
+            <source
+              src="/images/projects/softtouch/softtouch-logo-reveal.mp4"
+              type="video/mp4"
+            />
+            {/* Fallback image */}
+            <img
+              src="/images/projects/softtouch/softtouch case study-04.jpg"
+              alt="Softtouch brand logo on warm paper ground"
+              width={1918}
+              height={883}
+              className="cs-st-img-natural"
+              loading="lazy"
+            />
+          </video>
         </div>
       </section>
 
       {/* =========================================================================
-          Branded Collateral & Utility Objects — Full-screen section (viewport height)
-          Three products in spacious row:
-          1. Softtouch mug on the left (softtouch case study-08.jpg)
-          2. Softtouch bottle/flask in center with original grey background (softtouch case study-07.jpg)
-          3. Softtouch USB drive on the right (softtouch case study-09.jpg)
+          1. Collateral & Utility Objects — Compact row with mug, bottle, and USB drive
+          Side by side in 3 balanced image tiles with contained product artwork.
           ========================================================================= */}
       <section
-        className="cs-st-sec cs-st-merch-fullscreen"
+        className="cs-st-sec cs-st-merch-trio cs-st-guttered"
         data-st-stage
-        aria-label="Branded Collateral & Utility Objects"
+        aria-label="Branded Collateral and Utility Objects"
       >
-        <div className="cs-st-merch-header">
-          <span className="ph-tag orange-tag mono">[ BRANDED UTILITY OBJECTS ]</span>
-        </div>
-        <div className="cs-st-merch-row">
-          <div className="cs-st-merch-card-mug" data-st-media="col">
+        <div className="cs-st-paired-grid-3">
+          <div className="cs-st-panel-cell cs-st-cell-mug" data-st-media="col">
             <img
               src="/images/projects/softtouch/softtouch case study-08.jpg"
               alt="Softtouch branded ceramic coffee mug"
               width={634}
               height={425}
-              className="cs-st-merch-img"
+              className="cs-st-collateral-img"
               loading="lazy"
             />
           </div>
-          <div className="cs-st-merch-card-flask" data-st-media="col">
+          <div className="cs-st-panel-cell cs-st-cell-flask" data-st-media="col">
             <img
               src="/images/projects/softtouch/softtouch case study-07.jpg"
               alt="Softtouch branded hydration flask on original grey background"
               width={634}
               height={425}
-              className="cs-st-merch-img"
+              className="cs-st-collateral-img"
               loading="lazy"
             />
           </div>
-          <div className="cs-st-merch-card-usb" data-st-media="col">
+          <div className="cs-st-panel-cell cs-st-cell-usb" data-st-media="col">
             <img
               src="/images/projects/softtouch/softtouch case study-09.jpg"
               alt="Softtouch branded USB flash drive"
               width={634}
               height={425}
-              className="cs-st-merch-img"
+              className="cs-st-collateral-img"
               loading="lazy"
             />
           </div>
@@ -390,8 +441,8 @@ export default function SofttouchCaseStudy({
       </section>
 
       {/* =========================================================================
-          2. Apparel — Peach/orange backdrop (#e7955d) with Softtouch T-shirt (1918×818)
-          Asset: /images/projects/softtouch/softtouch case study-10.jpg
+          2. Apparel — Warm peach/orange panel below with Softtouch T-shirt centered
+          Asset: /images/projects/softtouch/softtouch case study-10.jpg (1918×883)
           ========================================================================= */}
       <section
         className="cs-st-sec cs-st-apparel cs-st-guttered"
@@ -401,52 +452,58 @@ export default function SofttouchCaseStudy({
         <div className="cs-st-panel-single cs-st-bg-apparel" data-st-media="single">
           <img
             src="/images/projects/softtouch/softtouch case study-10.jpg"
-            alt="Softtouch branded orange T-shirt centered on peach-orange backdrop"
+            alt="Softtouch branded orange T-shirt centered on warm peach-orange backdrop"
             width={1918}
             height={818}
-            className="cs-st-img-natural"
+            className="cs-st-apparel-img"
             loading="lazy"
           />
         </div>
       </section>
 
       {/* =========================================================================
-          3. Campaign — Orange campaign composition with phone mockup & Hindi artwork (1916×468)
-          Asset: /images/projects/softtouch/softtouch case study-11.jpg
+          3. Campaign — Orange campaign panel below with existing campaign artwork & phone visual
+          Asset: /images/projects/softtouch/softtouch case study-11.jpg (1916×468)
           ========================================================================= */}
       <section
         className="cs-st-sec cs-st-campaign cs-st-guttered"
         data-st-stage
-        aria-label="Regional Campaign Banner"
+        aria-label="Softtouch Campaign Artwork and Mobile Application Visual"
       >
         <div className="cs-st-panel-single cs-st-bg-campaign" data-st-media="single">
           <img
             src="/images/projects/softtouch/softtouch case study-11.jpg"
-            alt="Softtouch campaign banner: Khushiyo Ke Rang Softtouch Ke Sang with mobile application mockup on the right"
+            alt="Softtouch campaign banner featuring Khushiyo Ke Rang Softtouch Ke Sang artwork with mobile application on the right"
             width={1916}
             height={468}
-            className="cs-st-img-natural"
+            className="cs-st-campaign-img"
             loading="lazy"
           />
         </div>
       </section>
 
       {/* =========================================================================
-          Compact inset warm-white 2-column label panel before sketches
+          Challenge and Strategic Solution
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-process-note" aria-label="Packaging Process and Label Architecture">
+      <section className="cs-st-sec cs-st-process-note" aria-label="The Challenge and Strategic Solution">
         <div className="cs-st-container">
           <div className="cs-st-story-box" data-st-card>
             <div className="cs-st-story-col" data-st-item>
-              <span className="mono cs-st-cat">[ 01 · PACKAGING PROCESS ]</span>
-              <p className="cs-st-story-lead">
-                Container geometry, lid proportions, and wordmark placement sketches.
+              <span className="mono cs-st-cat" style={{ whiteSpace: 'pre' }}>[01  THE CHALLENGE]</span>
+              <h2 className="cs-st-strategy-heading">
+                Creating distinction across every product range.
+              </h2>
+              <p className="cs-st-strategy-body">
+                The challenge was to build a cohesive brand identity for multiple product ranges while giving each category its own unique visual appeal. The designs needed to stand out on retail shelves, communicate product differentiation, and create a strong, recognisable brand presence.
               </p>
             </div>
             <div className="cs-st-story-col" data-st-item>
-              <span className="mono cs-st-cat">[ 02 · LABEL ARCHITECTURE ]</span>
-              <p className="cs-st-story-lead">
-                Wrap label die-lines across emulsions, primers, weather coats, and wall putty.
+              <span className="mono cs-st-cat" style={{ whiteSpace: 'pre' }}>[02  STRATEGIC SOLUTION]</span>
+              <h2 className="cs-st-strategy-heading">
+                Every bucket tells a different story.
+              </h2>
+              <p className="cs-st-strategy-body">
+                We developed innovative packaging designs where each bucket represents a distinct product category through its own visual language. By combining distinctive colours, graphics, and design elements, we created a unified packaging system that makes every range instantly recognisable and visually appealing on shelves.
               </p>
             </div>
           </div>
@@ -531,22 +588,24 @@ export default function SofttouchCaseStudy({
       </section>
 
       {/* =========================================================================
-          Second Inset Identity Panel ("SOFTTOUCH", replacing AARANYA)
+          Brand Applications & Outdoor Media Panel (Centered)
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-second-title" aria-label="Softtouch Brand Applications Panel">
+      <section className="cs-st-sec cs-st-second-title cs-st-outdoor-media" aria-label="Outdoor Media Brand Applications">
         <div className="cs-st-container">
-          <div className="cs-st-intro-card" data-st-card>
-            <div className="cs-st-meta-row" data-st-item>
+          <div className="cs-st-intro-card cs-st-card-centered" data-st-card>
+            <div className="cs-st-meta-row cs-st-meta-centered" data-st-item>
               <span className="cs-st-tag mono">[ BRAND APPLICATIONS ]</span>
-              <span className="cs-st-cat mono">Collateral &amp; Retail Signage</span>
+              <span className="cs-st-cat mono">Outdoor Media</span>
             </div>
-            <div className="cs-st-title-wrap">
-              <h2 className="cs-st-monument-title">{project.name}</h2>
-              <span className="cs-st-title-thread" data-st-thread aria-hidden="true" />
+            <div className="cs-st-title-wrap cs-st-title-centered">
+              <h2 className="cs-st-monument-title">Outdoor Media</h2>
+              <span className="cs-st-title-thread cs-st-thread-centered" data-st-thread aria-hidden="true" />
             </div>
-            <p className="cs-st-lead-summary" style={{ marginBottom: 0 }} data-st-item>
+            <p className="cs-st-lead-summary cs-st-lead-centered" style={{ marginBottom: 0 }} data-st-item>
               Print brochures, retail showroom standees, and dealer storefront signage.
             </p>
+            {/* Structurally ready media slot for outdoor media asset when supplied */}
+            <div className="cs-st-outdoor-media-frame" aria-hidden="true" />
           </div>
         </div>
       </section>
@@ -622,8 +681,8 @@ export default function SofttouchCaseStudy({
             <div className="cs-st-detail-layout">
               <div className="cs-st-detail-thumb">
                 <img
-                  src="/images/projects/softtouch/softtouch case study-19.jpg"
-                  alt="Softtouch Oleo Premium Enamel metal tin container with wire handle"
+                  src="/images/projects/softtouch/softtouch case study-19.png"
+                  alt="Softtouch Premium Oil Paint Bucket packaging detail"
                   width={331}
                   height={410}
                   className="cs-st-thumb-img"
@@ -633,9 +692,9 @@ export default function SofttouchCaseStudy({
               </div>
               <div className="cs-st-detail-content">
                 <span className="mono cs-st-cat" data-st-item>[ PACKAGING DETAIL ]</span>
-                <h3 className="cs-st-detail-title" data-st-item>Oleo Premium Enamel</h3>
+                <h3 className="cs-st-detail-title" data-st-item>Premium Oil Paint Bucket</h3>
                 <p className="body cs-st-detail-p" data-st-item>
-                  Small-format metal enamel tin extending the Softtouch packaging system.
+                  Premium bucket packaging designed to elevate the oil paint range with distinctive visuals, strong shelf appeal, and a refined brand presence.
                 </p>
               </div>
             </div>
@@ -649,21 +708,23 @@ export default function SofttouchCaseStudy({
         </div>
       </section>
 
-      {/* Split Identity Card: "SOFTTOUCH" (replacing AARANYA in template position) */}
-      <section className="cs-st-sec cs-st-split-panel" aria-label="Softtouch Brand Summary Panel">
+      {/* =========================================================================
+          Testimonial Panel — Swapnil Mohota (Founder)
+          ========================================================================= */}
+      <section className="cs-st-sec cs-st-split-panel" aria-label="Client Testimonial Panel">
         <div className="cs-st-container">
           <div className="cs-st-split-card" data-st-card>
             <div className="cs-st-split-left">
               <div className="cs-st-meta-row" data-st-item>
-                <span className="cs-st-tag mono">[ CASE STUDY ]</span>
-                <span className="cs-st-cat mono">{project.category}</span>
+                <span className="cs-st-tag mono">[ TESTIMONIAL ]</span>
+                <span className="cs-st-cat mono">SWAPNIL MOHOTA — FOUNDER</span>
               </div>
               <div className="cs-st-title-wrap">
-                <h2 className="cs-st-split-title">{project.name}</h2>
+                <h2 className="cs-st-split-title">Hear It From Our Client</h2>
                 <span className="cs-st-title-thread" data-st-thread aria-hidden="true" />
               </div>
               <p className="cs-st-split-lead" data-st-item>
-                Cohesive visual identity and packaging system across every product tier.
+                A glimpse into our creative journey, the collaboration, and the impact of transforming Softtouch&apos;s brand identity and packaging.
               </p>
             </div>
             <div className="cs-st-split-right" data-st-split-accent aria-hidden="true" />

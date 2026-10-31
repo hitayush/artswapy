@@ -151,9 +151,13 @@ export default function FooterClose() {
 
       <div className="footer-bottom">
         <div className="footer-credits small">
-          <span>{site.credits.left} · {site.credits.right}</span>
+          <span className="footer-studio-credit">
+            <span className="footer-founder-name">{site.founder}</span>
+            <span className="footer-credit-sep" aria-hidden="true"> · </span>
+            <span className="footer-credit-desc">{site.credits.left} · {site.credits.right}</span>
+          </span>
           <span className="footer-dev-credit">
-            Developed with ❤️ &amp; ☕ by{' '}
+            Developed with <span className="footer-dev-icon">❤️</span> &amp; <span className="footer-dev-icon">☕</span> by{' '}
             <a
               href="https://www.hitayush.space/"
               target="_blank"
