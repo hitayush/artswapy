@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import type { Project } from '@/types/content';
 import { site } from '@/content/site';
@@ -8,6 +8,20 @@ import { gsap, ScrollTrigger, useGSAP } from '@/lib/motion/gsap';
 import CTAButton from '@/components/primitives/CTAButton';
 import ThemeToggle from '@/components/primitives/ThemeToggle.client';
 import FooterClose from '@/components/sections/FooterClose/FooterClose';
+
+/* ─── Chapter metadata for the scroll chapter indicator ─── */
+const CHAPTERS = [
+  { id: 'hero', label: 'Hero' },
+  { id: 'intro', label: 'Introduction' },
+  { id: 'logo-transition', label: 'Logo' },
+  { id: 'logo-definition', label: 'Definition' },
+  { id: 'type-palette', label: 'Typography' },
+  { id: 'logo-reveal', label: 'Reveal' },
+  { id: 'collateral', label: 'Collateral' },
+  { id: 'packaging', label: 'Packaging' },
+  { id: 'applications', label: 'Applications' },
+  { id: 'closing', label: 'Contact' },
+] as const;
 
 interface SofttouchCaseStudyProps {
   project: Project;
@@ -23,6 +37,59 @@ export default function SofttouchCaseStudy({
   enquiryHref
 }: SofttouchCaseStudyProps) {
   const flowRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const chapterRef = useRef<HTMLDivElement>(null);
+
+  /* ─── Lightbox state ─── */
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [lightboxAlt, setLightboxAlt] = useState('');
+  const lightboxRef = useRef<HTMLDialogElement>(null);
+
+  const openLightbox = useCallback((src: string, alt: string) => {
+    setLightboxSrc(src);
+    setLightboxAlt(alt);
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightboxSrc(null);
+    setLightboxAlt('');
+  }, []);
+
+  /* Open/close the native <dialog> when lightboxSrc changes */
+  useEffect(() => {
+    const dialog = lightboxRef.current;
+    if (!dialog) return;
+    if (lightboxSrc) {
+      if (!dialog.open) dialog.showModal();
+    } else {
+      if (dialog.open) dialog.close();
+    }
+  }, [lightboxSrc]);
+
+  /* Close on Escape or backdrop click */
+  useEffect(() => {
+    const dialog = lightboxRef.current;
+    if (!dialog) return;
+    const onClose = () => closeLightbox();
+    const onClick = (e: MouseEvent) => {
+      if (e.target === dialog) closeLightbox();
+    };
+    dialog.addEventListener('close', onClose);
+    dialog.addEventListener('click', onClick);
+    return () => {
+      dialog.removeEventListener('close', onClose);
+      dialog.removeEventListener('click', onClick);
+    };
+  }, [closeLightbox]);
+
+  /* Handle image click for lightbox */
+  const handleImageClick = useCallback(
+    (e: React.MouseEvent<HTMLImageElement>) => {
+      const img = e.currentTarget;
+      openLightbox(img.src, img.alt);
+    },
+    [openLightbox]
+  );
 
   useGSAP(
     () => {
@@ -32,8 +99,49 @@ export default function SofttouchCaseStudy({
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // 1. Initial Hero Choreographed Entrance Sequence
-        // Hero product lineup image gently breathes in and scales to natural rest
+        /* ═══════════════════════════════════════════════════════════
+           SCROLL PROGRESS BAR — thin orange line at the very top
+           ═══════════════════════════════════════════════════════════ */
+        const progressBar = progressRef.current;
+        if (progressBar) {
+          gsap.to(progressBar, {
+            scaleX: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: root,
+              start: 'top top',
+              end: 'bottom bottom',
+              scrub: 0.15
+            }
+          });
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           CHAPTER INDICATOR — track active section
+           ═══════════════════════════════════════════════════════════ */
+        const chapterEl = chapterRef.current;
+        const chapterSections = root.querySelectorAll<HTMLElement>('[data-chapter]');
+        if (chapterEl && chapterSections.length > 0) {
+          chapterSections.forEach((sec) => {
+            ScrollTrigger.create({
+              trigger: sec,
+              start: 'top 50%',
+              end: 'bottom 50%',
+              onEnter: () => {
+                const id = sec.dataset.chapter;
+                if (chapterEl) chapterEl.setAttribute('data-active', id || '');
+              },
+              onEnterBack: () => {
+                const id = sec.dataset.chapter;
+                if (chapterEl) chapterEl.setAttribute('data-active', id || '');
+              }
+            });
+          });
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           1. HERO — cinematic entrance with clip-path mask reveal
+           ═══════════════════════════════════════════════════════════ */
         const heroStage = root.querySelector<HTMLElement>('.cs-st-hero');
         const heroImg = heroStage?.querySelector<HTMLElement>('.cs-st-hero-img');
         const introCard = root.querySelector<HTMLElement>('.cs-st-intro-card');
@@ -41,14 +149,18 @@ export default function SofttouchCaseStudy({
         if (heroImg) {
           gsap.fromTo(
             heroImg,
-            { opacity: 0, scale: 0.98, y: 16 },
             {
-              opacity: 1,
+              clipPath: 'inset(8% 4% 8% 4%)',
+              scale: 1.04,
+              opacity: 0
+            },
+            {
+              clipPath: 'inset(0% 0% 0% 0%)',
               scale: 1,
-              y: 0,
-              duration: 1.1,
+              opacity: 1,
+              duration: 1.3,
               ease: 'art.soft',
-              delay: 0.08
+              delay: 0.12
             }
           );
         }
@@ -75,48 +187,47 @@ export default function SofttouchCaseStudy({
             introTL.fromTo(metaRow, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 }, 0.05);
           }
           if (title) {
-            introTL.fromTo(title, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65 }, 0.12);
+            introTL.fromTo(title, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7 }, 0.12);
           }
           if (thread) {
             introTL.fromTo(thread, { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 0.7, ease: 'art.inOut' }, 0.22);
           }
           if (summary) {
-            introTL.fromTo(summary, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6 }, 0.3);
+            introTL.fromTo(summary, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6 }, 0.32);
           }
           if (specs.length > 0) {
-            introTL.fromTo(specs, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, 0.38);
+            introTL.fromTo(specs, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, 0.4);
           }
         }
 
-        // 2. Dual-Layer Logo Color Transition (orange treatment to warm-white treatment)
+        /* ═══════════════════════════════════════════════════════════
+           2. DUAL-LAYER LOGO COLOR TRANSITION
+           ═══════════════════════════════════════════════════════════ */
         const logoStage = root.querySelector<HTMLElement>('.cs-st-orange-logo');
         const logoDarkVariant = logoStage?.querySelector<HTMLElement>('.cs-st-logo-variant-dark');
         const logoLightVariant = logoStage?.querySelector<HTMLElement>('.cs-st-logo-variant-light');
 
         if (logoStage && logoDarkVariant && logoLightVariant) {
-          // Entrance reveal when scrolling into view
+          // Clip-path mask reveal as logos enter
           gsap.fromTo(
             logoDarkVariant,
-            { y: 28, scale: 0.97, opacity: 0 },
+            { clipPath: 'inset(0% 100% 0% 0%)', opacity: 0.5 },
             {
-              y: 0,
-              scale: 1,
+              clipPath: 'inset(0% 0% 0% 0%)',
               opacity: 1,
-              duration: 0.8,
-              ease: 'art.out',
+              duration: 1,
+              ease: 'art.inOut',
               scrollTrigger: {
                 trigger: logoStage,
                 start: 'top 88%',
-                end: 'top 35%',
+                end: 'top 40%',
                 scrub: 0.45,
                 fastScrollEnd: true
               }
             }
           );
 
-          // Color transition: As the section approaches the warm-white narrative section,
-          // smoothly crossfade from the orange background & white/orange logo (03.jpg)
-          // to the warm-white background & orange/black logo (04.jpg)
+          // Color transition crossfade
           const transitionTL = gsap.timeline({
             scrollTrigger: {
               trigger: logoStage,
@@ -133,7 +244,9 @@ export default function SofttouchCaseStudy({
             .to(logoLightVariant, { opacity: 1, ease: 'none' }, 0);
         }
 
-        // 3. Sequential Softtouch Logo Reveal Video (Symbol appears first, then full wordmark reveals left-to-right)
+        /* ═══════════════════════════════════════════════════════════
+           3. SEQUENTIAL LOGO REVEAL VIDEO
+           ═══════════════════════════════════════════════════════════ */
         const lightLogoStage = root.querySelector<HTMLElement>('.cs-st-light-logo');
         const logoVideo = lightLogoStage?.querySelector<HTMLVideoElement>('.cs-st-logo-video');
 
@@ -174,23 +287,32 @@ export default function SofttouchCaseStudy({
           });
         }
 
-        // 4. Natural-proportion image stages with gentle settling motion
+        /* ═══════════════════════════════════════════════════════════
+           4. IMAGE STAGES — clip-path mask reveals + subtle parallax
+           ═══════════════════════════════════════════════════════════ */
         const stages = Array.from(
           root.querySelectorAll<HTMLElement>(
             '[data-st-stage]:not(.cs-st-orange-logo):not(.cs-st-light-logo)'
           )
         );
 
-        stages.forEach((stage) => {
+        stages.forEach((stage, stageIdx) => {
           const singleMedia = stage.querySelector<HTMLElement>('[data-st-media="single"]');
           if (singleMedia) {
+            // Alternate between vertical and horizontal mask reveals
+            const isEven = stageIdx % 2 === 0;
+            const fromClip = isEven
+              ? 'inset(6% 0% 6% 0%)'
+              : 'inset(0% 6% 0% 6%)';
+
             gsap.fromTo(
               singleMedia,
-              { y: 20, opacity: 0 },
+              { clipPath: fromClip, y: 24, opacity: 0 },
               {
+                clipPath: 'inset(0% 0% 0% 0%)',
                 y: 0,
                 opacity: 1,
-                duration: 0.7,
+                duration: 0.85,
                 ease: 'art.out',
                 scrollTrigger: {
                   trigger: stage,
@@ -200,20 +322,21 @@ export default function SofttouchCaseStudy({
               }
             );
 
-            // Subtle depth settling on the inner image
+            // Subtle parallax depth on the inner image
             const img = singleMedia.querySelector<HTMLElement>('img');
             if (img) {
               gsap.fromTo(
                 img,
-                { scale: 1.015 },
+                { scale: 1.03, y: 12 },
                 {
                   scale: 1,
-                  duration: 0.8,
-                  ease: 'art.soft',
+                  y: -8,
+                  ease: 'none',
                   scrollTrigger: {
                     trigger: stage,
-                    start: 'top 88%',
-                    toggleActions: 'play none none reverse'
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 0.4
                   }
                 }
               );
@@ -222,29 +345,33 @@ export default function SofttouchCaseStudy({
 
           const cols = Array.from(stage.querySelectorAll<HTMLElement>('[data-st-media="col"]'));
           if (cols.length > 0) {
-            gsap.fromTo(
-              cols,
-              { y: 20, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                stagger: 0.08,
-                duration: 0.7,
-                ease: 'art.out',
-                scrollTrigger: {
-                  trigger: stage,
-                  start: 'top 88%',
-                  toggleActions: 'play none none reverse'
+            cols.forEach((col, i) => {
+              // Staggered clip-path reveals for column items
+              const delay = i * 0.08;
+              gsap.fromTo(
+                col,
+                { clipPath: 'inset(8% 0% 8% 0%)', y: 20, opacity: 0 },
+                {
+                  clipPath: 'inset(0% 0% 0% 0%)',
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.75,
+                  delay,
+                  ease: 'art.out',
+                  scrollTrigger: {
+                    trigger: stage,
+                    start: 'top 88%',
+                    toggleActions: 'play none none reverse'
+                  }
                 }
-              }
-            );
+              );
 
-            cols.forEach((col) => {
+              // Per-column parallax
               const img = col.querySelector<HTMLElement>('img');
               if (img) {
                 gsap.fromTo(
                   img,
-                  { scale: 1.015 },
+                  { scale: 1.02 },
                   {
                     scale: 1,
                     duration: 0.8,
@@ -261,7 +388,9 @@ export default function SofttouchCaseStudy({
           }
         });
 
-        // 5. Lower text and narrative cards with sequenced content reveals
+        /* ═══════════════════════════════════════════════════════════
+           5. TEXT/NARRATIVE CARDS — sequenced content reveals
+           ═══════════════════════════════════════════════════════════ */
         const cards = Array.from(
           root.querySelectorAll<HTMLElement>('[data-st-card]:not(.cs-st-intro-card)')
         );
@@ -304,7 +433,9 @@ export default function SofttouchCaseStudy({
           }
         });
 
-        // 6. Final closing section transition into related work and footer
+        /* ═══════════════════════════════════════════════════════════
+           6. CLOSING SECTION
+           ═══════════════════════════════════════════════════════════ */
         const closingSec = root.querySelector<HTMLElement>('.cs-st-closing');
         if (closingSec) {
           const banner = closingSec.querySelector<HTMLElement>('.cs-enquiry-banner');
@@ -313,11 +444,12 @@ export default function SofttouchCaseStudy({
           if (banner) {
             gsap.fromTo(
               banner,
-              { y: 20, opacity: 0 },
+              { y: 24, opacity: 0, clipPath: 'inset(4% 2% 4% 2%)' },
               {
                 y: 0,
                 opacity: 1,
-                duration: 0.7,
+                clipPath: 'inset(0% 0% 0% 0%)',
+                duration: 0.75,
                 ease: 'art.out',
                 scrollTrigger: {
                   trigger: banner,
@@ -347,6 +479,7 @@ export default function SofttouchCaseStudy({
           }
         }
 
+        // Refresh ScrollTrigger when images load
         const imgs = Array.from(root.querySelectorAll('img'));
         const onImgLoad = () => ScrollTrigger.refresh();
         imgs.forEach((img) => {
@@ -384,6 +517,35 @@ export default function SofttouchCaseStudy({
 
   return (
     <div ref={flowRef} className="cs-softtouch-flow">
+      {/* ═══ Scroll Progress Bar ═══ */}
+      <div
+        ref={progressRef}
+        className="cs-st-progress-bar"
+        aria-hidden="true"
+        style={{ transform: 'scaleX(0)' }}
+      />
+
+      {/* ═══ Chapter Indicator (desktop only) ═══ */}
+      <nav
+        ref={chapterRef}
+        className="cs-st-chapter-nav"
+        aria-label="Case study sections"
+        data-active="hero"
+      >
+        {CHAPTERS.map((ch) => (
+          <a
+            key={ch.id}
+            href={`#${ch.id}`}
+            className="cs-st-chapter-dot"
+            data-chapter-id={ch.id}
+            aria-label={`Jump to ${ch.label}`}
+          >
+            <span className="cs-st-chapter-indicator-pip" aria-hidden="true" />
+            <span className="cs-st-chapter-label">{ch.label}</span>
+          </a>
+        ))}
+      </nav>
+
       {/* Studio Top Navigation Bar */}
       <header className="cs-topbar">
         <div className="cs-topbar-inner">
@@ -407,16 +569,17 @@ export default function SofttouchCaseStudy({
           Hero: 4 paint buckets on vibrant orange ground (natural aspect ratio 1919×982)
           Asset: /images/projects/softtouch/softtouch case study-02.jpg
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-hero" aria-label="Softtouch Product Lineup Hero">
+      <section id="hero" className="cs-st-sec cs-st-hero" data-chapter="hero" aria-label="Softtouch Product Lineup Hero">
         <div className="cs-st-stage-inner">
           <img
             src="/images/projects/softtouch/softtouch case study-02.jpg"
             alt="Softtouch paint buckets lineup on vibrant orange surface: Wall Putty, Aura, Storm Shield, and Evershield"
             width={1919}
             height={982}
-            className="cs-st-img-natural cs-st-hero-img"
+            className="cs-st-img-natural cs-st-hero-img cs-st-clickable-img"
             loading="eager"
             fetchPriority="high"
+            onClick={handleImageClick}
           />
         </div>
       </section>
@@ -424,7 +587,7 @@ export default function SofttouchCaseStudy({
       {/* =========================================================================
           Inset Warm-White Identity Panel ("SOFTTOUCH", replacing AARANYA)
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-intro" aria-label="Project Introduction">
+      <section id="intro" className="cs-st-sec cs-st-intro" data-chapter="intro" aria-label="Project Introduction">
         <div className="cs-st-container">
           <div className="cs-st-intro-card" data-st-card>
             <div className="cs-st-meta-row" data-st-item>
@@ -471,8 +634,10 @@ export default function SofttouchCaseStudy({
           - Warm-white ground: /images/projects/softtouch/softtouch case study-04.jpg (orange/black logo)
           ========================================================================= */}
       <section
+        id="logo-transition"
         className="cs-st-sec cs-st-orange-logo cs-st-logo-viewport"
         data-st-stage
+        data-chapter="logo-transition"
         aria-label="Softtouch Brand Signature on Orange"
       >
         <div className="cs-st-stage-inner cs-st-transition-stage" data-st-media="single">
@@ -500,7 +665,7 @@ export default function SofttouchCaseStudy({
       {/* =========================================================================
           Softtouch Logo Definition Section
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-story" aria-label="Softtouch Logo Definition">
+      <section id="logo-definition" className="cs-st-sec cs-st-story" data-chapter="logo-definition" aria-label="Softtouch Logo Definition">
         <div className="cs-st-container">
           <div className="cs-st-story-box" data-st-card>
             <div className="cs-st-story-col" data-st-item>
@@ -524,8 +689,10 @@ export default function SofttouchCaseStudy({
           - Right: /images/projects/softtouch/softtouch case study-06.jpg (Colour palette scale)
           ========================================================================= */}
       <section
+        id="type-palette"
         className="cs-st-sec cs-st-type-palette cs-st-guttered"
         data-st-stage
+        data-chapter="type-palette"
         aria-label="Typography and Colour System"
       >
         <div className="cs-st-paired-grid-2">
@@ -535,8 +702,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch Montserrat brand typeface specimen on orange background"
               width={960}
               height={631}
-              className="cs-st-img-natural"
+              className="cs-st-img-natural cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
           <div className="cs-st-panel-cell cs-st-cell-palette" data-st-media="col">
@@ -545,8 +713,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch brand colour palette scale (#E87124 and #231F20)"
               width={960}
               height={631}
-              className="cs-st-img-natural"
+              className="cs-st-img-natural cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
         </div>
@@ -558,8 +727,10 @@ export default function SofttouchCaseStudy({
           Fallback poster: /images/projects/softtouch/softtouch case study-04.jpg (1918×883)
           ========================================================================= */}
       <section
+        id="logo-reveal"
         className="cs-st-sec cs-st-light-logo cs-st-guttered"
         data-st-stage
+        data-chapter="logo-reveal"
         aria-label="Softtouch Logo on Warm Paper Ground"
       >
         <div className="cs-st-panel-single cs-st-bg-warm-logo cs-st-video-container" data-st-media="single">
@@ -594,8 +765,10 @@ export default function SofttouchCaseStudy({
           Side by side in 3 balanced image tiles with contained product artwork.
           ========================================================================= */}
       <section
+        id="collateral"
         className="cs-st-sec cs-st-merch-trio cs-st-guttered"
         data-st-stage
+        data-chapter="collateral"
         aria-label="Branded Collateral and Utility Objects"
       >
         <div className="cs-st-paired-grid-3">
@@ -605,8 +778,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch branded ceramic coffee mug"
               width={634}
               height={425}
-              className="cs-st-collateral-img"
+              className="cs-st-collateral-img cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
           <div className="cs-st-panel-cell cs-st-cell-flask" data-st-media="col">
@@ -615,8 +789,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch branded hydration flask on original grey background"
               width={634}
               height={425}
-              className="cs-st-collateral-img"
+              className="cs-st-collateral-img cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
           <div className="cs-st-panel-cell cs-st-cell-usb" data-st-media="col">
@@ -625,8 +800,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch branded USB flash drive"
               width={634}
               height={425}
-              className="cs-st-collateral-img"
+              className="cs-st-collateral-img cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
         </div>
@@ -647,8 +823,9 @@ export default function SofttouchCaseStudy({
             alt="Softtouch branded orange T-shirt centered on warm peach-orange backdrop"
             width={1918}
             height={818}
-            className="cs-st-apparel-img"
+            className="cs-st-apparel-img cs-st-clickable-img"
             loading="lazy"
+            onClick={handleImageClick}
           />
         </div>
       </section>
@@ -668,8 +845,9 @@ export default function SofttouchCaseStudy({
             alt="Softtouch campaign banner featuring Khushiyo Ke Rang Softtouch Ke Sang artwork with mobile application on the right"
             width={1916}
             height={468}
-            className="cs-st-campaign-img"
+            className="cs-st-campaign-img cs-st-clickable-img"
             loading="lazy"
+            onClick={handleImageClick}
           />
         </div>
       </section>
@@ -707,8 +885,10 @@ export default function SofttouchCaseStudy({
           Asset: /images/projects/softtouch/softtouch case study-12.jpg
           ========================================================================= */}
       <section
+        id="packaging"
         className="cs-st-sec cs-st-sketches cs-st-guttered"
         data-st-stage
+        data-chapter="packaging"
         aria-label="Process Sketches"
       >
         <div className="cs-st-panel-single cs-st-bg-sketches" data-st-media="single">
@@ -717,8 +897,9 @@ export default function SofttouchCaseStudy({
             alt="Hand-drawn concept exploration and structural packaging sketches for Softtouch paint containers and wordmark"
             width={2388}
             height={1668}
-            className="cs-st-img-natural"
+            className="cs-st-img-natural cs-st-clickable-img"
             loading="lazy"
+            onClick={handleImageClick}
           />
         </div>
       </section>
@@ -738,8 +919,9 @@ export default function SofttouchCaseStudy({
             alt="Plain white paint bucket on the left paired with Dampfixx Ultra and Aura packaging label designs on the right"
             width={1914}
             height={872}
-            className="cs-st-img-natural"
+            className="cs-st-img-natural cs-st-clickable-img"
             loading="lazy"
+            onClick={handleImageClick}
           />
         </div>
       </section>
@@ -762,8 +944,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch interior emulsion buckets: Astheta, Softflow, Grandeur, and Aura"
               width={955}
               height={538}
-              className="cs-st-img-natural"
+              className="cs-st-img-natural cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
           <div className="cs-st-panel-cell cs-st-cell-range-right" data-st-media="col">
@@ -772,8 +955,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch primer buckets and wall putty bag lineup on showroom plinth"
               width={955}
               height={538}
-              className="cs-st-img-natural"
+              className="cs-st-img-natural cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
         </div>
@@ -782,7 +966,7 @@ export default function SofttouchCaseStudy({
       {/* =========================================================================
           Brand Applications & Outdoor Media Panel (Centered)
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-second-title cs-st-outdoor-media" aria-label="Outdoor Media Brand Applications">
+      <section id="applications" className="cs-st-sec cs-st-second-title cs-st-outdoor-media" data-chapter="applications" aria-label="Outdoor Media Brand Applications">
         <div className="cs-st-container">
           <div className="cs-st-intro-card cs-st-card-centered" data-st-card>
             <div className="cs-st-meta-row cs-st-meta-centered" data-st-item>
@@ -820,8 +1004,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch open and folded brochures on orange ground"
               width={955}
               height={538}
-              className="cs-st-img-natural"
+              className="cs-st-img-natural cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
           <div className="cs-st-panel-cell cs-st-cell-collateral-right" data-st-media="col">
@@ -830,8 +1015,9 @@ export default function SofttouchCaseStudy({
               alt="Softtouch showroom standing display sign for Rajeshree and Swastik Traders"
               width={955}
               height={538}
-              className="cs-st-img-natural"
+              className="cs-st-img-natural cs-st-clickable-img"
               loading="lazy"
+              onClick={handleImageClick}
             />
           </div>
         </div>
@@ -852,8 +1038,9 @@ export default function SofttouchCaseStudy({
             alt="Softtouch dealership storefront fascia signage: Rajeshree and Swastik Traders, Umred Road, Udasa, Umred"
             width={1921}
             height={600}
-            className="cs-st-img-natural"
+            className="cs-st-img-natural cs-st-clickable-img"
             loading="lazy"
+            onClick={handleImageClick}
           />
         </div>
       </section>
@@ -876,9 +1063,10 @@ export default function SofttouchCaseStudy({
                   alt="Softtouch Premium Oil Paint Bucket packaging detail"
                   width={331}
                   height={410}
-                  className="cs-st-thumb-img"
+                  className="cs-st-thumb-img cs-st-clickable-img"
                   loading="lazy"
                   data-st-thumb
+                  onClick={handleImageClick}
                 />
               </div>
               <div className="cs-st-detail-content">
@@ -908,8 +1096,9 @@ export default function SofttouchCaseStudy({
             alt="Softtouch Storm Shield and Evershield angled paint buckets on signature orange background"
             width={1919}
             height={1080}
-            className="cs-st-img-natural"
+            className="cs-st-img-natural cs-st-clickable-img"
             loading="lazy"
+            onClick={handleImageClick}
           />
         </div>
       </section>
@@ -917,7 +1106,7 @@ export default function SofttouchCaseStudy({
       {/* =========================================================================
           11. Closing — Existing ArtSwapy related-work / contact / footer experience
           ========================================================================= */}
-      <section className="cs-st-sec cs-st-closing" aria-label="Collaboration and Project Navigation">
+      <section id="closing" className="cs-st-sec cs-st-closing" data-chapter="closing" aria-label="Collaboration and Project Navigation">
         <div className="cs-st-container">
           <div className="cs-enquiry-banner" data-st-card>
             <div className="cs-enquiry-content">
@@ -951,6 +1140,34 @@ export default function SofttouchCaseStudy({
 
       {/* ArtSwapy Studio Footer */}
       <FooterClose />
+
+      {/* ═══ Lightbox Dialog ═══ */}
+      <dialog
+        ref={lightboxRef}
+        className="cs-st-lightbox"
+        aria-label="Image detail view"
+      >
+        {lightboxSrc && (
+          <div className="cs-st-lightbox-content">
+            <button
+              className="cs-st-lightbox-close"
+              onClick={closeLightbox}
+              aria-label="Close image detail"
+              type="button"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <img
+              src={lightboxSrc}
+              alt={lightboxAlt}
+              className="cs-st-lightbox-img"
+            />
+          </div>
+        )}
+      </dialog>
     </div>
   );
 }
