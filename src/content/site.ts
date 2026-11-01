@@ -28,17 +28,17 @@ export const site = {
     placeholder: false
   },
   phone: {
-    display: '+91 98230 34567',
-    value: '+919823034567',
-    whatsapp: 'https://wa.me/919823034567',
+    display: '+91 70589 26089',
+    value: '+917058926089',
+    whatsapp: 'https://wa.me/917058926089',
     placeholder: false
   } satisfies PhoneContact,
   socials: [
     {
       id: 'instagram',
       label: 'Instagram',
-      handle: '@artswapy',
-      href: 'https://instagram.com/artswapy'
+      handle: '@art_swapy',
+      href: 'https://www.instagram.com/art_swapy/'
     },
     {
       id: 'youtube',
@@ -755,7 +755,7 @@ export const contact = {
   routes: [
     { id: 'email', label: 'Email', value: site.email.address, href: `mailto:${site.email.address}`, placeholder: false },
     { id: 'phone', label: 'Phone / WhatsApp', value: site.phone.display, href: site.phone.whatsapp, placeholder: false },
-    { id: 'instagram', label: 'Instagram', value: '@artswapy', href: 'https://instagram.com/artswapy', placeholder: false },
+    { id: 'instagram', label: 'Instagram', value: '@art_swapy', href: 'https://www.instagram.com/art_swapy/', placeholder: false },
     { id: 'youtube', label: 'YouTube', value: '@artswapy', href: 'https://youtube.com/@artswapy', placeholder: false },
     { id: 'linkedin', label: 'LinkedIn', value: 'Swapnil Gathibandhe', href: 'https://linkedin.com/in/swapnil-gathibandhe', placeholder: false },
     { id: 'location', label: 'Location', value: 'Nagpur, India', placeholder: false },

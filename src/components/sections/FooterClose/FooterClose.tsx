@@ -41,8 +41,8 @@ const CONTACT_ICONS = [
   },
   {
     id: 'instagram',
-    title: 'Instagram: @artswapy',
-    href: 'https://instagram.com/artswapy',
+    title: `Instagram: ${site.socials.find((s) => s.id === 'instagram')?.handle ?? '@art_swapy'}`,
+    href: site.socials.find((s) => s.id === 'instagram')?.href ?? 'https://www.instagram.com/art_swapy/',
     external: true,
     icon: (
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
